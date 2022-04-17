@@ -1,0 +1,30 @@
+{
+    "compilerOptions": {
+        "checkJs": false,
+        "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "target": "es2020",
+        "module": "ESNext",
+        "outDir": "./build",
+        "forceConsistentCasingInFileNames": true,
+        "importHelpers": true,
+        "jsx": "react-jsx",
+        "declaration": true,
+        "strict": true
+    },
+    "exclude": [
+        "dist",
+        "node_modules",
+        "build",
+        ".vscode",
+        "coverage",
+        ".npm",
+        ".yarn"
+    ],
+    "include": ["src/**/*"],
+    "typeAcquisition": {
+        "enable": true,
+        "include": ["node"]
+    }
+}
