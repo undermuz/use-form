@@ -2,11 +2,14 @@ import { useCallback, useMemo } from "react"
 
 import formReducer, {
     EnumFormStatus,
+    IErrors,
     IFields,
     IFormState,
+    ITouched,
     IValues,
     IValueTest,
     SEND_FORM,
+    ValidateFunction,
 } from "./reducer"
 
 /* MIDDLEWARES */
@@ -41,7 +44,7 @@ const DEF_INITIAL_STATE_OPTIONS = {
     validate: () => {},
 }
 
-const getInitialState = (
+export const getInitialState = (
     props: IInitialStateOptions = DEF_INITIAL_STATE_OPTIONS
 ): IFormState => {
     const {
@@ -70,11 +73,44 @@ export interface IUseFormOptions extends IInitialStateOptions {
     middlewares?: any[]
 }
 
+export interface IUseFormControl {
+    setValue: (
+        name: string,
+        value: any,
+        silent?: boolean,
+        checkOnlyFilled?: boolean,
+        type?: string
+    ) => void
+    setTouchedByName: (name: string, value?: boolean, silent?: boolean) => void
+    setTouched: (
+        newTouched: ITouched,
+        silent?: boolean,
+        checkOnlyFilled?: boolean
+    ) => void
+    setValues: (
+        newValues: IValues,
+        silent?: boolean,
+        checkOnlyFilled?: boolean,
+        type?: string
+    ) => void
+    setTests: (
+        newTests: IValueTest[],
+        silent?: boolean,
+        checkOnlyFilled?: boolean
+    ) => void
+    setValidate: (
+        newValidate: ValidateFunction,
+        silent?: boolean,
+        checkOnlyFilled?: boolean
+    ) => void
+    setErrors: (newErrors: IErrors) => void
+}
+
 export const useFormControl = (
     props: IUseFormOptions,
     store: IStore<IFormState>,
     dispatch: DispatchFunction
-) => {
+): IUseFormControl => {
     const setTouched = useSetTouched(props, store, dispatch)
     const setValues = useSetValues(props, store, dispatch)
     const setTests = useSetTests(props, store, dispatch)
@@ -94,7 +130,18 @@ export const useFormControl = (
     }
 }
 
-const useForm = (props: IUseFormOptions) => {
+export type SendFunction = (api: Function) => void
+
+export interface IUseForm {
+    IsFormValid: (c: boolean) => boolean
+    store: IStore<IFormState>
+    dispatch: DispatchFunction
+    send: SendFunction
+}
+
+export type UseFormConfig = IUseForm & IFormState & IUseFormControl
+
+const useForm = (props: IUseFormOptions): UseFormConfig => {
     const initialState = useMemo(() => getInitialState(props), [])
 
     const middlewares = useMemo(
@@ -116,7 +163,7 @@ const useForm = (props: IUseFormOptions) => {
 
     const IsFormValid = useIsFormValid(props, store, dispatch)
 
-    const send = useCallback((api: Function) => {
+    const send = useCallback<SendFunction>((api: Function) => {
         return new Promise((onResolve, onReject) => {
             dispatch({
                 type: SEND_FORM,

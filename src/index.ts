@@ -1,4 +1,9 @@
-import useForm, { IInitialStateOptions } from "./useForm"
+import useForm, {
+    IInitialStateOptions,
+    SendFunction,
+    IUseForm,
+    UseFormConfig,
+} from "./useForm"
 
 import useReducer, {
     IActionPayload,
@@ -16,9 +21,15 @@ import {
     IFormState,
 } from "./useForm/reducer"
 
+import FormContext, { useFormContext } from "./connectToForm/formContext"
+import ConnectToForm from "./connectToForm"
+
 export default useForm
 
 export {
+    FormContext,
+    ConnectToForm,
+    useFormContext,
     IValueTest,
     IFields,
     ITouched,
@@ -31,4 +42,7 @@ export {
     IAction,
     DispatchFunction,
     IStore,
+    SendFunction,
+    IUseForm,
+    UseFormConfig,
 }
