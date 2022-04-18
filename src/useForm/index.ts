@@ -28,7 +28,7 @@ import {
     useSetErrors,
 } from "./helpers"
 
-import useReducer, { DispatchFunction, IStore } from "../useReducer"
+import useReducer, { DispatchFunction, IStore } from "../useReducer/index"
 
 export interface IInitialStateOptions {
     initialValues: IValues

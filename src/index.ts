@@ -4,14 +4,14 @@ import useForm, {
     IUseForm,
     UseFormConfig,
     IUseFormOptions,
-} from "./useForm"
+} from "./useForm/index"
 
 import useReducer, {
     IActionPayload,
     IAction,
     DispatchFunction,
     IStore,
-} from "./useReducer"
+} from "./useReducer/index"
 
 import {
     IValueTest,
@@ -23,7 +23,7 @@ import {
 } from "./useForm/reducer"
 
 import FormContext, { useFormContext } from "./connectToForm/formContext"
-import ConnectToForm from "./connectToForm"
+import ConnectToForm from "./connectToForm/index"
 
 export default useForm
 

@@ -1,4 +1,4 @@
-import { IAction } from "../useReducer"
+import { IAction } from "../useReducer/index"
 
 const IsFunction = (value: any): boolean =>
     Boolean(value) &&

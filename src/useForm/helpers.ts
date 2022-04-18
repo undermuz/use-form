@@ -17,7 +17,7 @@ import {
 } from "./reducer"
 
 import { getFormErrors } from "./middlewares/validate"
-import { DispatchFunction, IStore } from "../useReducer"
+import { DispatchFunction, IStore } from "../useReducer/index"
 
 export interface IUseFormSettings {
     [k: string]: any
