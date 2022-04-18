@@ -52,7 +52,7 @@ export interface IFormState {
     sendError: any
     values: IValues
     tests: IValueTest[]
-    validate: ValidateFunction
+    validate?: ValidateFunction
     touched: ITouched
     fields: IFields
     errors: IErrors
@@ -154,9 +154,9 @@ export const fieldsReducer = (state: IFields, action: IAction): IFields => {
 }
 
 export const validateReducer = (
-    state: ValidateFunction,
+    state: ValidateFunction | undefined,
     action: IAction
-): ValidateFunction => {
+): ValidateFunction | undefined => {
     switch (action.type) {
         case SET_VALIDATE:
             return action.payload.validate

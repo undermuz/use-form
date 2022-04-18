@@ -34,7 +34,7 @@ export interface IInitialStateOptions {
     initialValues: IValues
     valueTests: IValueTest[]
     fields: IFields
-    validate: Function
+    validate?: Function
 }
 
 const DEF_INITIAL_STATE_OPTIONS = {
