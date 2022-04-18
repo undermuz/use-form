@@ -3,6 +3,7 @@ import useForm, {
     SendFunction,
     IUseForm,
     UseFormConfig,
+    IUseFormOptions,
 } from "./useForm"
 
 import useReducer, {
@@ -30,6 +31,7 @@ export {
     FormContext,
     ConnectToForm,
     useFormContext,
+    IUseFormOptions,
     IValueTest,
     IFields,
     ITouched,
