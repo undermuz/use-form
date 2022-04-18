@@ -8,12 +8,12 @@ import {
 import { useFormContext } from "./formContext"
 
 export interface IConnectToForm {
-    IsFilled: (v: any) => boolean
     name: string
     inputName?: string
     disabled?: boolean
     type?: string
     children: ReactElement
+    IsFilled?: (v: any) => boolean
     onRefInput?: Function
     onRef?: Function
 }
