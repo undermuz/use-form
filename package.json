@@ -34,7 +34,8 @@
     "eslint": "^8.9.0",
     "eslint-plugin-react": "^7.28.0",
     "rollup": "^2.70.2",
-    "rollup-plugin-peer-deps-external": "^2.2.4"
+    "rollup-plugin-peer-deps-external": "^2.2.4",
+    "tslib": "^2.3.1"
   },
   "keywords": [
     "react",
