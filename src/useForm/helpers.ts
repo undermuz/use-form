@@ -51,7 +51,7 @@ export const isFormHasErrors = (
 export const useIsFormValid = (
     settings: IUseFormSettings,
     store: IStore<IFormState>,
-    dispatch: DispatchFunction
+    _dispatch: DispatchFunction
 ) => {
     return useCallback((checkOnlyFilled = true) => {
         return !isFormHasErrors(settings, store, checkOnlyFilled)[0]
@@ -59,8 +59,8 @@ export const useIsFormValid = (
 }
 
 export const useSetTouched = (
-    settings: IUseFormSettings,
-    store: IStore<IFormState>,
+    _settings: IUseFormSettings,
+    _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
     return useCallback(
@@ -77,8 +77,8 @@ export const useSetTouched = (
 }
 
 export const useSetValues = (
-    settings: IUseFormSettings,
-    store: IStore<IFormState>,
+    _settings: IUseFormSettings,
+    _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
     return useCallback(
@@ -100,8 +100,8 @@ export const useSetValues = (
 }
 
 export const useSetTests = (
-    settings: IUseFormSettings,
-    store: IStore<IFormState>,
+    _settings: IUseFormSettings,
+    _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
     return useCallback(
@@ -118,8 +118,8 @@ export const useSetTests = (
 }
 
 export const useSetErrors = (
-    settings: IUseFormSettings,
-    store: IStore<IFormState>,
+    _settings: IUseFormSettings,
+    _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
     return useCallback((newErrors: IErrors) => {
@@ -131,8 +131,8 @@ export const useSetErrors = (
 }
 
 export const useSetFieldValue = (
-    settings: IUseFormSettings,
-    store: IStore<IFormState>,
+    _settings: IUseFormSettings,
+    _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
     return useCallback(
@@ -155,8 +155,8 @@ export const useSetFieldValue = (
 }
 
 export const useSetFieldTouched = (
-    settings: IUseFormSettings,
-    store: IStore<IFormState>,
+    _settings: IUseFormSettings,
+    _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
     return useCallback(
@@ -175,8 +175,8 @@ export const useSetFieldTouched = (
 }
 
 export const useSetValidate = (
-    settings: IUseFormSettings,
-    store: IStore<IFormState>,
+    _settings: IUseFormSettings,
+    _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
     return useCallback(

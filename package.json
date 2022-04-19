@@ -2,12 +2,17 @@
   "name": "@undermuz/use-form",
   "version": "0.0.1",
   "description": "React library for build forms",
-  "main": "build",
+  "main": "./build/index.js",
+  "module": "./esm/index.js",
   "exports": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.cjs.json",
+    "build:cjs": "tsc --project tsconfig.cjs.json --outDir cjs",
+    "build:esm": "tsc --project tsconfig.esm.json --outDir esm",
+    "build:umd": "tsc --project tsconfig.umd.json --outDir umd",
+    "prepare": "npm run build:cjs & npm run build:esm & npm run build:umd && npm run build",
     "install": "tsc --build --force"
   },
   "author": {
@@ -22,9 +27,14 @@
     "typescript": "^4.5.5"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^21.1.0",
+    "@rollup/plugin-node-resolve": "^13.2.1",
+    "@rollup/plugin-typescript": "^8.3.2",
     "@types/react": "^18.0.5",
     "eslint": "^8.9.0",
-    "eslint-plugin-react": "^7.28.0"
+    "eslint-plugin-react": "^7.28.0",
+    "rollup": "^2.70.2",
+    "rollup-plugin-peer-deps-external": "^2.2.4"
   },
   "keywords": [
     "react",

@@ -3,7 +3,6 @@ const noop = () => {}
 import {
     DispatchFunction,
     IAction,
-    IActionPayload,
     IStore,
 } from "../../useReducer"
 import { FormSendError, FormValidateError } from "../errors"

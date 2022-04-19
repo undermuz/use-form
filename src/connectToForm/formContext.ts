@@ -9,24 +9,24 @@ const DEF_VALUES: UseFormConfig = {
     ...getInitialState(),
     send: () => {},
 
-    IsFormValid: (c) => {
+    IsFormValid: (_c) => {
         return true
     },
-    setValue: (name, value, silent, checkOnlyFilled, type) => {},
-    setTouchedByName: (name, value, silent) => {},
-    setTouched: (newTouched, silent, checkOnlyFilled) => {},
-    setValues: (newValues, silent, checkOnlyFilled, type) => {},
-    setTests: (newTests, silent, checkOnlyFilled) => {},
-    setValidate: (newValidate, silent, checkOnlyFilled) => {},
-    setErrors: (newErrors) => {},
+    setValue: (_name, _value, _silent, _checkOnlyFilled, _type) => {},
+    setTouchedByName: (_name, _value, _silent) => {},
+    setTouched: (_newTouched, _silent, _checkOnlyFilled) => {},
+    setValues: (_newValues, _silent, _checkOnlyFilled, _type) => {},
+    setTests: (_newTests, _silent, _checkOnlyFilled) => {},
+    setValidate: (_newValidate, _silent, _checkOnlyFilled) => {},
+    setErrors: (_newErrors) => {},
 
     store: {
         getState: () => {
             return getInitialState()
         },
-        dispatch: (...args) => {},
+        dispatch: (..._args) => {},
     },
-    dispatch: (...args) => {},
+    dispatch: (..._args) => {},
 }
 
 const FormContext = createContext<UseFormConfig>(DEF_VALUES)
