@@ -4,7 +4,6 @@
   "description": "React library for build forms",
   "main": "./build/index.js",
   "module": "./esm/index.js",
-  "exports": "./build/index.js",
   "types": "./build/index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
