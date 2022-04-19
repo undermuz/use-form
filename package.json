@@ -13,7 +13,7 @@
     "build:esm": "tsc --project tsconfig.esm.json --outDir esm",
     "build:umd": "tsc --project tsconfig.umd.json --outDir umd",
     "prepare": "npm run build:cjs & npm run build:esm & npm run build:umd && npm run build",
-    "install": "tsc --build --force"
+    "install": "npm run build:cjs & npm run build:esm & npm run build:umd && npm run build"
   },
   "author": {
     "name": "undermuz",
