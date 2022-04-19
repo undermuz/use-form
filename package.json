@@ -8,7 +8,7 @@
   "types": "build/types/index.d.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm run build:cjs && npm run build:esm && npm run build:umd && npm run build:types",
+    "build": "node tools/cleanup && npm run build:cjs && npm run build:esm && npm run build:umd && npm run build:types",
     "build:cjs": "node tools/cleanup cjs && tsc -p config/tsconfig.cjs.json",
     "build:esm": "node tools/cleanup esm && tsc -p config/tsconfig.esm.json",
     "build:umd": "node tools/cleanup umd && webpack --config config/webpack.config.js",
@@ -25,17 +25,12 @@
   "license": "MIT",
   "dependencies": {
     "react": "^17.0.2",
+    "@types/react": "^18.0.5",
     "typescript": "^4.5.5"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^21.1.0",
-    "@rollup/plugin-node-resolve": "^13.2.1",
-    "@rollup/plugin-typescript": "^8.3.2",
-    "@types/react": "^18.0.5",
     "eslint": "^8.9.0",
     "eslint-plugin-react": "^7.28.0",
-    "rollup": "^2.70.2",
-    "rollup-plugin-peer-deps-external": "^2.2.4",
     "ts-loader": "^9.2.8",
     "tslib": "^2.3.1",
     "webpack": "^5.72.0",
