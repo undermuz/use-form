@@ -14,8 +14,7 @@
     "build:umd": "node tools/cleanup umd && webpack --config config/webpack.config.js",
     "build:types": "node tools/cleanup types && tsc -p config/tsconfig.types.json",
     "clean": "node tools/cleanup",
-    "preinstall": "npm i -D",
-    "install": "npm run build"
+    "install": "npm i -D && npm run build"
   },
   "author": {
     "name": "undermuz",
