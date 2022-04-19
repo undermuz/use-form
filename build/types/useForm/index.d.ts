@@ -20,7 +20,7 @@ export interface IUseFormControl {
     setErrors: (newErrors: IErrors) => void;
 }
 export declare const useFormControl: (props: IUseFormOptions, store: IStore<IFormState>, dispatch: DispatchFunction) => IUseFormControl;
-export declare type SendFunction = (api: Function) => void;
+export declare type SendFunction = (api: Function) => Promise<any>;
 export interface IUseForm {
     IsFormValid: (c: boolean) => boolean;
     store: IStore<IFormState>;

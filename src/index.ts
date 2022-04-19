@@ -24,10 +24,22 @@ import {
 
 import FormContext, { useFormContext } from "./connectToForm/formContext"
 import ConnectToForm from "./connectToForm/index"
+import {
+    useIsFormSuccess,
+    useIsFormCanceling,
+    useIsFormSending,
+    useIsFormHasErrors,
+    useFormErrors,
+    useFormSubmit,
+} from "./utils"
+
+import IfForm, { IIfFormProps } from "./ifForm"
 
 export default useForm
 
 export {
+    IIfFormProps,
+    IfForm,
     FormContext,
     ConnectToForm,
     useFormContext,
@@ -47,4 +59,10 @@ export {
     SendFunction,
     IUseForm,
     UseFormConfig,
+    useIsFormSuccess,
+    useIsFormCanceling,
+    useIsFormSending,
+    useIsFormHasErrors,
+    useFormErrors,
+    useFormSubmit,
 }

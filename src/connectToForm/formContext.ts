@@ -7,7 +7,9 @@ export const defaultValidate = ({ errors = {} }) => errors
 
 const DEF_VALUES: UseFormConfig = {
     ...getInitialState(),
-    send: () => {},
+    send: () => {
+        return Promise.resolve()
+    },
 
     IsFormValid: (_c) => {
         return true

@@ -130,7 +130,7 @@ export const useFormControl = (
     }
 }
 
-export type SendFunction = (api: Function) => void
+export type SendFunction = (api: Function) => Promise<any>
 
 export interface IUseForm {
     IsFormValid: (c: boolean) => boolean

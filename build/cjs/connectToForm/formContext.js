@@ -9,7 +9,9 @@ const defaultValidate = ({ errors = {} }) => errors;
 exports.defaultValidate = defaultValidate;
 const DEF_VALUES = {
     ...(0, index_1.getInitialState)(),
-    send: () => { },
+    send: () => {
+        return Promise.resolve();
+    },
     IsFormValid: (_c) => {
         return true;
     },

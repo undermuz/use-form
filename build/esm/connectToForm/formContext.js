@@ -5,7 +5,9 @@ import { getInitialState } from "../useForm/index";
 export const defaultValidate = ({ errors = {} }) => errors;
 const DEF_VALUES = {
     ...getInitialState(),
-    send: () => { },
+    send: () => {
+        return Promise.resolve();
+    },
     IsFormValid: (_c) => {
         return true;
     },
