@@ -9,7 +9,8 @@
   "sideEffects": false,
   "files": [
     "build/cjs/",
-    "build/esm/"
+    "build/esm/",
+    "build/types/"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
