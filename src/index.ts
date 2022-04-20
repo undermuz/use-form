@@ -1,4 +1,6 @@
-import useForm, {
+import useForm from "./useForm/index"
+
+export {
     IInitialStateOptions,
     SendFunction,
     IUseForm,
@@ -6,14 +8,15 @@ import useForm, {
     IUseFormOptions,
 } from "./useForm/index"
 
-import useReducer, {
+export {
+    default as useReducer,
     IActionPayload,
     IAction,
     DispatchFunction,
     IStore,
 } from "./useReducer/index"
 
-import {
+export {
     IValueTest,
     IFields,
     ITouched,
@@ -22,9 +25,14 @@ import {
     IFormState,
 } from "./useForm/reducer"
 
-import FormContext, { useFormContext } from "./connectToForm/formContext"
-import ConnectToForm from "./connectToForm/index"
-import {
+export {
+    default as FormContext,
+    useFormContext,
+} from "./connectToForm/formContext"
+
+export { default as ConnectToForm } from "./connectToForm/index"
+
+export {
     useIsFormSuccess,
     useIsFormCanceling,
     useIsFormSending,
@@ -34,40 +42,7 @@ import {
     useFormSubmit,
 } from "./utils"
 
-import IfForm, { IIfFormProps } from "./ifForm/index"
-import FormSubmit, { EnumFormSubmitStatus } from "./formSubmit/index"
+export { default as IfForm, IIfFormProps } from "./ifForm/index"
+export { default as FormSubmit, EnumFormSubmitStatus } from "./formSubmit/index"
 
 export default useForm
-
-export {
-    IIfFormProps,
-    IfForm,
-    FormSubmit,
-    FormContext,
-    ConnectToForm,
-    useFormContext,
-    IUseFormOptions,
-    IValueTest,
-    IFields,
-    ITouched,
-    IValues,
-    IInitialStateOptions,
-    EnumFormStatus,
-    EnumFormSubmitStatus,
-    IFormState,
-    useReducer,
-    IActionPayload,
-    IAction,
-    DispatchFunction,
-    IStore,
-    SendFunction,
-    IUseForm,
-    UseFormConfig,
-    useIsFormSuccess,
-    useIsFormCanceling,
-    useIsFormSending,
-    useIsFormHasErrors,
-    useFormFields,
-    useFormErrors,
-    useFormSubmit,
-}

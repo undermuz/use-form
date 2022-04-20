@@ -1,5 +1,5 @@
 import { __assign, __rest } from "tslib";
-import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+import React from "react";
 import IfForm from "../ifForm";
 import { useFormSubmit, useIsFormHasErrors, useIsFormSending, } from "../utils";
 export var EnumFormSubmitStatus;
@@ -14,8 +14,12 @@ var FormSubmit = function (props) {
     var hasErrors = useIsFormHasErrors();
     var isSending = useIsFormSending();
     var submit = useFormSubmit(onSend, onSucceed, onError);
-    return (_jsxs(Component, __assign({}, otherProps, { disabled: isSending || (hasErrors && disableWhenErrors) || disabled, type: "submit", onClick: submit }, { children: [_jsx(IfForm, { children: children ? children(EnumFormSubmitStatus.Default) : "Send" }), _jsx(IfForm, __assign({ isSuccess: true }, { children: children ? children(EnumFormSubmitStatus.Succeed) : "Succeed" })), _jsx(IfForm, __assign({ isCanceling: true }, { children: children ? children(EnumFormSubmitStatus.Canceling) : "Failed" })), _jsx(IfForm, __assign({ isSending: true }, { children: children
-                    ? children(EnumFormSubmitStatus.Sending)
-                    : "Sending..." }))] })));
+    return (React.createElement(Component, __assign({}, otherProps, { disabled: isSending || (hasErrors && disableWhenErrors) || disabled, type: "submit", onClick: submit }),
+        React.createElement(IfForm, null, children ? children(EnumFormSubmitStatus.Default) : "Send"),
+        React.createElement(IfForm, { isSuccess: true }, children ? children(EnumFormSubmitStatus.Succeed) : "Succeed"),
+        React.createElement(IfForm, { isCanceling: true }, children ? children(EnumFormSubmitStatus.Canceling) : "Failed"),
+        React.createElement(IfForm, { isSending: true }, children
+            ? children(EnumFormSubmitStatus.Sending)
+            : "Sending...")));
 };
 export default FormSubmit;
