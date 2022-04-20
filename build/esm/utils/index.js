@@ -16,6 +16,10 @@ export const useIsFormHasErrors = () => {
     const params = useFormContext();
     return Object.keys(params.errors).length > 0;
 };
+export const useFormFields = () => {
+    const params = useFormContext();
+    return params.fields;
+};
 export const useFormErrors = () => {
     const params = useFormContext();
     return params.errors;

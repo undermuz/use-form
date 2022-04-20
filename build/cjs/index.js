@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useFormSubmit = exports.useFormErrors = exports.useIsFormHasErrors = exports.useIsFormSending = exports.useIsFormCanceling = exports.useIsFormSuccess = exports.useReducer = exports.EnumFormStatus = exports.useFormContext = exports.ConnectToForm = exports.FormContext = exports.IfForm = void 0;
+exports.useFormSubmit = exports.useFormErrors = exports.useFormFields = exports.useIsFormHasErrors = exports.useIsFormSending = exports.useIsFormCanceling = exports.useIsFormSuccess = exports.useReducer = exports.EnumFormStatus = exports.useFormContext = exports.ConnectToForm = exports.FormContext = exports.IfForm = void 0;
 const tslib_1 = require("tslib");
 const index_1 = tslib_1.__importDefault(require("./useForm/index"));
 const index_2 = tslib_1.__importDefault(require("./useReducer/index"));
@@ -17,6 +17,7 @@ Object.defineProperty(exports, "useIsFormSuccess", { enumerable: true, get: func
 Object.defineProperty(exports, "useIsFormCanceling", { enumerable: true, get: function () { return utils_1.useIsFormCanceling; } });
 Object.defineProperty(exports, "useIsFormSending", { enumerable: true, get: function () { return utils_1.useIsFormSending; } });
 Object.defineProperty(exports, "useIsFormHasErrors", { enumerable: true, get: function () { return utils_1.useIsFormHasErrors; } });
+Object.defineProperty(exports, "useFormFields", { enumerable: true, get: function () { return utils_1.useFormFields; } });
 Object.defineProperty(exports, "useFormErrors", { enumerable: true, get: function () { return utils_1.useFormErrors; } });
 Object.defineProperty(exports, "useFormSubmit", { enumerable: true, get: function () { return utils_1.useFormSubmit; } });
 const ifForm_1 = tslib_1.__importDefault(require("./ifForm"));
