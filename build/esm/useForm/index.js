@@ -85,21 +85,22 @@ const useForm = (props) => {
             fields: {},
             ...(props.options || {}),
         };
-        props.fields.forEach((_field) => {
+        Object.keys(props.fields).forEach((fieldName) => {
+            const _field = props.fields[fieldName];
             let field;
             if (typeof _field === "string") {
                 field = {
-                    name: _field,
+                    label: _field,
                 };
             }
             else {
                 field = _field;
             }
-            _config.fields[field.name] = field.label || field.name;
-            _config.initialValues[field.name] = field.initialValue;
+            _config.fields[fieldName] = field.label || fieldName;
+            _config.initialValues[fieldName] = field.initialValue;
             if (field.rules) {
                 field.rules.forEach((rule) => {
-                    _config.valueTests.push([[field.name], ...rule]);
+                    _config.valueTests.push([[fieldName], ...rule]);
                 });
             }
         });

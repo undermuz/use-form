@@ -190,8 +190,7 @@ const useFormCore = (props: IUseFormOptions): UseFormConfig => {
 
 export type IUseFormFieldRule = [Array<Function>, string?]
 export interface IUseFormField {
-    name: string
-    label?: string
+    label: string
     initialValue?: string
     rules?: IUseFormFieldRule[]
 }
@@ -199,7 +198,7 @@ export interface IUseFormField {
 export type TypeUseFormField = IUseFormField | string
 
 export interface IUseFormSettings {
-    fields: Array<TypeUseFormField>
+    fields: Record<string, TypeUseFormField>
     options?: IUseFormOptions
 }
 
@@ -212,23 +211,25 @@ const useForm = (props: IUseFormSettings) => {
             ...(props.options || {}),
         }
 
-        props.fields.forEach((_field: TypeUseFormField) => {
+        Object.keys(props.fields).forEach((fieldName: string) => {
+            const _field: TypeUseFormField = props.fields[fieldName]
+
             let field: IUseFormField
 
             if (typeof _field === "string") {
                 field = {
-                    name: _field as string,
+                    label: _field as string,
                 }
             } else {
                 field = _field as IUseFormField
             }
 
-            _config.fields[field.name] = field.label || field.name
-            _config.initialValues[field.name] = field.initialValue
+            _config.fields[fieldName] = field.label || fieldName
+            _config.initialValues[fieldName] = field.initialValue
 
             if (field.rules) {
                 field.rules.forEach((rule: IUseFormFieldRule) => {
-                    _config.valueTests.push([[field.name], ...rule])
+                    _config.valueTests.push([[fieldName], ...rule])
                 })
             }
         })

@@ -30,14 +30,13 @@ export interface IUseForm {
 export declare type UseFormConfig = IUseForm & IFormState & IUseFormControl;
 export declare type IUseFormFieldRule = [Array<Function>, string?];
 export interface IUseFormField {
-    name: string;
-    label?: string;
+    label: string;
     initialValue?: string;
     rules?: IUseFormFieldRule[];
 }
 export declare type TypeUseFormField = IUseFormField | string;
 export interface IUseFormSettings {
-    fields: Array<TypeUseFormField>;
+    fields: Record<string, TypeUseFormField>;
     options?: IUseFormOptions;
 }
 declare const useForm: (props: IUseFormSettings) => UseFormConfig;
