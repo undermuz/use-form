@@ -58,27 +58,18 @@ const ErrorBlock = () => {
 }
 
 const LoginForm = () => {
-    const formConfig = useMemo<IUseFormOptions>(() => {
-        return {
-            initialValues: {
-                username: "",
-                password: "",
+    const form = useForm({
+        fields: {
+            username: {
+                label: "Login",
+                rules: [[[Boolean], "Username is required"]],
             },
-            valueTests: [
-                [
-                    ["username", "password"],
-                    [Boolean],
-                    "Username and password are required",
-                ],
-            ],
-            fields: {
-                username: "Login",
-                password: "Password",
+            password: {
+                label: "Password",
+                rules: [[[Boolean], "Password is required"]],
             },
-        }
-    }, [])
-
-    const form = useForm(formConfig)
+        },
+    })
 
     const onSend = useCallback((values: IValues) => {
         console.log("Login data", values)
