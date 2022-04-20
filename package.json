@@ -20,7 +20,9 @@
     "url": "https://github.com/undermuz"
   },
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "tslib": "^2.3.1"
+  },
   "peerDependencies": {
     "react": "^17.0.2",
     "react-dom": "^17.0.2"
@@ -31,7 +33,6 @@
     "eslint": "^8.9.0",
     "eslint-plugin-react": "^7.28.0",
     "ts-loader": "^9.2.8",
-    "tslib": "^2.3.1",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
   },

@@ -12,7 +12,7 @@
         "jsx": "react-jsx",
         "declaration": false,
         "strict": true,
-        "lib": ["dom", "es2017", "es5", "es6", "es7"],
+        "lib": ["dom", "es2017", "es2018", "es5", "es6", "es7"],
         "sourceMap": false,
         "noImplicitAny": true,
         "noImplicitThis": true,
