@@ -6,6 +6,7 @@
         "esModuleInterop": true,
         "target": "es5",
         "module": "esnext",
+        "rootDir": "src",
         "outDir": "./build",
         "forceConsistentCasingInFileNames": true,
         "importHelpers": true,
@@ -30,9 +31,5 @@
         ".npm",
         ".yarn"
     ],
-    "include": ["src/**/*"],
-    "typeAcquisition": {
-        "enable": true,
-        "include": ["node"]
-    }
+    "include": ["src/**/*"]
 }
