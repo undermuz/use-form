@@ -35,7 +35,7 @@ import {
 } from "./utils"
 
 import IfForm, { IIfFormProps } from "./ifForm"
-import FormSubmit from "./formSubmit"
+import FormSubmit, { EnumFormSubmitStatus } from "./formSubmit"
 
 export default useForm
 
@@ -53,6 +53,7 @@ export {
     IValues,
     IInitialStateOptions,
     EnumFormStatus,
+    EnumFormSubmitStatus,
     IFormState,
     useReducer,
     IActionPayload,
