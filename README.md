@@ -12,7 +12,6 @@ See src/examples for more details
 
 `npm update @undermuz/use-form`
 
-
 ## Examples
 
 ```javascript
