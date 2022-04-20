@@ -1,8 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formReducer = exports.sendErrorReducer = exports.isSuccessReducer = exports.isCancelingReducer = exports.isSendingReducer = exports.validateReducer = exports.fieldsReducer = exports.errorsReducer = exports.touchedReducer = exports.testsReducer = exports.valuesReducer = exports.EnumFormStatus = exports.SEND_FORM = exports.VALIDATE_FORM = exports.SET_SEND_ERROR = exports.SET_IS_SUCCESS = exports.SET_IS_CANCELING = exports.SET_IS_SENDING = exports.SET_VALIDATE = exports.SET_FIELDS = exports.SET_ERRORS = exports.SET_TOUCHED = exports.SET_TOUCHED_FIELD = exports.SET_TESTS = exports.SET_VALUE = exports.SET_VALUES = void 0;
-const IsFunction = (value) => Boolean(value) &&
-    ["[object Function]", "[object AsyncFunction]"].includes({}.toString.call(value));
+var tslib_1 = require("tslib");
+var IsFunction = function (value) {
+    return Boolean(value) &&
+        ["[object Function]", "[object AsyncFunction]"].includes({}.toString.call(value));
+};
 exports.SET_VALUES = "set_values";
 exports.SET_VALUE = "set_value";
 exports.SET_TESTS = "set_tests";
@@ -21,7 +24,8 @@ var EnumFormStatus;
 (function (EnumFormStatus) {
     EnumFormStatus["Initial"] = "initial";
 })(EnumFormStatus = exports.EnumFormStatus || (exports.EnumFormStatus = {}));
-const valuesReducer = (state, action) => {
+var valuesReducer = function (state, action) {
+    var _a, _b;
     switch (action.type) {
         case exports.SET_VALUES:
             if (IsFunction(action.payload.values)) {
@@ -30,21 +34,15 @@ const valuesReducer = (state, action) => {
             return action.payload.values;
         case exports.SET_VALUE:
             if (IsFunction(action.payload.value)) {
-                return {
-                    ...state,
-                    [action.payload.name]: action.payload.value(state[action.payload.name]),
-                };
+                return tslib_1.__assign(tslib_1.__assign({}, state), (_a = {}, _a[action.payload.name] = action.payload.value(state[action.payload.name]), _a));
             }
-            return {
-                ...state,
-                [action.payload.name]: action.payload.value,
-            };
+            return tslib_1.__assign(tslib_1.__assign({}, state), (_b = {}, _b[action.payload.name] = action.payload.value, _b));
         default:
             return state;
     }
 };
 exports.valuesReducer = valuesReducer;
-const testsReducer = (state, action) => {
+var testsReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_TESTS:
             if (IsFunction(action.payload.tests)) {
@@ -56,7 +54,7 @@ const testsReducer = (state, action) => {
     }
 };
 exports.testsReducer = testsReducer;
-const touchedReducer = (state, action) => {
+var touchedReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_TOUCHED:
             if (IsFunction(action.payload.touched)) {
@@ -64,13 +62,13 @@ const touchedReducer = (state, action) => {
             }
             return action.payload.touched;
         case exports.SET_TOUCHED_FIELD: {
-            const { name, value = true } = action.payload;
-            let newTouched = state;
-            if (value && state.indexOf(name) === -1) {
-                newTouched = [...state, name];
+            var _a = action.payload, name_1 = _a.name, _b = _a.value, value = _b === void 0 ? true : _b;
+            var newTouched = state;
+            if (value && state.indexOf(name_1) === -1) {
+                newTouched = tslib_1.__spreadArray(tslib_1.__spreadArray([], state, true), [name_1], false);
             }
-            else if (!value && state.indexOf(name) > -1) {
-                newTouched = state.filter((_n) => _n !== name);
+            else if (!value && state.indexOf(name_1) > -1) {
+                newTouched = state.filter(function (_n) { return _n !== name_1; });
             }
             return newTouched;
         }
@@ -79,7 +77,7 @@ const touchedReducer = (state, action) => {
     }
 };
 exports.touchedReducer = touchedReducer;
-const errorsReducer = (state, action) => {
+var errorsReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_ERRORS:
             if (IsFunction(action.payload.errors)) {
@@ -91,7 +89,7 @@ const errorsReducer = (state, action) => {
     }
 };
 exports.errorsReducer = errorsReducer;
-const fieldsReducer = (state, action) => {
+var fieldsReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_FIELDS:
             if (IsFunction(action.payload.fields)) {
@@ -103,7 +101,7 @@ const fieldsReducer = (state, action) => {
     }
 };
 exports.fieldsReducer = fieldsReducer;
-const validateReducer = (state, action) => {
+var validateReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_VALIDATE:
             return action.payload.validate;
@@ -112,7 +110,7 @@ const validateReducer = (state, action) => {
     }
 };
 exports.validateReducer = validateReducer;
-const isSendingReducer = (state, action) => {
+var isSendingReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_IS_SENDING:
             return Boolean(action.payload);
@@ -121,7 +119,7 @@ const isSendingReducer = (state, action) => {
     }
 };
 exports.isSendingReducer = isSendingReducer;
-const isCancelingReducer = (state, action) => {
+var isCancelingReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_IS_CANCELING:
             return Boolean(action.payload);
@@ -130,7 +128,7 @@ const isCancelingReducer = (state, action) => {
     }
 };
 exports.isCancelingReducer = isCancelingReducer;
-const isSuccessReducer = (state, action) => {
+var isSuccessReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_IS_SUCCESS:
             return Boolean(action.payload);
@@ -139,7 +137,7 @@ const isSuccessReducer = (state, action) => {
     }
 };
 exports.isSuccessReducer = isSuccessReducer;
-const sendErrorReducer = (state, action) => {
+var sendErrorReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_SEND_ERROR:
             return action.payload || null;
@@ -148,20 +146,8 @@ const sendErrorReducer = (state, action) => {
     }
 };
 exports.sendErrorReducer = sendErrorReducer;
-const formReducer = (state, action) => {
-    return {
-        ...state,
-        values: (0, exports.valuesReducer)(state.values, action),
-        fields: (0, exports.fieldsReducer)(state.fields, action),
-        tests: (0, exports.testsReducer)(state.tests, action),
-        touched: (0, exports.touchedReducer)(state.touched, action),
-        errors: (0, exports.errorsReducer)(state.errors, action),
-        validate: (0, exports.validateReducer)(state.validate, action),
-        isSending: (0, exports.isSendingReducer)(state.isSending, action),
-        isCanceling: (0, exports.isCancelingReducer)(state.isCanceling, action),
-        isSuccess: (0, exports.isSuccessReducer)(state.isSuccess, action),
-        sendError: (0, exports.sendErrorReducer)(state.sendError, action),
-    };
+var formReducer = function (state, action) {
+    return tslib_1.__assign(tslib_1.__assign({}, state), { values: (0, exports.valuesReducer)(state.values, action), fields: (0, exports.fieldsReducer)(state.fields, action), tests: (0, exports.testsReducer)(state.tests, action), touched: (0, exports.touchedReducer)(state.touched, action), errors: (0, exports.errorsReducer)(state.errors, action), validate: (0, exports.validateReducer)(state.validate, action), isSending: (0, exports.isSendingReducer)(state.isSending, action), isCanceling: (0, exports.isCancelingReducer)(state.isCanceling, action), isSuccess: (0, exports.isSuccessReducer)(state.isSuccess, action), sendError: (0, exports.sendErrorReducer)(state.sendError, action) });
 };
 exports.formReducer = formReducer;
 exports.default = exports.formReducer;

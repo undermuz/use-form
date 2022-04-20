@@ -1,89 +1,103 @@
+import { __assign } from "tslib";
 import { useCallback } from "react";
 import { SET_ERRORS, SET_TESTS, SET_TOUCHED, SET_TOUCHED_FIELD, SET_VALIDATE, SET_VALUE, SET_VALUES, } from "./reducer";
 import { getFormErrors } from "./middlewares/validate";
-export const isFormHasErrors = (settings, store, checkOnlyFilled = true) => {
-    const { debug } = settings;
-    const state = store.getState();
-    const { validate, touched, fields } = state;
-    const validateFn = validate !== null && validate !== void 0 ? validate : getFormErrors;
-    const newErrors = validateFn({
-        ...state,
-        touched: checkOnlyFilled ? touched : Object.keys(fields),
-    }, debug);
+export var isFormHasErrors = function (settings, store, checkOnlyFilled) {
+    if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
+    var debug = settings.debug;
+    var state = store.getState();
+    var validate = state.validate, touched = state.touched, fields = state.fields;
+    var validateFn = validate !== null && validate !== void 0 ? validate : getFormErrors;
+    var newErrors = validateFn(__assign(__assign({}, state), { touched: checkOnlyFilled ? touched : Object.keys(fields) }), debug);
     return [Object.keys(newErrors).length > 0, newErrors];
 };
-export const useIsFormValid = (settings, store, _dispatch) => {
-    return useCallback((checkOnlyFilled = true) => {
+export var useIsFormValid = function (settings, store, _dispatch) {
+    return useCallback(function (checkOnlyFilled) {
+        if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
         return !isFormHasErrors(settings, store, checkOnlyFilled)[0];
     }, []);
 };
-export const useSetTouched = (_settings, _store, dispatch) => {
-    return useCallback((newTouched, silent = false, checkOnlyFilled = true) => {
+export var useSetTouched = function (_settings, _store, dispatch) {
+    return useCallback(function (newTouched, silent, checkOnlyFilled) {
+        if (silent === void 0) { silent = false; }
+        if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
         dispatch({
             type: SET_TOUCHED,
             payload: { touched: newTouched },
-            silent,
-            checkOnlyFilled,
+            silent: silent,
+            checkOnlyFilled: checkOnlyFilled,
         });
     }, []);
 };
-export const useSetValues = (_settings, _store, dispatch) => {
-    return useCallback((newValues, silent = false, checkOnlyFilled = true, type = "system") => {
+export var useSetValues = function (_settings, _store, dispatch) {
+    return useCallback(function (newValues, silent, checkOnlyFilled, type) {
+        if (silent === void 0) { silent = false; }
+        if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
+        if (type === void 0) { type = "system"; }
         dispatch({
             type: SET_VALUES,
-            payload: { values: newValues, type },
-            silent,
-            checkOnlyFilled,
+            payload: { values: newValues, type: type },
+            silent: silent,
+            checkOnlyFilled: checkOnlyFilled,
         });
     }, []);
 };
-export const useSetTests = (_settings, _store, dispatch) => {
-    return useCallback((newTests, silent = false, checkOnlyFilled = true) => {
+export var useSetTests = function (_settings, _store, dispatch) {
+    return useCallback(function (newTests, silent, checkOnlyFilled) {
+        if (silent === void 0) { silent = false; }
+        if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
         dispatch({
             type: SET_TESTS,
             payload: { tests: newTests },
-            silent,
-            checkOnlyFilled,
+            silent: silent,
+            checkOnlyFilled: checkOnlyFilled,
         });
     }, []);
 };
-export const useSetErrors = (_settings, _store, dispatch) => {
-    return useCallback((newErrors) => {
+export var useSetErrors = function (_settings, _store, dispatch) {
+    return useCallback(function (newErrors) {
         dispatch({
             type: SET_ERRORS,
             payload: { errors: newErrors },
         });
     }, []);
 };
-export const useSetFieldValue = (_settings, _store, dispatch) => {
-    return useCallback((name, value, silent = false, checkOnlyFilled = true, type = "system") => {
+export var useSetFieldValue = function (_settings, _store, dispatch) {
+    return useCallback(function (name, value, silent, checkOnlyFilled, type) {
+        if (silent === void 0) { silent = false; }
+        if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
+        if (type === void 0) { type = "system"; }
         dispatch({
             type: SET_VALUE,
-            payload: { name, value, type },
-            silent,
-            checkOnlyFilled,
+            payload: { name: name, value: value, type: type },
+            silent: silent,
+            checkOnlyFilled: checkOnlyFilled,
         });
     }, []);
 };
-export const useSetFieldTouched = (_settings, _store, dispatch) => {
-    return useCallback((name, value = true, silent = false) => {
+export var useSetFieldTouched = function (_settings, _store, dispatch) {
+    return useCallback(function (name, value, silent) {
+        if (value === void 0) { value = true; }
+        if (silent === void 0) { silent = false; }
         dispatch({
             type: SET_TOUCHED_FIELD,
             payload: {
-                name,
-                value,
+                name: name,
+                value: value,
             },
-            silent,
+            silent: silent,
         });
     }, []);
 };
-export const useSetValidate = (_settings, _store, dispatch) => {
-    return useCallback((newValidate, silent = false, checkOnlyFilled = true) => {
+export var useSetValidate = function (_settings, _store, dispatch) {
+    return useCallback(function (newValidate, silent, checkOnlyFilled) {
+        if (silent === void 0) { silent = false; }
+        if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
         dispatch({
             type: SET_VALIDATE,
             payload: newValidate,
-            silent,
-            checkOnlyFilled,
+            silent: silent,
+            checkOnlyFilled: checkOnlyFilled,
         });
     }, []);
 };

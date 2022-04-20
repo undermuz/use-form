@@ -8,7 +8,7 @@
   "types": "build/types/index.d.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node tools/cleanup && npm run build:cjs && npm run build:esm && npm run build:umd && npm run build:types",
+    "build": "node tools/cleanup && npm run build:cjs && npm run build:esm && npm run build:types",
     "build:cjs": "tsc -p config/tsconfig.cjs.json",
     "build:esm": "tsc -p config/tsconfig.esm.json",
     "build:umd": "webpack --config config/webpack.config.js",
@@ -21,11 +21,13 @@
     "url": "https://github.com/undermuz"
   },
   "license": "MIT",
-  "dependencies": {
+  "dependencies": {},
+  "peerDependencies": {
     "react": "^17.0.2",
-    "typescript": "^4.5.5"
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
+    "typescript": "^4.5.5",
     "@types/react": "^18.0.5",
     "eslint": "^8.9.0",
     "eslint-plugin-react": "^7.28.0",

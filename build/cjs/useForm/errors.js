@@ -1,26 +1,33 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FormSendError = exports.FormValidateError = void 0;
-class FormValidateError extends Error {
-    constructor(message, errors) {
-        super(message);
-        this.name = "FormValidateError";
-        this.errors = errors;
-        this.message = message;
+var tslib_1 = require("tslib");
+var FormValidateError = /** @class */ (function (_super) {
+    tslib_1.__extends(FormValidateError, _super);
+    function FormValidateError(message, errors) {
+        var _this = _super.call(this, message) || this;
+        _this.name = "FormValidateError";
+        _this.errors = errors;
+        _this.message = message;
         // Set the prototype explicitly.
-        Object.setPrototypeOf(this, FormValidateError.prototype);
+        Object.setPrototypeOf(_this, FormValidateError.prototype);
+        return _this;
     }
-}
+    return FormValidateError;
+}(Error));
 exports.FormValidateError = FormValidateError;
-class FormSendError extends Error {
-    constructor(message, catchError, errors) {
-        super(message);
-        this.name = "FormSendError";
-        this.catchError = catchError;
-        this.errors = errors;
-        this.message = message;
+var FormSendError = /** @class */ (function (_super) {
+    tslib_1.__extends(FormSendError, _super);
+    function FormSendError(message, catchError, errors) {
+        var _this = _super.call(this, message) || this;
+        _this.name = "FormSendError";
+        _this.catchError = catchError;
+        _this.errors = errors;
+        _this.message = message;
         // Set the prototype explicitly.
-        Object.setPrototypeOf(this, FormSendError.prototype);
+        Object.setPrototypeOf(_this, FormSendError.prototype);
+        return _this;
     }
-}
+    return FormSendError;
+}(Error));
 exports.FormSendError = FormSendError;

@@ -1,52 +1,54 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getFormErrors = void 0;
-const reducer_1 = require("../reducer");
-const getFormErrors = (state, debug = false) => {
-    const { tests } = state;
-    let errors = {};
+var tslib_1 = require("tslib");
+var reducer_1 = require("../reducer");
+var getFormErrors = function (state, debug) {
+    if (debug === void 0) { debug = false; }
+    var tests = state.tests;
+    var errors = {};
     if (debug)
-        console.log(`[useForm][getFormErrors]`, state);
+        console.log("[useForm][getFormErrors]", state);
     if (!(tests === null || tests === void 0 ? void 0 : tests.length)) {
         if (debug)
-            console.log(`[useForm][getFormErrors][Tests are not set]`, state);
+            console.log("[useForm][getFormErrors][Tests are not set]", state);
         return errors;
     }
-    tests.forEach((test, index) => {
-        const [names, testList, errorText] = test;
+    tests.forEach(function (test, index) {
+        var names = test[0], testList = test[1], errorText = test[2];
         if (debug)
-            console.log(`[useForm][getFormErrors][Test #${index + 1}]`, {
-                names,
-                testList,
-                errorText,
+            console.log("[useForm][getFormErrors][Test #".concat(index + 1, "]"), {
+                names: names,
+                testList: testList,
+                errorText: errorText,
             });
-        names === null || names === void 0 ? void 0 : names.forEach((name) => {
-            let isError = false;
+        names === null || names === void 0 ? void 0 : names.forEach(function (name) {
+            var isError = false;
             if (state.touched.indexOf(name) > -1) {
-                testList.forEach((valueTest) => {
-                    const value = state.values[name];
+                testList.forEach(function (valueTest) {
+                    var value = state.values[name];
                     if (debug)
-                        console.log(`[useForm][getFormErrors][Test #${index + 1}][${name}][Begin]`, {
+                        console.log("[useForm][getFormErrors][Test #".concat(index + 1, "][").concat(name, "][Begin]"), {
                             test: valueTest,
-                            value,
+                            value: value,
                         });
                     if (!valueTest(value)) {
                         isError = true;
                         if (debug)
-                            console.log(`[useForm][getFormErrors][Test #${index + 1}][${name}][Error: ${errorText}]`, {
+                            console.log("[useForm][getFormErrors][Test #".concat(index + 1, "][").concat(name, "][Error: ").concat(errorText, "]"), {
                                 test: valueTest,
                                 value: value,
                             });
                     }
                     else {
                         if (debug)
-                            console.log(`[useForm][getFormErrors][Test #${index + 1}][${name}][Success]`);
+                            console.log("[useForm][getFormErrors][Test #".concat(index + 1, "][").concat(name, "][Success]"));
                     }
                 });
             }
             else {
                 if (debug)
-                    console.log(`[useForm][getFormErrors][Test #${index + 1}][${name}][Skip - isn't touched]`);
+                    console.log("[useForm][getFormErrors][Test #".concat(index + 1, "][").concat(name, "][Skip - isn't touched]"));
             }
             if (isError) {
                 if (Object.keys(errors).indexOf(name) === -1) {
@@ -59,38 +61,42 @@ const getFormErrors = (state, debug = false) => {
         });
     });
     if (debug)
-        console.log(`[useForm][getFormErrors][Errors: ${Object.keys(errors).length}]`, errors);
+        console.log("[useForm][getFormErrors][Errors: ".concat(Object.keys(errors).length, "]"), errors);
     return errors;
 };
 exports.getFormErrors = getFormErrors;
-const createValidating = (settings = {}) => (store) => (next) => (action) => {
-    const { log = true } = settings;
-    const result = next(action);
-    if (action.type === reducer_1.SET_VALUE ||
-        action.type === reducer_1.SET_VALUES ||
-        action.type === reducer_1.SET_TESTS ||
-        action.type === reducer_1.SET_TOUCHED_FIELD ||
-        action.type === reducer_1.SET_TOUCHED ||
-        action.type === reducer_1.SET_FIELDS ||
-        action.type === reducer_1.SET_VALIDATE ||
-        action.type === reducer_1.VALIDATE_FORM) {
-        const { silent = false, checkOnlyFilled = true } = action;
-        if (!silent) {
-            const { validate: customValidate = null } = action.payload;
-            const validateFn = customValidate !== null && customValidate !== void 0 ? customValidate : exports.getFormErrors;
-            const state = store.getState();
-            const newErrors = validateFn({
-                ...state,
-                touched: checkOnlyFilled
-                    ? state.touched
-                    : Object.keys(state.fields),
-            }, log);
-            store.dispatch({
-                type: reducer_1.SET_ERRORS,
-                payload: { errors: newErrors },
-            });
-        }
-    }
-    return result;
+var createValidating = function (settings) {
+    if (settings === void 0) { settings = {}; }
+    return function (store) {
+        return function (next) {
+            return function (action) {
+                var _a = settings.log, log = _a === void 0 ? true : _a;
+                var result = next(action);
+                if (action.type === reducer_1.SET_VALUE ||
+                    action.type === reducer_1.SET_VALUES ||
+                    action.type === reducer_1.SET_TESTS ||
+                    action.type === reducer_1.SET_TOUCHED_FIELD ||
+                    action.type === reducer_1.SET_TOUCHED ||
+                    action.type === reducer_1.SET_FIELDS ||
+                    action.type === reducer_1.SET_VALIDATE ||
+                    action.type === reducer_1.VALIDATE_FORM) {
+                    var _b = action.silent, silent = _b === void 0 ? false : _b, _c = action.checkOnlyFilled, checkOnlyFilled = _c === void 0 ? true : _c;
+                    if (!silent) {
+                        var _d = action.payload.validate, customValidate = _d === void 0 ? null : _d;
+                        var validateFn = customValidate !== null && customValidate !== void 0 ? customValidate : exports.getFormErrors;
+                        var state = store.getState();
+                        var newErrors = validateFn(tslib_1.__assign(tslib_1.__assign({}, state), { touched: checkOnlyFilled
+                                ? state.touched
+                                : Object.keys(state.fields) }), log);
+                        store.dispatch({
+                            type: reducer_1.SET_ERRORS,
+                            payload: { errors: newErrors },
+                        });
+                    }
+                }
+                return result;
+            };
+        };
+    };
 };
 exports.default = createValidating;

@@ -1,11 +1,11 @@
 import { Fragment as _Fragment, jsx as _jsx } from "react/jsx-runtime";
 import { useIsFormCanceling, useIsFormHasErrors, useIsFormSending, useIsFormSuccess, } from "../utils";
-const IfForm = (props) => {
-    const { children, isCanceling = false, isSending = false, isSuccess = false, hasErrors, } = props;
-    const isFormHasErrors = useIsFormHasErrors();
-    const isFormSuccess = useIsFormSuccess();
-    const isFormCanceling = useIsFormCanceling();
-    const isFormSending = useIsFormSending();
+var IfForm = function (props) {
+    var children = props.children, _a = props.isCanceling, isCanceling = _a === void 0 ? false : _a, _b = props.isSending, isSending = _b === void 0 ? false : _b, _c = props.isSuccess, isSuccess = _c === void 0 ? false : _c, hasErrors = props.hasErrors;
+    var isFormHasErrors = useIsFormHasErrors();
+    var isFormSuccess = useIsFormSuccess();
+    var isFormCanceling = useIsFormCanceling();
+    var isFormSending = useIsFormSending();
     if ((hasErrors && !isFormHasErrors) ||
         (isSuccess && !isFormSuccess) ||
         (isCanceling && !isFormCanceling) ||

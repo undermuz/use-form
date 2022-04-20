@@ -4,7 +4,7 @@
         "resolveJsonModule": true,
         "moduleResolution": "node",
         "esModuleInterop": true,
-        "target": "es2018",
+        "target": "es5",
         "module": "esnext",
         "outDir": "./build",
         "forceConsistentCasingInFileNames": true,

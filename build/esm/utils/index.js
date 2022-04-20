@@ -1,32 +1,32 @@
 import { useCallback } from "react";
 import { useFormContext } from "../connectToForm/formContext";
-export const useIsFormSuccess = () => {
-    const params = useFormContext();
+export var useIsFormSuccess = function () {
+    var params = useFormContext();
     return params.isSuccess;
 };
-export const useIsFormCanceling = () => {
-    const params = useFormContext();
+export var useIsFormCanceling = function () {
+    var params = useFormContext();
     return params.isCanceling;
 };
-export const useIsFormSending = () => {
-    const params = useFormContext();
+export var useIsFormSending = function () {
+    var params = useFormContext();
     return params.isSending;
 };
-export const useIsFormHasErrors = () => {
-    const params = useFormContext();
+export var useIsFormHasErrors = function () {
+    var params = useFormContext();
     return Object.keys(params.errors).length > 0;
 };
-export const useFormFields = () => {
-    const params = useFormContext();
+export var useFormFields = function () {
+    var params = useFormContext();
     return params.fields;
 };
-export const useFormErrors = () => {
-    const params = useFormContext();
+export var useFormErrors = function () {
+    var params = useFormContext();
     return params.errors;
 };
-export const useFormSubmit = (onSend, onSucceed, onError) => {
-    const { send } = useFormContext();
-    const handleSave = useCallback(() => {
+export var useFormSubmit = function (onSend, onSucceed, onError) {
+    var send = useFormContext().send;
+    var handleSave = useCallback(function () {
         send(onSend).then(onSucceed, onError);
     }, [send, onSend, onSucceed, onError]);
     return handleSave;

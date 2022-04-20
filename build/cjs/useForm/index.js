@@ -1,23 +1,24 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useFormControl = exports.getInitialState = void 0;
-const tslib_1 = require("tslib");
-const react_1 = require("react");
-const reducer_1 = tslib_1.__importStar(require("./reducer"));
+var tslib_1 = require("tslib");
+var react_1 = require("react");
+var reducer_1 = tslib_1.__importStar(require("./reducer"));
 /* MIDDLEWARES */
-const validate_1 = tslib_1.__importDefault(require("./middlewares/validate"));
-const send_1 = tslib_1.__importDefault(require("./middlewares/send"));
+var validate_1 = tslib_1.__importDefault(require("./middlewares/validate"));
+var send_1 = tslib_1.__importDefault(require("./middlewares/send"));
 /* HELPERS */
-const helpers_1 = require("./helpers");
-const index_1 = tslib_1.__importDefault(require("../useReducer/index"));
-const DEF_INITIAL_STATE_OPTIONS = {
+var helpers_1 = require("./helpers");
+var index_1 = tslib_1.__importDefault(require("../useReducer/index"));
+var DEF_INITIAL_STATE_OPTIONS = {
     initialValues: {},
     valueTests: [],
     fields: {},
-    validate: () => { },
+    validate: function () { },
 };
-const getInitialState = (props = DEF_INITIAL_STATE_OPTIONS) => {
-    const { initialValues = {}, valueTests = [], fields = {}, validate: _validate, } = props;
+var getInitialState = function (props) {
+    if (props === void 0) { props = DEF_INITIAL_STATE_OPTIONS; }
+    var _a = props.initialValues, initialValues = _a === void 0 ? {} : _a, _b = props.valueTests, valueTests = _b === void 0 ? [] : _b, _c = props.fields, fields = _c === void 0 ? {} : _c, _validate = props.validate;
     return {
         status: reducer_1.EnumFormStatus.Initial,
         isSending: false,
@@ -28,72 +29,59 @@ const getInitialState = (props = DEF_INITIAL_STATE_OPTIONS) => {
         tests: valueTests,
         validate: _validate,
         touched: [],
-        fields,
+        fields: fields,
         errors: {},
     };
 };
 exports.getInitialState = getInitialState;
-const useFormControl = (props, store, dispatch) => {
-    const setTouched = (0, helpers_1.useSetTouched)(props, store, dispatch);
-    const setValues = (0, helpers_1.useSetValues)(props, store, dispatch);
-    const setTests = (0, helpers_1.useSetTests)(props, store, dispatch);
-    const setValidate = (0, helpers_1.useSetValidate)(props, store, dispatch);
-    const setErrors = (0, helpers_1.useSetErrors)(props, store, dispatch);
-    const setValue = (0, helpers_1.useSetFieldValue)(props, store, dispatch);
-    const setTouchedByName = (0, helpers_1.useSetFieldTouched)(props, store, dispatch);
+var useFormControl = function (props, store, dispatch) {
+    var setTouched = (0, helpers_1.useSetTouched)(props, store, dispatch);
+    var setValues = (0, helpers_1.useSetValues)(props, store, dispatch);
+    var setTests = (0, helpers_1.useSetTests)(props, store, dispatch);
+    var setValidate = (0, helpers_1.useSetValidate)(props, store, dispatch);
+    var setErrors = (0, helpers_1.useSetErrors)(props, store, dispatch);
+    var setValue = (0, helpers_1.useSetFieldValue)(props, store, dispatch);
+    var setTouchedByName = (0, helpers_1.useSetFieldTouched)(props, store, dispatch);
     return {
-        setValue,
-        setTouchedByName,
-        setTouched,
-        setValues,
-        setTests,
-        setValidate,
-        setErrors,
+        setValue: setValue,
+        setTouchedByName: setTouchedByName,
+        setTouched: setTouched,
+        setValues: setValues,
+        setTests: setTests,
+        setValidate: setValidate,
+        setErrors: setErrors,
     };
 };
 exports.useFormControl = useFormControl;
-const useFormCore = (props) => {
-    const initialState = (0, react_1.useMemo)(() => (0, exports.getInitialState)(props), []);
-    const middlewares = (0, react_1.useMemo)(() => [
-        ...((props === null || props === void 0 ? void 0 : props.middlewares) || []),
+var useFormCore = function (props) {
+    var initialState = (0, react_1.useMemo)(function () { return (0, exports.getInitialState)(props); }, []);
+    var middlewares = (0, react_1.useMemo)(function () { return tslib_1.__spreadArray(tslib_1.__spreadArray([], ((props === null || props === void 0 ? void 0 : props.middlewares) || []), true), [
         (0, validate_1.default)(props),
         (0, send_1.default)(props),
-    ], []);
-    const [state, dispatch, store] = (0, index_1.default)(reducer_1.default, initialState, middlewares);
-    const formControl = (0, exports.useFormControl)(props, store, dispatch);
-    const IsFormValid = (0, helpers_1.useIsFormValid)(props, store, dispatch);
-    const send = (0, react_1.useCallback)((api) => {
-        return new Promise((onResolve, onReject) => {
+    ], false); }, []);
+    var _a = (0, index_1.default)(reducer_1.default, initialState, middlewares), state = _a[0], dispatch = _a[1], store = _a[2];
+    var formControl = (0, exports.useFormControl)(props, store, dispatch);
+    var IsFormValid = (0, helpers_1.useIsFormValid)(props, store, dispatch);
+    var send = (0, react_1.useCallback)(function (api) {
+        return new Promise(function (onResolve, onReject) {
             dispatch({
                 type: reducer_1.SEND_FORM,
                 payload: {
-                    api,
-                    onResolve,
-                    onReject,
+                    api: api,
+                    onResolve: onResolve,
+                    onReject: onReject,
                 },
             });
         });
     }, []);
-    return {
-        ...state,
-        ...formControl,
-        IsFormValid,
-        store,
-        dispatch,
-        send,
-    };
+    return tslib_1.__assign(tslib_1.__assign(tslib_1.__assign({}, state), formControl), { IsFormValid: IsFormValid, store: store, dispatch: dispatch, send: send });
 };
-const useForm = (props) => {
-    const formConfig = (0, react_1.useMemo)(() => {
-        const _config = {
-            initialValues: {},
-            valueTests: [],
-            fields: {},
-            ...(props.options || {}),
-        };
-        Object.keys(props.fields).forEach((fieldName) => {
-            const _field = props.fields[fieldName];
-            let field;
+var useForm = function (props) {
+    var formConfig = (0, react_1.useMemo)(function () {
+        var _config = tslib_1.__assign({ initialValues: {}, valueTests: [], fields: {} }, (props.options || {}));
+        Object.keys(props.fields).forEach(function (fieldName) {
+            var _field = props.fields[fieldName];
+            var field;
             if (typeof _field === "string") {
                 field = {
                     label: _field,
@@ -105,8 +93,8 @@ const useForm = (props) => {
             _config.fields[fieldName] = field.label || fieldName;
             _config.initialValues[fieldName] = field.initialValue;
             if (field.rules) {
-                field.rules.forEach((rule) => {
-                    _config.valueTests.push([[fieldName], ...rule]);
+                field.rules.forEach(function (rule) {
+                    _config.valueTests.push(tslib_1.__spreadArray([[fieldName]], rule, true));
                 });
             }
         });
