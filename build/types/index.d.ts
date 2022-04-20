@@ -5,5 +5,6 @@ import FormContext, { useFormContext } from "./connectToForm/formContext";
 import ConnectToForm from "./connectToForm/index";
 import { useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit } from "./utils";
 import IfForm, { IIfFormProps } from "./ifForm";
+import FormSubmit from "./formSubmit";
 export default useForm;
-export { IIfFormProps, IfForm, FormContext, ConnectToForm, useFormContext, IUseFormOptions, IValueTest, IFields, ITouched, IValues, IInitialStateOptions, EnumFormStatus, IFormState, useReducer, IActionPayload, IAction, DispatchFunction, IStore, SendFunction, IUseForm, UseFormConfig, useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit, };
+export { IIfFormProps, IfForm, FormSubmit, FormContext, ConnectToForm, useFormContext, IUseFormOptions, IValueTest, IFields, ITouched, IValues, IInitialStateOptions, EnumFormStatus, IFormState, useReducer, IActionPayload, IAction, DispatchFunction, IStore, SendFunction, IUseForm, UseFormConfig, useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit, };

@@ -35,12 +35,14 @@ import {
 } from "./utils"
 
 import IfForm, { IIfFormProps } from "./ifForm"
+import FormSubmit from "./formSubmit"
 
 export default useForm
 
 export {
     IIfFormProps,
     IfForm,
+    FormSubmit,
     FormContext,
     ConnectToForm,
     useFormContext,

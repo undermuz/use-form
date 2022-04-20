@@ -5,5 +5,6 @@ import FormContext, { useFormContext } from "./connectToForm/formContext";
 import ConnectToForm from "./connectToForm/index";
 import { useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit, } from "./utils";
 import IfForm from "./ifForm";
+import FormSubmit from "./formSubmit";
 export default useForm;
-export { IfForm, FormContext, ConnectToForm, useFormContext, EnumFormStatus, useReducer, useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit, };
+export { IfForm, FormSubmit, FormContext, ConnectToForm, useFormContext, EnumFormStatus, useReducer, useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit, };
