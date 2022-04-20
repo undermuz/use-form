@@ -4,7 +4,7 @@ import { IValueTest, IFields, ITouched, IValues, EnumFormStatus, IFormState } fr
 import FormContext, { useFormContext } from "./connectToForm/formContext";
 import ConnectToForm from "./connectToForm/index";
 import { useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit } from "./utils";
-import IfForm, { IIfFormProps } from "./ifForm";
-import FormSubmit, { EnumFormSubmitStatus } from "./formSubmit";
+import IfForm, { IIfFormProps } from "./ifForm/index";
+import FormSubmit, { EnumFormSubmitStatus } from "./formSubmit/index";
 export default useForm;
 export { IIfFormProps, IfForm, FormSubmit, FormContext, ConnectToForm, useFormContext, IUseFormOptions, IValueTest, IFields, ITouched, IValues, IInitialStateOptions, EnumFormStatus, EnumFormSubmitStatus, IFormState, useReducer, IActionPayload, IAction, DispatchFunction, IStore, SendFunction, IUseForm, UseFormConfig, useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit, };

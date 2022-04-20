@@ -34,8 +34,8 @@ import {
     useFormSubmit,
 } from "./utils"
 
-import IfForm, { IIfFormProps } from "./ifForm"
-import FormSubmit, { EnumFormSubmitStatus } from "./formSubmit"
+import IfForm, { IIfFormProps } from "./ifForm/index"
+import FormSubmit, { EnumFormSubmitStatus } from "./formSubmit/index"
 
 export default useForm
 

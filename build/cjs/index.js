@@ -20,9 +20,9 @@ Object.defineProperty(exports, "useIsFormHasErrors", { enumerable: true, get: fu
 Object.defineProperty(exports, "useFormFields", { enumerable: true, get: function () { return utils_1.useFormFields; } });
 Object.defineProperty(exports, "useFormErrors", { enumerable: true, get: function () { return utils_1.useFormErrors; } });
 Object.defineProperty(exports, "useFormSubmit", { enumerable: true, get: function () { return utils_1.useFormSubmit; } });
-const ifForm_1 = tslib_1.__importDefault(require("./ifForm"));
-exports.IfForm = ifForm_1.default;
-const formSubmit_1 = tslib_1.__importStar(require("./formSubmit"));
-exports.FormSubmit = formSubmit_1.default;
-Object.defineProperty(exports, "EnumFormSubmitStatus", { enumerable: true, get: function () { return formSubmit_1.EnumFormSubmitStatus; } });
+const index_4 = tslib_1.__importDefault(require("./ifForm/index"));
+exports.IfForm = index_4.default;
+const index_5 = tslib_1.__importStar(require("./formSubmit/index"));
+exports.FormSubmit = index_5.default;
+Object.defineProperty(exports, "EnumFormSubmitStatus", { enumerable: true, get: function () { return index_5.EnumFormSubmitStatus; } });
 exports.default = index_1.default;
