@@ -35,6 +35,14 @@ Every rule is array: [yourFnList, errorText], yourFnList is array of functions: 
     })
 ```
 
+You should wrapp your inputs and components witch use form-hooks by FormContext.Provider
+
+```javascript
+    <FormContext.Provider value={form}>
+    ...
+    </FormContext.Provider>
+```
+
 ### Connect input-like components to the form
 
 #### Browser's input
