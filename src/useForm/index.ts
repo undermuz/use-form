@@ -141,7 +141,7 @@ export interface IUseForm {
 
 export type UseFormConfig = IUseForm & IFormState & IUseFormControl
 
-const useForm = (props: IUseFormOptions): UseFormConfig => {
+const useFormCore = (props: IUseFormOptions): UseFormConfig => {
     const initialState = useMemo(() => getInitialState(props), [])
 
     const middlewares = useMemo(
@@ -186,6 +186,57 @@ const useForm = (props: IUseFormOptions): UseFormConfig => {
 
         send,
     }
+}
+
+export type IUseFormFieldRule = [Array<Function>, string?]
+export interface IUseFormField {
+    name: string
+    label?: string
+    initialValue?: string
+    rules?: IUseFormFieldRule[]
+}
+
+export type TypeUseFormField = IUseFormField | string
+
+export interface IUseFormSettings {
+    fields: Array<TypeUseFormField>
+    options?: IUseFormOptions
+}
+
+const useForm = (props: IUseFormSettings) => {
+    const formConfig = useMemo<IUseFormOptions>(() => {
+        const _config = {
+            initialValues: {},
+            valueTests: [],
+            fields: {},
+            ...(props.options || {}),
+        }
+
+        props.fields.forEach((_field: TypeUseFormField) => {
+            let field: IUseFormField
+
+            if (typeof _field === "string") {
+                field = {
+                    name: _field as string,
+                }
+            } else {
+                field = _field as IUseFormField
+            }
+
+            _config.fields[field.name] = field.label || field.name
+            _config.initialValues[field.name] = field.initialValue
+
+            if (field.rules) {
+                field.rules.forEach((rule: IUseFormFieldRule) => {
+                    _config.valueTests.push([[field.name], ...rule])
+                })
+            }
+        })
+
+        return _config
+    }, [])
+
+    return useFormCore(formConfig)
 }
 
 export default useForm
