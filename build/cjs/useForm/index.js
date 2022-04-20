@@ -52,7 +52,7 @@ const useFormControl = (props, store, dispatch) => {
     };
 };
 exports.useFormControl = useFormControl;
-const useForm = (props) => {
+const useFormCore = (props) => {
     const initialState = (0, react_1.useMemo)(() => (0, exports.getInitialState)(props), []);
     const middlewares = (0, react_1.useMemo)(() => [
         ...((props === null || props === void 0 ? void 0 : props.middlewares) || []),
@@ -82,5 +82,35 @@ const useForm = (props) => {
         dispatch,
         send,
     };
+};
+const useForm = (props) => {
+    const formConfig = (0, react_1.useMemo)(() => {
+        const _config = {
+            initialValues: {},
+            valueTests: [],
+            fields: {},
+            ...(props.options || {}),
+        };
+        props.fields.forEach((_field) => {
+            let field;
+            if (typeof _field === "string") {
+                field = {
+                    name: _field,
+                };
+            }
+            else {
+                field = _field;
+            }
+            _config.fields[field.name] = field.label || field.name;
+            _config.initialValues[field.name] = field.initialValue;
+            if (field.rules) {
+                field.rules.forEach((rule) => {
+                    _config.valueTests.push([[field.name], ...rule]);
+                });
+            }
+        });
+        return _config;
+    }, []);
+    return useFormCore(formConfig);
 };
 exports.default = useForm;

@@ -28,5 +28,17 @@ export interface IUseForm {
     send: SendFunction;
 }
 export declare type UseFormConfig = IUseForm & IFormState & IUseFormControl;
-declare const useForm: (props: IUseFormOptions) => UseFormConfig;
+export declare type IUseFormFieldRule = [Array<Function>, string?];
+export interface IUseFormField {
+    name: string;
+    label?: string;
+    initialValue?: string;
+    rules?: IUseFormFieldRule[];
+}
+export declare type TypeUseFormField = IUseFormField | string;
+export interface IUseFormSettings {
+    fields: Array<TypeUseFormField>;
+    options?: IUseFormOptions;
+}
+declare const useForm: (props: IUseFormSettings) => UseFormConfig;
 export default useForm;
