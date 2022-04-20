@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useFormSubmit = exports.useFormErrors = exports.useFormFields = exports.useIsFormHasErrors = exports.useIsFormSending = exports.useIsFormCanceling = exports.useIsFormSuccess = exports.useReducer = exports.EnumFormStatus = exports.useFormContext = exports.ConnectToForm = exports.FormContext = exports.FormSubmit = exports.IfForm = void 0;
+exports.useFormSubmit = exports.useFormErrors = exports.useFormFields = exports.useIsFormHasErrors = exports.useIsFormSending = exports.useIsFormCanceling = exports.useIsFormSuccess = exports.useReducer = exports.EnumFormSubmitStatus = exports.EnumFormStatus = exports.useFormContext = exports.ConnectToForm = exports.FormContext = exports.FormSubmit = exports.IfForm = void 0;
 const tslib_1 = require("tslib");
 const index_1 = tslib_1.__importDefault(require("./useForm/index"));
 const index_2 = tslib_1.__importDefault(require("./useReducer/index"));
@@ -22,6 +22,7 @@ Object.defineProperty(exports, "useFormErrors", { enumerable: true, get: functio
 Object.defineProperty(exports, "useFormSubmit", { enumerable: true, get: function () { return utils_1.useFormSubmit; } });
 const ifForm_1 = tslib_1.__importDefault(require("./ifForm"));
 exports.IfForm = ifForm_1.default;
-const formSubmit_1 = tslib_1.__importDefault(require("./formSubmit"));
+const formSubmit_1 = tslib_1.__importStar(require("./formSubmit"));
 exports.FormSubmit = formSubmit_1.default;
+Object.defineProperty(exports, "EnumFormSubmitStatus", { enumerable: true, get: function () { return formSubmit_1.EnumFormSubmitStatus; } });
 exports.default = index_1.default;
