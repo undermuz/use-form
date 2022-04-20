@@ -1,17 +1,17 @@
 import { cloneElement, useCallback, useMemo, useState, } from "react";
 import { useFormContext } from "./formContext";
 var ConnectToForm = function (props) {
-    var _a, _b;
-    var _c = useState(false), focus = _c[0], setFocus = _c[1];
-    var _d = props.IsFilled, IsFilled = _d === void 0 ? Boolean : _d, name = props.name, inputName = props.inputName, disabled = props.disabled, _e = props.type, type = _e === void 0 ? "connect-to-form" : _e, _onRefInput = props.onRefInput, _onRef = props.onRef;
+    var _a;
+    var _b = useState(false), isFocused = _b[0], setFocus = _b[1];
+    var _c = props.IsFilled, IsFilled = _c === void 0 ? Boolean : _c, children = props.children, name = props.name, inputName = props.inputName, disabled = props.disabled, _d = props.type, type = _d === void 0 ? "connect-to-form" : _d, _onRefInput = props.onRefInput, _onRef = props.onRef;
     var params = useFormContext();
-    var _f = params.isSending, isSending = _f === void 0 ? false : _f, _g = params.values, values = _g === void 0 ? {} : _g, _h = params.touched, touched = _h === void 0 ? [] : _h, _j = params.errors, errors = _j === void 0 ? [] : _j, _k = params.fields, fields = _k === void 0 ? {} : _k, setValue = params.setValue, setTouchedByName = params.setTouchedByName;
+    var _e = params.isSending, isSending = _e === void 0 ? false : _e, _f = params.values, values = _f === void 0 ? {} : _f, _g = params.touched, touched = _g === void 0 ? [] : _g, _h = params.errors, errors = _h === void 0 ? [] : _h, _j = params.fields, fields = _j === void 0 ? {} : _j, setValue = params.setValue, setTouchedByName = params.setTouchedByName;
     var value = values[name];
     var error = errors[name];
     var isTouched = touched.indexOf(name) > -1;
+    var hasError = Boolean(error) && isTouched;
     var isFilled = IsFilled(value);
-    var isError = Boolean(error) && isTouched;
-    var isSuccess = !isError && isTouched && IsFilled(value);
+    var isSucceed = !hasError && isTouched && IsFilled(value);
     var onRefInput = useMemo(function () {
         if (_onRefInput) {
             return function (node) {
@@ -38,22 +38,33 @@ var ConnectToForm = function (props) {
     var onChange = useCallback(function (_v) {
         setValue(name, _v, false, true, type);
     }, [setValue, name, type]);
-    if (!props.children) {
+    var inputProps = {
+        id: "field-".concat(name),
+        name: inputName || name,
+        label: ((_a = children === null || children === void 0 ? void 0 : children.props) === null || _a === void 0 ? void 0 : _a.label) || fields[name],
+        disabled: isSending || disabled,
+        value: value,
+        onChange: function (e) { var _a; return onChange === null || onChange === void 0 ? void 0 : onChange((_a = e === null || e === void 0 ? void 0 : e.target) === null || _a === void 0 ? void 0 : _a.value); },
+        onFocus: onFocus,
+        onBlur: onBlur,
+    };
+    if (!children) {
         console.error("ConnectToForm must have a children");
         return null;
     }
-    return cloneElement(props.children, {
-        name: inputName || name,
-        value: value,
-        label: ((_b = (_a = props.children) === null || _a === void 0 ? void 0 : _a.props) === null || _b === void 0 ? void 0 : _b.label) || fields[name],
-        focused: focus,
-        touched: isTouched,
-        filled: isFilled,
-        disabled: isSending || disabled,
-        isError: isError,
-        isSuccess: isSuccess,
-        error: isError ? error : false,
-        success: isSuccess,
+    return cloneElement(children, {
+        inputProps: inputProps,
+        name: inputProps.name,
+        value: inputProps.value,
+        label: inputProps.label,
+        error: hasError ? error : null,
+        disabled: inputProps.disabled,
+        isFocused: isFocused,
+        isTouched: isTouched,
+        isFilled: isFilled,
+        isSucceed: isSucceed,
+        isDisabled: inputProps.disabled,
+        hasError: hasError,
         onChange: onChange,
         onFocus: onFocus,
         onBlur: onBlur,

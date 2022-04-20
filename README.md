@@ -12,6 +12,230 @@ See src/examples for more details
 
 `npm update @undermuz/use-form`
 
+## Basic usage
+
+### Setup form
+
+Setup a login form with username and password fields with rules
+Rules work like: !yourFn(filedValue) && errorText, your should provide an array: [Rule1, Rule2, RuleN]
+Every rule is array: [yourFnList, errorText], yourFnList is array of functions: yourFn(filedValue) => boolean
+
+```javascript
+    const form = useForm({
+        fields: {
+            username: {
+                label: "Login",
+                rules: [[[Boolean], "Username is required"]],
+            },
+            password: {
+                label: "Password",
+                rules: [[[Boolean], "Password is required"]],
+            },
+        },
+    })
+```
+
+### Connect input-like components to the form
+
+#### Browser's input
+
+```javascript
+
+    //Short-version
+    const Input: React.FC<IInputProps> = ({
+        inputProps = {}, //Provides by ConnectToForm
+        ...rest
+    }) => {
+        return (
+            <label>
+                {inputProps.label}
+                <input
+                    {..._.pick(rest, ["type", "placeholder"])}
+                    {...inputProps}
+                />
+            </label>
+        )
+    }
+
+    //Full-version
+    const Input: React.FC<IInputProps> = ({
+        type = "text",
+        placeholder = "",
+        name = "", //Provides by ConnectToForm
+        onChange, //Provides by ConnectToForm
+        label, //Provides by ConnectToForm
+        value, //Provides by ConnectToForm
+    }) => {
+        return (
+            <label>
+                {label}
+                <input
+                    type={type}
+                    name={name}
+                    placeholder={placeholder}
+                    onChange={(e) => onChange?.(e.target.value)}
+                    value={value}
+                />
+            </label>
+        )
+    }
+
+    ...
+
+    <ConnectToForm name="username">
+        <Input type="text" />
+    </ConnectToForm>
+
+    <ConnectToForm name="password">
+        <Input type="password" />
+    </ConnectToForm>
+```
+
+#### Third-party components
+
+```javascript
+    const form = useForm({
+        fields: {
+            date: {
+                label: "Start date",
+                initialValue: new Date(),
+                rules: [
+                    [[Boolean], "Start date is required"],
+                    [[SomeDateValidationFunction], "Start date is invalid"]
+                ],
+            },
+        },
+    })
+    
+    ...
+
+    const DateInput: React.FC<IInputProps> = ({
+        onChange, //Provides by ConnectToForm
+        label, //Provides by ConnectToForm
+        value, //Provides by ConnectToForm
+        ...rest
+    }) => {
+        return (
+            <label>
+                {label}
+                <DateTime
+                    {...rest}
+                    value={moment(value)}
+                    onChange={(m) => onChange(.m.toDate())}
+                />
+            </label>
+        )
+    }
+
+    ...
+
+    <ConnectToForm name="date">
+        <DateInput dateFormat={"YYYY-MM-DD"} />
+    </ConnectToForm>
+```
+
+### Input's states
+
+```javascript
+    const Input: React.FC<IInputProps> = ({
+        inputProps = {}, //Provides by ConnectToForm
+        label, //Provides by ConnectToForm
+        isSucceed, //Provides by ConnectToForm
+        hasError, //Provides by ConnectToForm
+        isFocused, //Provides by ConnectToForm
+        isTouched, //Provides by ConnectToForm
+        isFilled, //Provides by ConnectToForm
+        isDisabled //Provides by ConnectToForm
+        ...rest
+    }) => {
+        return (
+            <label>
+                {label}
+                <input
+                    {..._.pick(rest, ["type", "placeholder"])}
+                    {...inputProps}
+                    className={isSucceed ? "succeed" : hasError ? "has-error" : "default"}
+                />
+                {/*  Other states */}
+                {isFocused && "Tip: type something funny"}
+                {isTouched && "You have already touched this field"}
+                {isFilled && "You have already filled this field"}
+                {isDisabled && "This field is disabled now"}
+            </label>
+        )
+    }
+```
+
+### Form's states
+
+```javascript
+    <IfForm>
+        <p>Nothing happens</p>
+    </IfForm>
+
+    <IfForm isSuccess>
+        <p>Form has sent success</p>
+    </IfForm>
+
+    <IfForm isCanceling>
+        <p>Form has sent unsuccess</p>
+    </IfForm>
+
+    <IfForm isSending>
+        <p>Form is sending now</p>
+    </IfForm>
+
+    <IfForm hasErrors>
+        <p>Form has errors</p>
+    </IfForm>
+```
+
+### Submit
+
+```javascript
+
+    const form = useForm(/*Form config*/)
+
+    ...
+
+    const onSend = useCallback((values: IValues) => {
+        console.log("Login data", values)
+
+        return true
+    }, [])
+
+    const onSucceed = useCallback(() => {
+        console.log("Login completed")
+    }, [])
+
+    const onError = useCallback(() => {
+        console.log("Login failed")
+    }, [])
+
+    //Hook-version
+
+    const submit = useFormSubmit(onSend, onSucceed, onError)
+
+    ...
+
+    <Button disabled={form.isSending} onClick={submit}>
+        Submit
+    </Button>
+
+    //Component version
+
+    <FormSubmit onSend={onSend} onSucceed={onSucceed} onError={onError}>
+        {(status: EnumFormSubmitStatus) => {
+            if (status === EnumFormSubmitStatus.Sending) {
+                return "Sending..."
+            }
+
+            return "Submit"
+        }}
+    </FormSubmit>
+
+```
+
 ## Examples
 
 ```javascript
@@ -99,7 +323,7 @@ const LoginForm = () => {
                 }}
             </FormSubmit>
 
-            <IfForm>
+            <IfForm hasErrors>
                 <ErrorBlock />
             </IfForm>
         </FormContext.Provider>

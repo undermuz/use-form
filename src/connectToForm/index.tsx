@@ -19,10 +19,11 @@ export interface IConnectToForm {
 }
 
 const ConnectToForm = (props: IConnectToForm) => {
-    const [focus, setFocus] = useState(false)
+    const [isFocused, setFocus] = useState(false)
 
     const {
         IsFilled = Boolean,
+        children,
         name,
         inputName,
         disabled,
@@ -45,10 +46,13 @@ const ConnectToForm = (props: IConnectToForm) => {
 
     const value = values[name]
     const error = errors[name]
+
     const isTouched = touched.indexOf(name) > -1
+
+    const hasError = Boolean(error) && isTouched
+
     const isFilled = IsFilled(value)
-    const isError = Boolean(error) && isTouched
-    const isSuccess = !isError && isTouched && IsFilled(value)
+    const isSucceed = !hasError && isTouched && IsFilled(value)
 
     const onRefInput = useMemo(() => {
         if (_onRefInput) {
@@ -84,24 +88,38 @@ const ConnectToForm = (props: IConnectToForm) => {
         [setValue, name, type]
     )
 
-    if (!props.children) {
+    const inputProps = {
+        id: `field-${name}`,
+        name: inputName || name,
+        label: children?.props?.label || fields[name],
+        disabled: isSending || disabled,
+        value,
+        onChange: (e: any) => onChange?.(e?.target?.value),
+        onFocus,
+        onBlur,
+    }
+
+    if (!children) {
         console.error("ConnectToForm must have a children")
 
         return null
     }
 
-    return cloneElement(props.children, {
-        name: inputName || name,
-        value,
-        label: props.children?.props?.label || fields[name],
-        focused: focus,
-        touched: isTouched,
-        filled: isFilled,
-        disabled: isSending || disabled,
-        isError,
-        isSuccess,
-        error: isError ? error : false,
-        success: isSuccess,
+    return cloneElement(children, {
+        inputProps,
+
+        name: inputProps.name,
+        value: inputProps.value,
+        label: inputProps.label,
+        error: hasError ? error : null,
+        disabled: inputProps.disabled,
+
+        isFocused,
+        isTouched,
+        isFilled,
+        isSucceed,
+        isDisabled: inputProps.disabled,
+        hasError,
 
         onChange,
         onFocus,
