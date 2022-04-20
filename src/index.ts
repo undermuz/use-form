@@ -40,7 +40,7 @@ export {
     useFormFields,
     useFormErrors,
     useFormSubmit,
-} from "./utils"
+} from "./utils/index"
 
 export { default as IfForm, IIfFormProps } from "./ifForm/index"
 export { default as FormSubmit, EnumFormSubmitStatus } from "./formSubmit/index"

@@ -4,7 +4,7 @@ export { default as useReducer, IActionPayload, IAction, DispatchFunction, IStor
 export { IValueTest, IFields, ITouched, IValues, EnumFormStatus, IFormState, } from "./useForm/reducer";
 export { default as FormContext, useFormContext, } from "./connectToForm/formContext";
 export { default as ConnectToForm } from "./connectToForm/index";
-export { useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit, } from "./utils";
+export { useIsFormSuccess, useIsFormCanceling, useIsFormSending, useIsFormHasErrors, useFormFields, useFormErrors, useFormSubmit, } from "./utils/index";
 export { default as IfForm, IIfFormProps } from "./ifForm/index";
 export { default as FormSubmit, EnumFormSubmitStatus } from "./formSubmit/index";
 export default useForm;
