@@ -17,11 +17,11 @@ export enum EnumFormSubmitStatus {
 }
 
 interface IFormSubmitProps<Target = WebTarget> {
-    as: Target
+    as?: Target
     children?: (status: EnumFormSubmitStatus) => React.ReactNode
     disableWhenErrors?: boolean
     onSend: Function
-    onFinally: (value: any) => any
+    onSucceed: (value: any) => any
     onError?: (reason: any) => PromiseLike<never>
     disabled?: boolean
 }
@@ -32,7 +32,7 @@ const FormSubmit: React.FC<IFormSubmitProps> = (props) => {
         children,
         disableWhenErrors = false,
         onSend,
-        onFinally,
+        onSucceed,
         onError,
         disabled = false,
         ...otherProps
@@ -41,7 +41,7 @@ const FormSubmit: React.FC<IFormSubmitProps> = (props) => {
     const hasErrors = useIsFormHasErrors()
     const isSending = useIsFormSending()
 
-    const submit = useFormSubmit(onSend, onFinally, onError)
+    const submit = useFormSubmit(onSend, onSucceed, onError)
 
     return (
         <Component

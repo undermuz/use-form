@@ -55,14 +55,14 @@ export const useFormErrors = () => {
 
 export const useFormSubmit = (
     onSend: Function,
-    onFinally: (value: any) => any,
+    onSucceed: (value: any) => any,
     onError?: (reason: any) => PromiseLike<never>
 ) => {
     const { send } = useFormContext()
 
     const handleSave = useCallback(() => {
-        send(onSend).then(onFinally, onError)
-    }, [send, onSend, onFinally, onError])
+        send(onSend).then(onSucceed, onError)
+    }, [send, onSend, onSucceed, onError])
 
     return handleSave
 }
