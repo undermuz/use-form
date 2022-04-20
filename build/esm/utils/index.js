@@ -24,10 +24,10 @@ export const useFormErrors = () => {
     const params = useFormContext();
     return params.errors;
 };
-export const useFormSubmit = (onSend, onFinally, onError) => {
+export const useFormSubmit = (onSend, onSucceed, onError) => {
     const { send } = useFormContext();
     const handleSave = useCallback(() => {
-        send(onSend).then(onFinally, onError);
-    }, [send, onSend, onFinally, onError]);
+        send(onSend).then(onSucceed, onError);
+    }, [send, onSend, onSucceed, onError]);
     return handleSave;
 };

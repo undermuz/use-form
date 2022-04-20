@@ -7,11 +7,11 @@ export declare enum EnumFormSubmitStatus {
     Sending = "sending"
 }
 interface IFormSubmitProps<Target = WebTarget> {
-    as: Target;
+    as?: Target;
     children?: (status: EnumFormSubmitStatus) => React.ReactNode;
     disableWhenErrors?: boolean;
     onSend: Function;
-    onFinally: (value: any) => any;
+    onSucceed: (value: any) => any;
     onError?: (reason: any) => PromiseLike<never>;
     disabled?: boolean;
 }

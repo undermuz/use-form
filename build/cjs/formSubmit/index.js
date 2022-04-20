@@ -13,10 +13,10 @@ var EnumFormSubmitStatus;
     EnumFormSubmitStatus["Sending"] = "sending";
 })(EnumFormSubmitStatus = exports.EnumFormSubmitStatus || (exports.EnumFormSubmitStatus = {}));
 const FormSubmit = (props) => {
-    const { as: Component = "button", children, disableWhenErrors = false, onSend, onFinally, onError, disabled = false, ...otherProps } = props;
+    const { as: Component = "button", children, disableWhenErrors = false, onSend, onSucceed, onError, disabled = false, ...otherProps } = props;
     const hasErrors = (0, utils_1.useIsFormHasErrors)();
     const isSending = (0, utils_1.useIsFormSending)();
-    const submit = (0, utils_1.useFormSubmit)(onSend, onFinally, onError);
+    const submit = (0, utils_1.useFormSubmit)(onSend, onSucceed, onError);
     return ((0, jsx_runtime_1.jsxs)(Component, { ...otherProps, disabled: isSending || (hasErrors && disableWhenErrors) || disabled, type: "submit", onClick: submit, children: [(0, jsx_runtime_1.jsx)(ifForm_1.default, { children: children ? children(EnumFormSubmitStatus.Default) : "Send" }), (0, jsx_runtime_1.jsx)(ifForm_1.default, { isSuccess: true, children: children ? children(EnumFormSubmitStatus.Succeed) : "Succeed" }), (0, jsx_runtime_1.jsx)(ifForm_1.default, { isCanceling: true, children: children ? children(EnumFormSubmitStatus.Canceling) : "Failed" }), (0, jsx_runtime_1.jsx)(ifForm_1.default, { isSending: true, children: children
                     ? children(EnumFormSubmitStatus.Sending)
                     : "Sending..." })] }));

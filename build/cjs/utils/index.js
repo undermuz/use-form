@@ -33,11 +33,11 @@ const useFormErrors = () => {
     return params.errors;
 };
 exports.useFormErrors = useFormErrors;
-const useFormSubmit = (onSend, onFinally, onError) => {
+const useFormSubmit = (onSend, onSucceed, onError) => {
     const { send } = (0, formContext_1.useFormContext)();
     const handleSave = (0, react_1.useCallback)(() => {
-        send(onSend).then(onFinally, onError);
-    }, [send, onSend, onFinally, onError]);
+        send(onSend).then(onSucceed, onError);
+    }, [send, onSend, onSucceed, onError]);
     return handleSave;
 };
 exports.useFormSubmit = useFormSubmit;
