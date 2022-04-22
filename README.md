@@ -2,8 +2,6 @@
 
 React library for build forms
 
-See src/examples for more details
-
 ## Install
 
 `npm i -S git@github.com:undermuz/use-form.git`
@@ -16,7 +14,7 @@ See src/examples for more details
 
 ### Setup form
 
-Setup a login form with username and password fields with rules
+For example, setup a login form with username and password fields with rules
 Rules work like: !yourFn(filedValue) && errorText, your should provide an array: [Rule1, Rule2, RuleN]
 Every rule is array: [yourFnList, errorText], yourFnList is array of functions: yourFn(filedValue) => boolean
 
@@ -44,6 +42,19 @@ You should wrapp your inputs and components witch use form-hooks by FormContext.
 ```
 
 ### Connect input-like components to the form
+
+To connect any form component (or just a component)
+you have to wrapp it by ConnectToForm and provider a name
+
+Provided component have to receive `value` prop and `onChange` prop and emit `onChange` with new value
+
+```javascript
+    <ConnectToForm name="FIELD_NAME">
+        {/*Your component*/}
+    </ConnectToForm>
+```
+
+ConnectToForm provides current field's value to your component, and wait new value through `onChange`
 
 #### Browser's input
 
@@ -200,14 +211,17 @@ You should wrapp your inputs and components witch use form-hooks by FormContext.
 
 ### Submit
 
-```javascript
+#### Create callbacks
 
+```javascript
     const form = useForm(/*Form config*/)
 
     ...
 
-    const onSend = useCallback((values: IValues) => {
+    const onSend = useCallback(async (values: IValues) => {
         console.log("Login data", values)
+
+        await sendValuesToTheServer(value)
 
         return true
     }, [])
@@ -219,8 +233,11 @@ You should wrapp your inputs and components witch use form-hooks by FormContext.
     const onError = useCallback(() => {
         console.log("Login failed")
     }, [])
+```
 
-    //Hook-version
+#### Get submit callback by hook
+
+```javascript
 
     const submit = useFormSubmit(onSend, onSucceed, onError)
 
@@ -230,6 +247,11 @@ You should wrapp your inputs and components witch use form-hooks by FormContext.
         Submit
     </Button>
 
+```
+
+#### OR Get submit by component
+
+```javascript
     //Component version
 
     <FormSubmit onSend={onSend} onSucceed={onSucceed} onError={onError}>
