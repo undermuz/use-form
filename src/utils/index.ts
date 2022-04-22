@@ -56,7 +56,7 @@ export const useFormErrors = () => {
 export const useFormSubmit = (
     onSend: Function,
     onSucceed: (value: any) => any,
-    onError?: (reason: any) => PromiseLike<never>
+    onError?: (reason: any) => any
 ) => {
     const { send } = useFormContext()
 

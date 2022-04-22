@@ -12,7 +12,7 @@ interface IFormSubmitProps<Target = WebTarget> {
     disableWhenErrors?: boolean;
     onSend: Function;
     onSucceed: (value: any) => any;
-    onError?: (reason: any) => PromiseLike<never>;
+    onError?: (reason: any) => any;
     disabled?: boolean;
 }
 declare const FormSubmit: React.FC<IFormSubmitProps>;
