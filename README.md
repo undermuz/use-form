@@ -221,9 +221,7 @@ ConnectToForm provides current field's value to your component, and wait new val
     const onSend = useCallback(async (values: IValues) => {
         console.log("Login data", values)
 
-        await sendValuesToTheServer(value)
-
-        return true
+        await sendValuesToTheServer(values)
     }, [])
 
     const onSucceed = useCallback(() => {
