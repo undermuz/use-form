@@ -334,11 +334,11 @@ const LoginForm = () => {
     return (
         <FormContext.Provider value={form}>
             <ConnectToForm name="username">
-                <Input />
+                <Input placeholder="Enter your login" />
             </ConnectToForm>
 
             <ConnectToForm name="password">
-                <Input />
+                <Input type="password" placeholder="Enter your password" />
             </ConnectToForm>
 
             <FormSubmit onSend={onSend} onSucceed={onSucceed}>
