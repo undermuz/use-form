@@ -140,7 +140,7 @@ ConnectToForm provides current field's value to your component, and wait new val
                 <DateTime
                     {...rest}
                     value={moment(value)}
-                    onChange={(m) => onChange(.m.toDate())}
+                    onChange={(m) => onChange(m.toDate())}
                 />
             </label>
         )
