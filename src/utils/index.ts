@@ -61,7 +61,7 @@ export const useFormSubmit = (
     const { send } = useFormContext()
 
     const handleSave = useCallback(() => {
-        send(onSend).then(onSucceed, onError)
+        send(onSend).then<any, any>(onSucceed, onError)
     }, [send, onSend, onSucceed, onError])
 
     return handleSave
