@@ -14,7 +14,7 @@ export declare const SET_SEND_ERROR = "set_send_error";
 export declare const VALIDATE_FORM = "validate_form";
 export declare const SEND_FORM = "send_form";
 export declare type IValueTest = [Array<string>, Array<Function>, string?];
-export declare type ValidateFunction = Function;
+export declare type ValidateFunction = (formState: IFormState, debug?: boolean) => IErrors;
 export interface IFields {
     [s: string]: any;
 }
@@ -36,7 +36,7 @@ export interface IFormState {
     sendError: any;
     values: IValues;
     tests: IValueTest[];
-    validate?: ValidateFunction;
+    validate: ValidateFunction;
     touched: ITouched;
     fields: IFields;
     errors: IErrors;
@@ -46,7 +46,7 @@ export declare const testsReducer: (state: IValueTest[], action: IAction) => IVa
 export declare const touchedReducer: (state: ITouched, action: IAction) => ITouched;
 export declare const errorsReducer: (state: IErrors, action: IAction) => IErrors;
 export declare const fieldsReducer: (state: IFields, action: IAction) => IFields;
-export declare const validateReducer: (state: ValidateFunction | undefined, action: IAction) => ValidateFunction | undefined;
+export declare const validateReducer: (state: ValidateFunction, action: IAction) => ValidateFunction;
 export declare const isSendingReducer: (state: boolean, action: IAction) => boolean;
 export declare const isCancelingReducer: (state: boolean, action: IAction) => boolean;
 export declare const isSuccessReducer: (state: boolean, action: IAction) => boolean;

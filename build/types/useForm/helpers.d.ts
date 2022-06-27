@@ -4,7 +4,7 @@ export interface IUseFormSettings {
     [k: string]: any;
     debug?: boolean;
 }
-export declare const isFormHasErrors: (settings: IUseFormSettings, store: IStore<IFormState>, checkOnlyFilled?: boolean) => any[];
+export declare const isFormHasErrors: (settings: IUseFormSettings, store: IStore<IFormState>, checkOnlyFilled?: boolean) => [boolean, IErrors];
 export declare const useIsFormValid: (settings: IUseFormSettings, store: IStore<IFormState>, _dispatch: DispatchFunction) => (checkOnlyFilled?: boolean) => boolean;
 export declare const useSetTouched: (_settings: IUseFormSettings, _store: IStore<IFormState>, dispatch: DispatchFunction) => (newTouched: ITouched, silent?: boolean, checkOnlyFilled?: boolean) => void;
 export declare const useSetValues: (_settings: IUseFormSettings, _store: IStore<IFormState>, dispatch: DispatchFunction) => (newValues: IValues, silent?: boolean, checkOnlyFilled?: boolean, type?: string) => void;

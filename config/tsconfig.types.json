@@ -1,8 +1,9 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "declaration": true /* Generates corresponding '.d.ts' file. */,
-    "emitDeclarationOnly": true,
-    "outDir": "../build/types" /* Redirect output structure to the directory. */
-  }
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "declaration": true /* Generates corresponding '.d.ts' file. */,
+        "emitDeclarationOnly": true,
+        "outDir": "../build/types" /* Redirect output structure to the directory. */
+    },
+    "exclude": ["../src/**/*.test.ts", "../src/**/*.test.tsx"]
 }

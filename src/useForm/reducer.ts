@@ -1,4 +1,5 @@
 import { IAction } from "../useReducer/index"
+import { getFormErrors } from "./middlewares/validate"
 
 const IsFunction = (value: any): boolean =>
     Boolean(value) &&
@@ -24,7 +25,10 @@ export const SEND_FORM = "send_form"
 
 export type IValueTest = [Array<string>, Array<Function>, string?]
 
-export type ValidateFunction = Function
+export type ValidateFunction = (
+    formState: IFormState,
+    debug?: boolean
+) => IErrors
 
 export interface IFields {
     [s: string]: any
@@ -52,7 +56,7 @@ export interface IFormState {
     sendError: any
     values: IValues
     tests: IValueTest[]
-    validate?: ValidateFunction
+    validate: ValidateFunction
     touched: ITouched
     fields: IFields
     errors: IErrors
@@ -154,11 +158,15 @@ export const fieldsReducer = (state: IFields, action: IAction): IFields => {
 }
 
 export const validateReducer = (
-    state: ValidateFunction | undefined,
+    state: ValidateFunction,
     action: IAction
-): ValidateFunction | undefined => {
+): ValidateFunction => {
     switch (action.type) {
         case SET_VALIDATE:
+            if (!action.payload.validate) {
+                return getFormErrors
+            }
+
             return action.payload.validate
         default:
             return state
@@ -205,7 +213,7 @@ export const sendErrorReducer = (state: any, action: IAction) => {
 }
 
 export const formReducer = (state: IFormState, action: IAction): IFormState => {
-    return {
+    const nextState = {
         ...state,
         values: valuesReducer(state.values, action),
         fields: fieldsReducer(state.fields, action),
@@ -218,6 +226,8 @@ export const formReducer = (state: IFormState, action: IAction): IFormState => {
         isSuccess: isSuccessReducer(state.isSuccess, action),
         sendError: sendErrorReducer(state.sendError, action),
     }
+
+    return nextState
 }
 
 export default formReducer

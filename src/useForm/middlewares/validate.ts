@@ -113,7 +113,7 @@ const createValidating =
     (store: IStore<IFormState>) =>
     (next: DispatchFunction) =>
     (action: IAction) => {
-        const { log = true } = settings
+        const { debug = false } = settings
 
         const result = next(action)
 
@@ -130,11 +130,11 @@ const createValidating =
             const { silent = false, checkOnlyFilled = true } = action
 
             if (!silent) {
+                const state = store.getState()
+
                 const { validate: customValidate = null } = action.payload
 
-                const validateFn = customValidate ?? getFormErrors
-
-                const state = store.getState()
+                const validateFn = customValidate ?? state.validate
 
                 const newErrors = validateFn(
                     {
@@ -143,7 +143,7 @@ const createValidating =
                             ? state.touched
                             : Object.keys(state.fields),
                     },
-                    log
+                    debug
                 )
 
                 store.dispatch({

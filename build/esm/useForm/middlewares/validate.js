@@ -66,7 +66,7 @@ var createValidating = function (settings) {
     return function (store) {
         return function (next) {
             return function (action) {
-                var _a = settings.log, log = _a === void 0 ? true : _a;
+                var _a = settings.debug, debug = _a === void 0 ? false : _a;
                 var result = next(action);
                 if (action.type === SET_VALUE ||
                     action.type === SET_VALUES ||
@@ -78,12 +78,12 @@ var createValidating = function (settings) {
                     action.type === VALIDATE_FORM) {
                     var _b = action.silent, silent = _b === void 0 ? false : _b, _c = action.checkOnlyFilled, checkOnlyFilled = _c === void 0 ? true : _c;
                     if (!silent) {
-                        var _d = action.payload.validate, customValidate = _d === void 0 ? null : _d;
-                        var validateFn = customValidate !== null && customValidate !== void 0 ? customValidate : getFormErrors;
                         var state = store.getState();
+                        var _d = action.payload.validate, customValidate = _d === void 0 ? null : _d;
+                        var validateFn = customValidate !== null && customValidate !== void 0 ? customValidate : state.validate;
                         var newErrors = validateFn(__assign(__assign({}, state), { touched: checkOnlyFilled
                                 ? state.touched
-                                : Object.keys(state.fields) }), log);
+                                : Object.keys(state.fields) }), debug);
                         store.dispatch({
                             type: SET_ERRORS,
                             payload: { errors: newErrors },

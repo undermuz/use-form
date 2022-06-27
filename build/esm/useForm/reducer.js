@@ -1,4 +1,5 @@
 import { __assign, __spreadArray } from "tslib";
+import { getFormErrors } from "./middlewares/validate";
 var IsFunction = function (value) {
     return Boolean(value) &&
         ["[object Function]", "[object AsyncFunction]"].includes({}.toString.call(value));
@@ -96,6 +97,9 @@ export var fieldsReducer = function (state, action) {
 export var validateReducer = function (state, action) {
     switch (action.type) {
         case SET_VALIDATE:
+            if (!action.payload.validate) {
+                return getFormErrors;
+            }
             return action.payload.validate;
         default:
             return state;
@@ -134,6 +138,7 @@ export var sendErrorReducer = function (state, action) {
     }
 };
 export var formReducer = function (state, action) {
-    return __assign(__assign({}, state), { values: valuesReducer(state.values, action), fields: fieldsReducer(state.fields, action), tests: testsReducer(state.tests, action), touched: touchedReducer(state.touched, action), errors: errorsReducer(state.errors, action), validate: validateReducer(state.validate, action), isSending: isSendingReducer(state.isSending, action), isCanceling: isCancelingReducer(state.isCanceling, action), isSuccess: isSuccessReducer(state.isSuccess, action), sendError: sendErrorReducer(state.sendError, action) });
+    var nextState = __assign(__assign({}, state), { values: valuesReducer(state.values, action), fields: fieldsReducer(state.fields, action), tests: testsReducer(state.tests, action), touched: touchedReducer(state.touched, action), errors: errorsReducer(state.errors, action), validate: validateReducer(state.validate, action), isSending: isSendingReducer(state.isSending, action), isCanceling: isCancelingReducer(state.isCanceling, action), isSuccess: isSuccessReducer(state.isSuccess, action), sendError: sendErrorReducer(state.sendError, action) });
+    return nextState;
 };
 export default formReducer;

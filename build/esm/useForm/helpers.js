@@ -1,14 +1,12 @@
 import { __assign } from "tslib";
 import { useCallback } from "react";
 import { SET_ERRORS, SET_TESTS, SET_TOUCHED, SET_TOUCHED_FIELD, SET_VALIDATE, SET_VALUE, SET_VALUES, } from "./reducer";
-import { getFormErrors } from "./middlewares/validate";
 export var isFormHasErrors = function (settings, store, checkOnlyFilled) {
     if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
     var debug = settings.debug;
     var state = store.getState();
     var validate = state.validate, touched = state.touched, fields = state.fields;
-    var validateFn = validate !== null && validate !== void 0 ? validate : getFormErrors;
-    var newErrors = validateFn(__assign(__assign({}, state), { touched: checkOnlyFilled ? touched : Object.keys(fields) }), debug);
+    var newErrors = validate(__assign(__assign({}, state), { touched: checkOnlyFilled ? touched : Object.keys(fields) }), debug);
     return [Object.keys(newErrors).length > 0, newErrors];
 };
 export var useIsFormValid = function (settings, store, _dispatch) {

@@ -1,5 +1,5 @@
 /// <reference types="react" />
-import { UseFormConfig } from "../useForm/index";
+import { UseFormConfig } from "../useForm";
 export declare const defaultValidate: ({ errors }: {
     errors?: {} | undefined;
 }) => {};

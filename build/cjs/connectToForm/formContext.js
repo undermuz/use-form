@@ -1,23 +1,48 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.useFormContext = exports.defaultValidate = void 0;
-var tslib_1 = require("tslib");
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-unused-vars */
 var react_1 = require("react");
-var index_1 = require("../useForm/index");
+var useForm_1 = require("../useForm");
+var validate_1 = require("../useForm/middlewares/validate");
+var reducer_1 = require("../useForm/reducer");
 var defaultValidate = function (_a) {
     var _b = _a.errors, errors = _b === void 0 ? {} : _b;
     return errors;
 };
 exports.defaultValidate = defaultValidate;
-var DEF_VALUES = tslib_1.__assign(tslib_1.__assign({}, (0, index_1.getInitialState)()), { send: function () {
+var DEF_VALUES = {
+    status: reducer_1.EnumFormStatus.Initial,
+    values: {},
+    isSending: false,
+    isCanceling: false,
+    isSuccess: false,
+    sendError: null,
+    tests: [],
+    validate: validate_1.getFormErrors,
+    touched: [],
+    fields: [],
+    errors: {},
+    send: function () {
         return Promise.resolve();
-    }, IsFormValid: function (_c) {
+    },
+    isFormValid: function (_c) {
         return true;
-    }, setValue: function (_name, _value, _silent, _checkOnlyFilled, _type) { }, setTouchedByName: function (_name, _value, _silent) { }, setTouched: function (_newTouched, _silent, _checkOnlyFilled) { }, setValues: function (_newValues, _silent, _checkOnlyFilled, _type) { }, setTests: function (_newTests, _silent, _checkOnlyFilled) { }, setValidate: function (_newValidate, _silent, _checkOnlyFilled) { }, setErrors: function (_newErrors) { }, store: {
+    },
+    IsFormValid: function (_c) {
+        return true;
+    },
+    setValue: function (_name, _value, _silent, _checkOnlyFilled, _type) { },
+    setTouchedByName: function (_name, _value, _silent) { },
+    setTouched: function (_newTouched, _silent, _checkOnlyFilled) { },
+    setValues: function (_newValues, _silent, _checkOnlyFilled, _type) { },
+    setTests: function (_newTests, _silent, _checkOnlyFilled) { },
+    setValidate: function (_newValidate, _silent, _checkOnlyFilled) { },
+    setErrors: function (_newErrors) { },
+    store: {
         getState: function () {
-            return (0, index_1.getInitialState)();
+            return (0, useForm_1.getInitialState)();
         },
         dispatch: function () {
             var _args = [];
@@ -25,12 +50,14 @@ var DEF_VALUES = tslib_1.__assign(tslib_1.__assign({}, (0, index_1.getInitialSta
                 _args[_i] = arguments[_i];
             }
         },
-    }, dispatch: function () {
+    },
+    dispatch: function () {
         var _args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             _args[_i] = arguments[_i];
         }
-    } });
+    },
+};
 var FormContext = (0, react_1.createContext)(DEF_VALUES);
 FormContext.displayName = "FormContext";
 var useFormContext = function () {

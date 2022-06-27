@@ -1,4 +1,4 @@
-/// <reference types="react" />
+import { MutableRefObject } from "react";
 interface ExoticComponentWithDisplayName<P = unknown> extends React.ExoticComponent<P> {
     defaultProps?: Partial<P>;
     displayName?: string;
@@ -13,4 +13,5 @@ export declare const useIsFormHasErrors: () => boolean;
 export declare const useFormFields: () => import("..").IFields;
 export declare const useFormErrors: () => import("../useForm/reducer").IErrors;
 export declare const useFormSubmit: (onSend: Function, onSucceed: (value: any) => any, onError?: ((reason: any) => any) | undefined) => () => void;
+export declare const useRefBy: <T = any>(by: T) => MutableRefObject<T>;
 export {};

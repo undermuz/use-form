@@ -16,7 +16,6 @@ import {
     ValidateFunction,
 } from "./reducer"
 
-import { getFormErrors } from "./middlewares/validate"
 import { DispatchFunction, IStore } from "../useReducer/index"
 
 export interface IUseFormSettings {
@@ -28,16 +27,14 @@ export const isFormHasErrors = (
     settings: IUseFormSettings,
     store: IStore<IFormState>,
     checkOnlyFilled: boolean = true
-) => {
+): [boolean, IErrors] => {
     const { debug } = settings
 
     const state = store.getState()
 
     const { validate, touched, fields } = state
 
-    const validateFn = validate ?? getFormErrors
-
-    const newErrors = validateFn(
+    const newErrors = validate(
         {
             ...state,
             touched: checkOnlyFilled ? touched : Object.keys(fields),

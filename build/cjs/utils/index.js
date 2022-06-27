@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.useFormSubmit = exports.useFormErrors = exports.useFormFields = exports.useIsFormHasErrors = exports.useIsFormSending = exports.useIsFormCanceling = exports.useIsFormSuccess = void 0;
+exports.useRefBy = exports.useFormSubmit = exports.useFormErrors = exports.useFormFields = exports.useIsFormHasErrors = exports.useIsFormSending = exports.useIsFormCanceling = exports.useIsFormSuccess = void 0;
 var react_1 = require("react");
 var formContext_1 = require("../connectToForm/formContext");
 var useIsFormSuccess = function () {
@@ -41,3 +41,11 @@ var useFormSubmit = function (onSend, onSucceed, onError) {
     return handleSave;
 };
 exports.useFormSubmit = useFormSubmit;
+var useRefBy = function (by) {
+    var refBy = (0, react_1.useRef)(by);
+    (0, react_1.useEffect)(function () {
+        refBy.current = by;
+    }, [by]);
+    return refBy;
+};
+exports.useRefBy = useRefBy;

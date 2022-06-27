@@ -1,16 +1,31 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-unused-vars */
 import { createContext, useContext } from "react"
-import { getInitialState, UseFormConfig } from "../useForm/index"
+import { getInitialState, UseFormConfig } from "../useForm"
+import { getFormErrors } from "../useForm/middlewares/validate"
+import { EnumFormStatus } from "../useForm/reducer"
 
 export const defaultValidate = ({ errors = {} }) => errors
 
 const DEF_VALUES: UseFormConfig = {
-    ...getInitialState(),
+    status: EnumFormStatus.Initial,
+    values: {},
+    isSending: false,
+    isCanceling: false,
+    isSuccess: false,
+    sendError: null,
+    tests: [],
+    validate: getFormErrors,
+    touched: [],
+    fields: [],
+    errors: {},
     send: () => {
         return Promise.resolve()
     },
 
+    isFormValid: (_c) => {
+        return true
+    },
     IsFormValid: (_c) => {
         return true
     },

@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.formReducer = exports.sendErrorReducer = exports.isSuccessReducer = exports.isCancelingReducer = exports.isSendingReducer = exports.validateReducer = exports.fieldsReducer = exports.errorsReducer = exports.touchedReducer = exports.testsReducer = exports.valuesReducer = exports.EnumFormStatus = exports.SEND_FORM = exports.VALIDATE_FORM = exports.SET_SEND_ERROR = exports.SET_IS_SUCCESS = exports.SET_IS_CANCELING = exports.SET_IS_SENDING = exports.SET_VALIDATE = exports.SET_FIELDS = exports.SET_ERRORS = exports.SET_TOUCHED = exports.SET_TOUCHED_FIELD = exports.SET_TESTS = exports.SET_VALUE = exports.SET_VALUES = void 0;
 var tslib_1 = require("tslib");
+var validate_1 = require("./middlewares/validate");
 var IsFunction = function (value) {
     return Boolean(value) &&
         ["[object Function]", "[object AsyncFunction]"].includes({}.toString.call(value));
@@ -104,6 +105,9 @@ exports.fieldsReducer = fieldsReducer;
 var validateReducer = function (state, action) {
     switch (action.type) {
         case exports.SET_VALIDATE:
+            if (!action.payload.validate) {
+                return validate_1.getFormErrors;
+            }
             return action.payload.validate;
         default:
             return state;
@@ -147,7 +151,8 @@ var sendErrorReducer = function (state, action) {
 };
 exports.sendErrorReducer = sendErrorReducer;
 var formReducer = function (state, action) {
-    return tslib_1.__assign(tslib_1.__assign({}, state), { values: (0, exports.valuesReducer)(state.values, action), fields: (0, exports.fieldsReducer)(state.fields, action), tests: (0, exports.testsReducer)(state.tests, action), touched: (0, exports.touchedReducer)(state.touched, action), errors: (0, exports.errorsReducer)(state.errors, action), validate: (0, exports.validateReducer)(state.validate, action), isSending: (0, exports.isSendingReducer)(state.isSending, action), isCanceling: (0, exports.isCancelingReducer)(state.isCanceling, action), isSuccess: (0, exports.isSuccessReducer)(state.isSuccess, action), sendError: (0, exports.sendErrorReducer)(state.sendError, action) });
+    var nextState = tslib_1.__assign(tslib_1.__assign({}, state), { values: (0, exports.valuesReducer)(state.values, action), fields: (0, exports.fieldsReducer)(state.fields, action), tests: (0, exports.testsReducer)(state.tests, action), touched: (0, exports.touchedReducer)(state.touched, action), errors: (0, exports.errorsReducer)(state.errors, action), validate: (0, exports.validateReducer)(state.validate, action), isSending: (0, exports.isSendingReducer)(state.isSending, action), isCanceling: (0, exports.isCancelingReducer)(state.isCanceling, action), isSuccess: (0, exports.isSuccessReducer)(state.isSuccess, action), sendError: (0, exports.sendErrorReducer)(state.sendError, action) });
+    return nextState;
 };
 exports.formReducer = formReducer;
 exports.default = exports.formReducer;

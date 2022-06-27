@@ -4,14 +4,12 @@ exports.useSetValidate = exports.useSetFieldTouched = exports.useSetFieldValue =
 var tslib_1 = require("tslib");
 var react_1 = require("react");
 var reducer_1 = require("./reducer");
-var validate_1 = require("./middlewares/validate");
 var isFormHasErrors = function (settings, store, checkOnlyFilled) {
     if (checkOnlyFilled === void 0) { checkOnlyFilled = true; }
     var debug = settings.debug;
     var state = store.getState();
     var validate = state.validate, touched = state.touched, fields = state.fields;
-    var validateFn = validate !== null && validate !== void 0 ? validate : validate_1.getFormErrors;
-    var newErrors = validateFn(tslib_1.__assign(tslib_1.__assign({}, state), { touched: checkOnlyFilled ? touched : Object.keys(fields) }), debug);
+    var newErrors = validate(tslib_1.__assign(tslib_1.__assign({}, state), { touched: checkOnlyFilled ? touched : Object.keys(fields) }), debug);
     return [Object.keys(newErrors).length > 0, newErrors];
 };
 exports.isFormHasErrors = isFormHasErrors;

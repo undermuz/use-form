@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react"
+import { useCallback, useEffect, useMemo, useRef } from "react"
 
 import formReducer, {
     EnumFormStatus,
@@ -13,7 +13,7 @@ import formReducer, {
 } from "./reducer"
 
 /* MIDDLEWARES */
-import createValidating from "./middlewares/validate"
+import createValidating, { getFormErrors } from "./middlewares/validate"
 import createSend from "./middlewares/send"
 
 /* HELPERS */
@@ -29,38 +29,39 @@ import {
 } from "./helpers"
 
 import useReducer, { DispatchFunction, IStore } from "../useReducer/index"
+import { useRefBy } from "../utils"
 
 export interface IInitialStateOptions {
     initialValues: IValues
     valueTests: IValueTest[]
     fields: IFields
-    validate?: Function
+    validate?: ValidateFunction
 }
 
 const DEF_INITIAL_STATE_OPTIONS = {
     initialValues: {},
     valueTests: [],
     fields: {},
-    validate: () => {},
+    validate: getFormErrors,
 }
 
 export const getInitialState = (
-    props: IInitialStateOptions = DEF_INITIAL_STATE_OPTIONS
+    props: Partial<IInitialStateOptions> = DEF_INITIAL_STATE_OPTIONS
 ): IFormState => {
     const {
         initialValues = {},
         valueTests = [],
         fields = {},
-        validate: _validate,
+        validate: _validate = getFormErrors,
     } = props
 
     return {
         status: EnumFormStatus.Initial,
+        values: initialValues,
         isSending: false,
         isCanceling: false,
         isSuccess: false,
         sendError: null,
-        values: initialValues,
         tests: valueTests,
         validate: _validate,
         touched: [],
@@ -69,8 +70,9 @@ export const getInitialState = (
     }
 }
 
-export interface IUseFormOptions extends IInitialStateOptions {
+export interface IUseFormOptions extends Partial<IInitialStateOptions> {
     middlewares?: any[]
+    debug?: boolean
 }
 
 export interface IUseFormControl {
@@ -111,8 +113,9 @@ export const useFormControl = (
     store: IStore<IFormState>,
     dispatch: DispatchFunction
 ): IUseFormControl => {
-    const setTouched = useSetTouched(props, store, dispatch)
     const setValues = useSetValues(props, store, dispatch)
+
+    const setTouched = useSetTouched(props, store, dispatch)
     const setTests = useSetTests(props, store, dispatch)
     const setValidate = useSetValidate(props, store, dispatch)
     const setErrors = useSetErrors(props, store, dispatch)
@@ -133,7 +136,11 @@ export const useFormControl = (
 export type SendFunction = (api: Function) => Promise<any>
 
 export interface IUseForm {
+    /**
+     * @deprecated
+     */
     IsFormValid: (c: boolean) => boolean
+    isFormValid: (c: boolean) => boolean
     store: IStore<IFormState>
     dispatch: DispatchFunction
     send: SendFunction
@@ -161,7 +168,7 @@ const useFormCore = (props: IUseFormOptions): UseFormConfig => {
 
     const formControl = useFormControl(props, store, dispatch)
 
-    const IsFormValid = useIsFormValid(props, store, dispatch)
+    const validate = useIsFormValid(props, store, dispatch)
 
     const send = useCallback<SendFunction>((api: Function) => {
         return new Promise((onResolve, onReject) => {
@@ -179,7 +186,8 @@ const useFormCore = (props: IUseFormOptions): UseFormConfig => {
     return {
         ...state,
         ...formControl,
-        IsFormValid,
+        IsFormValid: validate,
+        isFormValid: validate,
 
         store,
         dispatch,
@@ -188,7 +196,7 @@ const useFormCore = (props: IUseFormOptions): UseFormConfig => {
     }
 }
 
-export type IUseFormFieldRule = [Array<Function>, string?]
+export type IUseFormFieldRule = [Function[], string?]
 export interface IUseFormField {
     label: string
     initialValue?: string
@@ -197,15 +205,19 @@ export interface IUseFormField {
 
 export type TypeUseFormField = IUseFormField | string
 
+export type FormSettingsTypeFields = Record<string, TypeUseFormField>
+
 export interface IUseFormSettings {
-    fields: Record<string, TypeUseFormField>
+    fields: FormSettingsTypeFields
+    value?: IValues
+    onChange?: (v: IValues) => void
     options?: IUseFormOptions
 }
 
 const useForm = (props: IUseFormSettings) => {
     const formConfig = useMemo<IUseFormOptions>(() => {
         const _config = {
-            initialValues: {},
+            initialValues: props.value ? props.value : {},
             valueTests: [],
             fields: {},
             ...(props.options || {}),
@@ -219,15 +231,19 @@ const useForm = (props: IUseFormSettings) => {
             if (typeof _field === "string") {
                 field = {
                     label: _field as string,
+                    initialValue: undefined,
+                    rules: [],
                 }
             } else {
                 field = _field as IUseFormField
             }
 
             _config.fields[fieldName] = field.label || fieldName
-            _config.initialValues[fieldName] = field.initialValue
 
-            if (field.rules) {
+            if (!props.value)
+                _config.initialValues[fieldName] = field.initialValue
+
+            if (field.rules?.length) {
                 field.rules.forEach((rule: IUseFormFieldRule) => {
                     _config.valueTests.push([[fieldName], ...rule])
                 })
@@ -237,7 +253,45 @@ const useForm = (props: IUseFormSettings) => {
         return _config
     }, [])
 
-    return useFormCore(formConfig)
+    const valueRef = useRefBy(props.value)
+    const onChangeRef = useRefBy(props.onChange)
+
+    const form = useFormCore(formConfig)
+
+    useEffect(() => {
+        if (props.value && props.value !== form.store.getState().values) {
+            if (props.options?.debug)
+                console.log(
+                    "[useForm][Update values from external]",
+                    props.value
+                )
+
+            valueRef.current = props.value
+            form.setValues(props.value)
+        }
+    }, [props.value])
+
+    const mountFlag = useRef(false)
+
+    useEffect(() => {
+        if (mountFlag.current) {
+            if (onChangeRef.current && valueRef.current !== form.values) {
+                if (props.options?.debug)
+                    console.log("[useForm][Emit values to external]", {
+                        form: form.values,
+                        external: valueRef.current,
+                        equal: valueRef.current === form.values,
+                    })
+
+                valueRef.current = form.values
+                onChangeRef.current(form.values)
+            }
+        } else {
+            mountFlag.current = true
+        }
+    }, [form.values])
+
+    return form
 }
 
 export default useForm

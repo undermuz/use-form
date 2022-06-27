@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useFormContext } from "../connectToForm/formContext";
 export var useIsFormSuccess = function () {
     var params = useFormContext();
@@ -30,4 +30,11 @@ export var useFormSubmit = function (onSend, onSucceed, onError) {
         send(onSend).then(onSucceed, onError);
     }, [send, onSend, onSucceed, onError]);
     return handleSave;
+};
+export var useRefBy = function (by) {
+    var refBy = useRef(by);
+    useEffect(function () {
+        refBy.current = by;
+    }, [by]);
+    return refBy;
 };

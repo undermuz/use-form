@@ -1,4 +1,4 @@
-import { useCallback } from "react"
+import { MutableRefObject, useCallback, useEffect, useRef } from "react"
 import { useFormContext } from "../connectToForm/formContext"
 
 interface ExoticComponentWithDisplayName<P = unknown>
@@ -65,4 +65,14 @@ export const useFormSubmit = (
     }, [send, onSend, onSucceed, onError])
 
     return handleSave
+}
+
+export const useRefBy = <T = any>(by: T): MutableRefObject<T> => {
+    const refBy = useRef<T>(by)
+
+    useEffect(() => {
+        refBy.current = by
+    }, [by])
+
+    return refBy
 }
