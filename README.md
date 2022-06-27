@@ -264,6 +264,36 @@ ConnectToForm provides current field's value to your component, and wait new val
 
 ```
 
+## Controlled form
+
+You can control form's values from outside by providing `value` and `onChange` to useForm's config
+
+### Example
+
+```javascript
+const [value, onChange] = useState<IValues>(() => {
+    return {
+        username: "",
+        password: ""
+    }
+})
+
+const form = useForm({
+    fields: {
+        username: {
+            label: "Login",
+            rules: [[[Boolean], "Username is required"]],
+        },
+        password: {
+            label: "Password",
+            rules: [[[Boolean], "Password is required"]],
+        },
+    },
+    value,
+    onChange
+})
+```
+
 ## Examples
 
 ```javascript
