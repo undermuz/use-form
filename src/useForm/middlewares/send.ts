@@ -114,7 +114,7 @@ const send = async (
 
         return { response: resp, values: state.values }
     } catch (error) {
-        const _errors: Record<string, string> = {}
+        const _errors: IErrors = {}
         let hasErrors = false
 
         //@ts-ignore

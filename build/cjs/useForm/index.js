@@ -9,6 +9,7 @@ var validate_1 = tslib_1.__importStar(require("./middlewares/validate"));
 var send_1 = tslib_1.__importDefault(require("./middlewares/send"));
 /* HELPERS */
 var helpers_1 = require("./helpers");
+var underscore_1 = require("underscore");
 var index_1 = tslib_1.__importDefault(require("../useReducer/index"));
 var utils_1 = require("../utils");
 var DEF_INITIAL_STATE_OPTIONS = {
@@ -121,7 +122,8 @@ var useForm = function (props) {
     (0, react_1.useEffect)(function () {
         var _a;
         if (mountFlag.current) {
-            if (onChangeRef.current && valueRef.current !== form.values) {
+            if (onChangeRef.current &&
+                !(0, underscore_1.isEqual)(valueRef.current, form.values)) {
                 if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
                     console.log("[useForm][Emit values to external]", {
                         form: form.values,

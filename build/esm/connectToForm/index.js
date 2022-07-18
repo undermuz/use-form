@@ -5,7 +5,7 @@ var ConnectToForm = function (props) {
     var _b = useState(false), isFocused = _b[0], setFocus = _b[1];
     var _c = props.IsFilled, IsFilled = _c === void 0 ? Boolean : _c, children = props.children, name = props.name, inputName = props.inputName, disabled = props.disabled, _d = props.type, type = _d === void 0 ? "connect-to-form" : _d, _onRefInput = props.onRefInput, _onRef = props.onRef;
     var params = useFormContext();
-    var _e = params.isSending, isSending = _e === void 0 ? false : _e, _f = params.values, values = _f === void 0 ? {} : _f, _g = params.touched, touched = _g === void 0 ? [] : _g, _h = params.errors, errors = _h === void 0 ? [] : _h, _j = params.fields, fields = _j === void 0 ? {} : _j, setValue = params.setValue, setTouchedByName = params.setTouchedByName;
+    var _e = params.isSending, isSending = _e === void 0 ? false : _e, _f = params.values, values = _f === void 0 ? {} : _f, _g = params.touched, touched = _g === void 0 ? [] : _g, _h = params.errors, errors = _h === void 0 ? {} : _h, _j = params.fields, fields = _j === void 0 ? {} : _j, setValue = params.setValue, setTouchedByName = params.setTouchedByName;
     var value = values[name];
     var error = errors[name];
     var isTouched = touched.indexOf(name) > -1;

@@ -1,6 +1,4 @@
-export interface IErrors {
-    [k: string]: string;
-}
+import { IErrors } from "./reducer";
 declare class FormValidateError extends Error {
     errors?: IErrors;
     constructor(message: string, errors?: IErrors);

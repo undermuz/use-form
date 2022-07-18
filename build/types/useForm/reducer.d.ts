@@ -22,8 +22,9 @@ export declare type ITouched = Array<string>;
 export interface IValues {
     [s: string]: any;
 }
+export declare type IError = string[];
 export interface IErrors {
-    [s: string]: any;
+    [s: string]: IError;
 }
 export declare enum EnumFormStatus {
     Initial = "initial"

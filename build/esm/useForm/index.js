@@ -6,6 +6,7 @@ import createValidating, { getFormErrors } from "./middlewares/validate";
 import createSend from "./middlewares/send";
 /* HELPERS */
 import { useIsFormValid, useSetTouched, useSetValues, useSetTests, useSetFieldValue, useSetFieldTouched, useSetValidate, useSetErrors, } from "./helpers";
+import { isEqual } from "underscore";
 import useReducer from "../useReducer/index";
 import { useRefBy } from "../utils";
 var DEF_INITIAL_STATE_OPTIONS = {
@@ -116,7 +117,8 @@ var useForm = function (props) {
     useEffect(function () {
         var _a;
         if (mountFlag.current) {
-            if (onChangeRef.current && valueRef.current !== form.values) {
+            if (onChangeRef.current &&
+                !isEqual(valueRef.current, form.values)) {
                 if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
                     console.log("[useForm][Emit values to external]", {
                         form: form.values,

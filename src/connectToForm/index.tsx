@@ -38,7 +38,7 @@ const ConnectToForm = (props: IConnectToForm) => {
         isSending = false,
         values = {},
         touched = [],
-        errors = [],
+        errors = {},
         fields = {},
         setValue,
         setTouchedByName,

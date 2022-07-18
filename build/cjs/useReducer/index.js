@@ -27,7 +27,7 @@ var useReducer = function (reducer, initialState, middlewares) {
     var dispatch = (0, react_1.useCallback)(function (action) {
         draftState.current = reducer(draftState.current, action);
         setState(draftState.current);
-        return draftState.current;
+        return action;
     }, []);
     var enhancedDispatch = (0, react_1.useMemo)(function () {
         var store = {
