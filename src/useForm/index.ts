@@ -299,6 +299,10 @@ const useForm = (props: IUseFormSettings) => {
             }
         } else {
             mountFlag.current = true
+
+            if (props.value) {
+                form.setValues(props.value)
+            }
         }
     }, [form.values])
 
