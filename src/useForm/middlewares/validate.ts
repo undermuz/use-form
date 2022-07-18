@@ -117,7 +117,7 @@ const createValidating =
     (store: IStore<IFormState>) =>
     (next: DispatchFunction) =>
     (action: IAction) => {
-        const { debug = false } = settings
+        // const { debug = false } = settings
 
         const result = next(action)
 
@@ -147,7 +147,7 @@ const createValidating =
                             ? state.touched
                             : Object.keys(state.fields),
                     },
-                    debug
+                    // debug
                 )
 
                 store.dispatch({

@@ -255,12 +255,16 @@ const useForm = (props: IUseFormSettings) => {
         return _config
     }, [])
 
-    const valueRef = useRefBy(props.value)
+    const valueRef = useRef(props.value)
     const onChangeRef = useRefBy(props.onChange)
 
     const form = useFormCore(formConfig)
 
+    const mountFlag = useRef(false)
+
     useEffect(() => {
+        console.log("[useForm][Effect: props.value]", props.value)
+
         if (
             props.value &&
             props.value !== valueRef.current &&
@@ -268,7 +272,7 @@ const useForm = (props: IUseFormSettings) => {
         ) {
             if (props.options?.debug)
                 console.log("[useForm][Update values from external]", {
-                    new: props.value,
+                    external: props.value,
                     current: valueRef.current,
                 })
 
@@ -278,9 +282,9 @@ const useForm = (props: IUseFormSettings) => {
         }
     }, [props.value])
 
-    const mountFlag = useRef(false)
-
     useEffect(() => {
+        console.log("[useForm][Effect: form.values]", form.values)
+
         if (mountFlag.current) {
             if (
                 onChangeRef.current &&
@@ -289,8 +293,8 @@ const useForm = (props: IUseFormSettings) => {
             ) {
                 if (props.options?.debug)
                     console.log("[useForm][Emit values to external]", {
-                        new: form.values,
-                        current: valueRef.current,
+                        current: form.values,
+                        external: valueRef.current,
                     })
 
                 valueRef.current = form.values
@@ -303,7 +307,13 @@ const useForm = (props: IUseFormSettings) => {
     }, [form.values])
 
     useEffect(() => {
-        if (props.value) {
+        if (props.value && props.value !== form.store.getState().values) {
+            if (props.options?.debug)
+                console.log("[useForm][Set initials values]", {
+                    external: props.value,
+                    current: form.store.getState().values,
+                })
+
             form.setValues(props.value)
         }
     }, [])

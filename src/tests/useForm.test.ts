@@ -7,7 +7,7 @@ import {
     RenderHookResult,
 } from "@testing-library/react-hooks/pure"
 
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import useForm, {
     FormSettingsTypeFields,
@@ -23,7 +23,7 @@ type UseControlledForm = [IValues, (v: IValues) => void, UseFormConfig]
 const renderCounter = { current: 0 }
 
 const useControlledForm = (props: IUseFormSettings): UseControlledForm => {
-    const [value, onChange] = useState<IValues>(() => {
+    const [value, setValue] = useState<IValues>(() => {
         return Object.keys(props.fields).reduce<FormSettingsTypeFields>(
             (acc, name) => {
                 acc[name] = (props.fields[name] as IUseFormField)
@@ -34,6 +34,11 @@ const useControlledForm = (props: IUseFormSettings): UseControlledForm => {
             {}
         )
     })
+
+    const onChange = useCallback((v: any) => {
+        console.log("setValue", v)
+        setValue(v)
+    }, [])
 
     const formConfig = useMemo<IUseFormSettings>(() => {
         return {
@@ -46,6 +51,8 @@ const useControlledForm = (props: IUseFormSettings): UseControlledForm => {
     const form = useForm(formConfig)
 
     renderCounter.current++
+
+    console.log("Rendered: ", renderCounter.current)
 
     return [value, onChange, form]
 }
