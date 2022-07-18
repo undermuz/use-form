@@ -263,13 +263,14 @@ const useForm = (props: IUseFormSettings) => {
     useEffect(() => {
         if (
             props.value &&
+            props.value !== form.store.getState().values &&
             !isEqual(props.value, form.store.getState().values)
         ) {
             if (props.options?.debug)
-                console.log(
-                    "[useForm][Update values from external]",
-                    props.value
-                )
+                console.log("[useForm][Update values from external]", {
+                    new: props.value,
+                    current: valueRef.current,
+                })
 
             valueRef.current = props.value
             form.setValues(props.value)
@@ -282,13 +283,13 @@ const useForm = (props: IUseFormSettings) => {
         if (mountFlag.current) {
             if (
                 onChangeRef.current &&
+                valueRef.current !== form.values &&
                 !isEqual(valueRef.current, form.values)
             ) {
                 if (props.options?.debug)
                     console.log("[useForm][Emit values to external]", {
-                        form: form.values,
-                        external: valueRef.current,
-                        equal: valueRef.current === form.values,
+                        new: form.values,
+                        current: valueRef.current,
                     })
 
                 valueRef.current = form.values
