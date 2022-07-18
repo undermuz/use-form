@@ -263,8 +263,8 @@ const useForm = (props: IUseFormSettings) => {
     useEffect(() => {
         if (
             props.value &&
-            props.value !== form.store.getState().values &&
-            !isEqual(props.value, form.store.getState().values)
+            props.value !== valueRef.current &&
+            !isEqual(props.value, valueRef.current)
         ) {
             if (props.options?.debug)
                 console.log("[useForm][Update values from external]", {
@@ -273,6 +273,7 @@ const useForm = (props: IUseFormSettings) => {
                 })
 
             valueRef.current = props.value
+
             form.setValues(props.value)
         }
     }, [props.value])
@@ -293,6 +294,7 @@ const useForm = (props: IUseFormSettings) => {
                     })
 
                 valueRef.current = form.values
+
                 onChangeRef.current(form.values)
             }
         } else {

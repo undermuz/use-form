@@ -112,8 +112,8 @@ var useForm = function (props) {
     (0, react_1.useEffect)(function () {
         var _a;
         if (props.value &&
-            props.value !== form.store.getState().values &&
-            !(0, underscore_1.isEqual)(props.value, form.store.getState().values)) {
+            props.value !== valueRef.current &&
+            !(0, underscore_1.isEqual)(props.value, valueRef.current)) {
             if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
                 console.log("[useForm][Update values from external]", {
                     new: props.value,
