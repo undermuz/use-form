@@ -107,9 +107,13 @@ var useForm = function (props) {
     useEffect(function () {
         var _a;
         if (props.value &&
+            props.value !== form.store.getState().values &&
             !isEqual(props.value, form.store.getState().values)) {
             if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
-                console.log("[useForm][Update values from external]", props.value);
+                console.log("[useForm][Update values from external]", {
+                    new: props.value,
+                    current: valueRef.current,
+                });
             valueRef.current = props.value;
             form.setValues(props.value);
         }
@@ -119,12 +123,12 @@ var useForm = function (props) {
         var _a;
         if (mountFlag.current) {
             if (onChangeRef.current &&
+                valueRef.current !== form.values &&
                 !isEqual(valueRef.current, form.values)) {
                 if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
                     console.log("[useForm][Emit values to external]", {
-                        form: form.values,
-                        external: valueRef.current,
-                        equal: valueRef.current === form.values,
+                        new: form.values,
+                        current: valueRef.current,
                     });
                 valueRef.current = form.values;
                 onChangeRef.current(form.values);
