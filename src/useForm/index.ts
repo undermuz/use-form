@@ -28,6 +28,8 @@ import {
     useSetErrors,
 } from "./helpers"
 
+import { isEqual } from "underscore"
+
 import useReducer, { DispatchFunction, IStore } from "../useReducer/index"
 import { useRefBy } from "../utils"
 
@@ -275,7 +277,10 @@ const useForm = (props: IUseFormSettings) => {
 
     useEffect(() => {
         if (mountFlag.current) {
-            if (onChangeRef.current && valueRef.current !== form.values) {
+            if (
+                onChangeRef.current &&
+                !isEqual(valueRef.current, form.values)
+            ) {
                 if (props.options?.debug)
                     console.log("[useForm][Emit values to external]", {
                         form: form.values,

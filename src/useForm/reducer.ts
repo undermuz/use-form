@@ -40,8 +40,10 @@ export interface IValues {
     [s: string]: any
 }
 
+export type IError = string[]
+
 export interface IErrors {
-    [s: string]: any
+    [s: string]: IError
 }
 
 export enum EnumFormStatus {

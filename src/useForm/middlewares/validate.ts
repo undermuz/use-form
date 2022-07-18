@@ -12,12 +12,16 @@ import {
     VALIDATE_FORM,
     IValueTest,
     IFormState,
+    IErrors,
 } from "../reducer"
 
-export const getFormErrors = (state: IFormState, debug: boolean = false) => {
+export const getFormErrors = (
+    state: IFormState,
+    debug: boolean = false
+): IErrors => {
     const { tests } = state
 
-    let errors = {}
+    let errors: IErrors = {}
 
     if (debug) console.log(`[useForm][getFormErrors]`, state)
 
@@ -136,7 +140,7 @@ const createValidating =
 
                 const validateFn = customValidate ?? state.validate
 
-                const newErrors = validateFn(
+                const newErrors: IErrors = validateFn(
                     {
                         ...state,
                         touched: checkOnlyFilled
