@@ -106,34 +106,36 @@ var useForm = function (props) {
         });
         return _config;
     }, []);
-    var valueRef = (0, utils_1.useRefBy)(props.value);
+    var valueRef = (0, react_1.useRef)(props.value);
     var onChangeRef = (0, utils_1.useRefBy)(props.onChange);
     var form = useFormCore(formConfig);
+    var mountFlag = (0, react_1.useRef)(false);
     (0, react_1.useEffect)(function () {
         var _a;
+        console.log("[useForm][Effect: props.value]", props.value);
         if (props.value &&
             props.value !== valueRef.current &&
             !(0, underscore_1.isEqual)(props.value, valueRef.current)) {
             if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
                 console.log("[useForm][Update values from external]", {
-                    new: props.value,
+                    external: props.value,
                     current: valueRef.current,
                 });
             valueRef.current = props.value;
             form.setValues(props.value);
         }
     }, [props.value]);
-    var mountFlag = (0, react_1.useRef)(false);
     (0, react_1.useEffect)(function () {
         var _a;
+        console.log("[useForm][Effect: form.values]", form.values);
         if (mountFlag.current) {
             if (onChangeRef.current &&
                 valueRef.current !== form.values &&
                 !(0, underscore_1.isEqual)(valueRef.current, form.values)) {
                 if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
                     console.log("[useForm][Emit values to external]", {
-                        new: form.values,
-                        current: valueRef.current,
+                        current: form.values,
+                        external: valueRef.current,
                     });
                 valueRef.current = form.values;
                 onChangeRef.current(form.values);
@@ -144,7 +146,13 @@ var useForm = function (props) {
         }
     }, [form.values]);
     (0, react_1.useEffect)(function () {
-        if (props.value) {
+        var _a;
+        if (props.value && props.value !== form.store.getState().values) {
+            if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
+                console.log("[useForm][Set initials values]", {
+                    external: props.value,
+                    current: form.store.getState().values,
+                });
             form.setValues(props.value);
         }
     }, []);
