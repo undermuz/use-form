@@ -261,7 +261,10 @@ const useForm = (props: IUseFormSettings) => {
     const form = useFormCore(formConfig)
 
     useEffect(() => {
-        if (props.value && props.value !== form.store.getState().values) {
+        if (
+            props.value &&
+            !isEqual(props.value, form.store.getState().values)
+        ) {
             if (props.options?.debug)
                 console.log(
                     "[useForm][Update values from external]",

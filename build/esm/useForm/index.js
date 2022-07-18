@@ -106,7 +106,8 @@ var useForm = function (props) {
     var form = useFormCore(formConfig);
     useEffect(function () {
         var _a;
-        if (props.value && props.value !== form.store.getState().values) {
+        if (props.value &&
+            !isEqual(props.value, form.store.getState().values)) {
             if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
                 console.log("[useForm][Update values from external]", props.value);
             valueRef.current = props.value;
