@@ -143,6 +143,11 @@ var useForm = function (props) {
             mountFlag.current = true;
         }
     }, [form.values]);
+    (0, react_1.useEffect)(function () {
+        if (props.value) {
+            form.setValues(props.value);
+        }
+    }, []);
     return form;
 };
 exports.default = useForm;
