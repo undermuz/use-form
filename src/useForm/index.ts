@@ -216,8 +216,8 @@ export interface IUseFormSettings {
     options?: IUseFormOptions
 }
 
-const useForm = (props: IUseFormSettings) => {
-    const formConfig = useMemo<IUseFormOptions>(() => {
+const useFormConfigBySettings = (props: IUseFormSettings): IUseFormOptions => {
+    return useMemo<IUseFormOptions>(() => {
         const _config = {
             initialValues: props.value ? props.value : {},
             valueTests: [],
@@ -254,44 +254,42 @@ const useForm = (props: IUseFormSettings) => {
 
         return _config
     }, [])
+}
 
-    const valueRef = useRef(props.value)
-    const onChangeRef = useRefBy(props.onChange)
+const useControlledForm = (form: UseFormConfig, props: IUseFormSettings) => {
+    const { value, onChange, options } = props
 
-    const form = useFormCore(formConfig)
+    const valueRef = useRef(value)
+    const onChangeRef = useRefBy(onChange)
 
     const mountFlag = useRef(false)
 
     useEffect(() => {
-        console.log("[useForm][Effect: props.value]", props.value)
-
         if (
-            props.value &&
-            props.value !== valueRef.current &&
-            !isEqual(props.value, valueRef.current)
+            value &&
+            value !== valueRef.current &&
+            !isEqual(value, valueRef.current)
         ) {
-            if (props.options?.debug)
+            if (options?.debug)
                 console.log("[useForm][Update values from external]", {
-                    external: props.value,
+                    external: value,
                     current: valueRef.current,
                 })
 
-            valueRef.current = props.value
+            valueRef.current = value
 
-            form.setValues(props.value)
+            form.setValues(value)
         }
-    }, [props.value])
+    }, [value])
 
     useEffect(() => {
-        console.log("[useForm][Effect: form.values]", form.values)
-
         if (mountFlag.current) {
             if (
                 onChangeRef.current &&
                 valueRef.current !== form.values &&
                 !isEqual(valueRef.current, form.values)
             ) {
-                if (props.options?.debug)
+                if (options?.debug)
                     console.log("[useForm][Emit values to external]", {
                         current: form.values,
                         external: valueRef.current,
@@ -307,16 +305,24 @@ const useForm = (props: IUseFormSettings) => {
     }, [form.values])
 
     useEffect(() => {
-        if (props.value && props.value !== form.store.getState().values) {
-            if (props.options?.debug)
+        if (value && value !== form.store.getState().values) {
+            if (options?.debug)
                 console.log("[useForm][Set initials values]", {
-                    external: props.value,
+                    external: value,
                     current: form.store.getState().values,
                 })
 
-            form.setValues(props.value)
+            form.setValues(value)
         }
     }, [])
+}
+
+const useForm = (props: IUseFormSettings) => {
+    const formConfig = useFormConfigBySettings(props)
+
+    const form = useFormCore(formConfig)
+
+    useControlledForm(form, props)
 
     return form
 }

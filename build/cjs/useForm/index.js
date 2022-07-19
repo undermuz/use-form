@@ -78,8 +78,8 @@ var useFormCore = function (props) {
     }, []);
     return tslib_1.__assign(tslib_1.__assign(tslib_1.__assign({}, state), formControl), { IsFormValid: validate, isFormValid: validate, store: store, dispatch: dispatch, send: send });
 };
-var useForm = function (props) {
-    var formConfig = (0, react_1.useMemo)(function () {
+var useFormConfigBySettings = function (props) {
+    return (0, react_1.useMemo)(function () {
         var _config = tslib_1.__assign({ initialValues: props.value ? props.value : {}, valueTests: [], fields: {} }, (props.options || {}));
         Object.keys(props.fields).forEach(function (fieldName) {
             var _a;
@@ -106,33 +106,31 @@ var useForm = function (props) {
         });
         return _config;
     }, []);
-    var valueRef = (0, react_1.useRef)(props.value);
-    var onChangeRef = (0, utils_1.useRefBy)(props.onChange);
-    var form = useFormCore(formConfig);
+};
+var useControlledForm = function (form, props) {
+    var value = props.value, onChange = props.onChange, options = props.options;
+    var valueRef = (0, react_1.useRef)(value);
+    var onChangeRef = (0, utils_1.useRefBy)(onChange);
     var mountFlag = (0, react_1.useRef)(false);
     (0, react_1.useEffect)(function () {
-        var _a;
-        console.log("[useForm][Effect: props.value]", props.value);
-        if (props.value &&
-            props.value !== valueRef.current &&
-            !(0, underscore_1.isEqual)(props.value, valueRef.current)) {
-            if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
+        if (value &&
+            value !== valueRef.current &&
+            !(0, underscore_1.isEqual)(value, valueRef.current)) {
+            if (options === null || options === void 0 ? void 0 : options.debug)
                 console.log("[useForm][Update values from external]", {
-                    external: props.value,
+                    external: value,
                     current: valueRef.current,
                 });
-            valueRef.current = props.value;
-            form.setValues(props.value);
+            valueRef.current = value;
+            form.setValues(value);
         }
-    }, [props.value]);
+    }, [value]);
     (0, react_1.useEffect)(function () {
-        var _a;
-        console.log("[useForm][Effect: form.values]", form.values);
         if (mountFlag.current) {
             if (onChangeRef.current &&
                 valueRef.current !== form.values &&
                 !(0, underscore_1.isEqual)(valueRef.current, form.values)) {
-                if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
+                if (options === null || options === void 0 ? void 0 : options.debug)
                     console.log("[useForm][Emit values to external]", {
                         current: form.values,
                         external: valueRef.current,
@@ -146,16 +144,20 @@ var useForm = function (props) {
         }
     }, [form.values]);
     (0, react_1.useEffect)(function () {
-        var _a;
-        if (props.value && props.value !== form.store.getState().values) {
-            if ((_a = props.options) === null || _a === void 0 ? void 0 : _a.debug)
+        if (value && value !== form.store.getState().values) {
+            if (options === null || options === void 0 ? void 0 : options.debug)
                 console.log("[useForm][Set initials values]", {
-                    external: props.value,
+                    external: value,
                     current: form.store.getState().values,
                 });
-            form.setValues(props.value);
+            form.setValues(value);
         }
     }, []);
+};
+var useForm = function (props) {
+    var formConfig = useFormConfigBySettings(props);
+    var form = useFormCore(formConfig);
+    useControlledForm(form, props);
     return form;
 };
 exports.default = useForm;
