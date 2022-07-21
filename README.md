@@ -4,7 +4,7 @@ React library for build forms
 
 ## Install
 
-`npm i -S git@github.com:undermuz/use-form.git`
+`npm i @undermuz/use-form`
 
 ## Update
 
