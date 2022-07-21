@@ -209,6 +209,36 @@ ConnectToForm provides current field's value to your component, and wait new val
     </IfForm>
 ```
 
+You can get form's values and errors directly through `form` variable:
+
+```javascript
+    const form = useForm(/*Form config*/)
+
+    const { values, errors } = form
+
+    useEffect(() => {
+        console.log("[Form][Values]", values)
+    }, [values])
+
+    useEffect(() => {
+        console.log("[Form][Errors]", errors)
+    }, [errors])
+```
+
+Or by context inside FormContext.Provider:
+
+```javascript
+    const { values, errors } = useFormContext()
+
+    useEffect(() => {
+        console.log("[Form][Values]", values)
+    }, [values])
+
+    useEffect(() => {
+        console.log("[Form][Errors]", errors)
+    }, [errors])
+```
+
 ### Submit
 
 #### Create callbacks
