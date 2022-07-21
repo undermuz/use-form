@@ -1,6 +1,6 @@
 {
   "name": "@undermuz/use-form",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "React library for build forms",
   "main": "build/cjs/index.js",
   "module": "build/esm/index.js",
