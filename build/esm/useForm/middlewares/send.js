@@ -137,11 +137,11 @@ var createSend = function (settings) {
                         case 2:
                             resp = _d.sent();
                             onResolve(resp);
-                            return [2 /*return*/, resp];
+                            return [3 /*break*/, 4];
                         case 3:
                             e_1 = _d.sent();
                             onReject(e_1);
-                            throw e_1;
+                            return [3 /*break*/, 4];
                         case 4: return [2 /*return*/];
                     }
                 });

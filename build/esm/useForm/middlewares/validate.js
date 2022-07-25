@@ -4,6 +4,7 @@ export var getFormErrors = function (state, debug) {
     if (debug === void 0) { debug = false; }
     var tests = state.tests;
     var errors = {};
+    debug = false;
     if (debug)
         console.log("[useForm][getFormErrors]", state);
     if (!(tests === null || tests === void 0 ? void 0 : tests.length)) {
