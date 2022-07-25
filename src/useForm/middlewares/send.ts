@@ -175,11 +175,11 @@ const createSend =
 
             onResolve(resp)
 
-            return resp
+            // return resp
         } catch (e) {
             onReject(e)
 
-            throw e
+            // throw e
         }
     }
 

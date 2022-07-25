@@ -23,6 +23,8 @@ export const getFormErrors = (
 
     let errors: IErrors = {}
 
+    debug = false
+
     if (debug) console.log(`[useForm][getFormErrors]`, state)
 
     if (!tests?.length) {

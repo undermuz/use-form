@@ -186,6 +186,7 @@ describe("useControlledForm", () => {
         const { result } = renderHookResults
 
         renderCounter.current = 0
+        console.log("[Rendered]", 0)
 
         act(() =>
             result.current[1]({
@@ -204,6 +205,7 @@ describe("useControlledForm", () => {
         const { result } = renderHookResults
 
         renderCounter.current = 0
+        console.log("[Rendered]", 0)
 
         act(() => result.current[2].setValue("username", "some_user_name_2"))
         act(() => result.current[2].setValue("password", "some_password_2"))
@@ -221,6 +223,7 @@ describe("useControlledForm", () => {
         const { result } = renderHookResults
 
         renderCounter.current = 0
+        console.log("[Rendered]", 0)
 
         act(() => result.current[2].setTouchedByName("username"))
         act(() => result.current[2].setTouchedByName("password"))
@@ -234,6 +237,7 @@ describe("useControlledForm", () => {
         const { result } = renderHookResults
 
         renderCounter.current = 0
+        console.log("[Rendered]", 0)
 
         act(() =>
             result.current[1]({
@@ -254,6 +258,7 @@ describe("useControlledForm", () => {
         const { result } = renderHookResults
 
         renderCounter.current = 0
+        console.log("[Rendered]", 0)
 
         act(() =>
             result.current[1]({
@@ -268,5 +273,63 @@ describe("useControlledForm", () => {
         expect(result.current[2].values.password).toBe("some_password_3")
 
         expect(result.current[2].errors).toEqual({})
+    })
+
+    test("send form error", async () => {
+        const { result } = renderHookResults
+
+        const mockOnSend = jest.fn(() => Promise.reject())
+
+        renderCounter.current = 0
+        console.log("[Rendered]", 0)
+
+        await act(async () => {
+            await expect(
+                result.current[2].send(mockOnSend)
+            ).rejects.toThrowError("Request has failed")
+        })
+
+        expect(mockOnSend.mock.calls.length).toBe(1)
+
+        //@ts-ignore
+        expect(mockOnSend.mock.calls[0][0]).toEqual({
+            username: "some_user_name_3",
+            password: "some_password_3",
+        })
+
+        expect(result.current[2].values.username).toBe("some_user_name_3")
+        expect(result.current[2].values.password).toBe("some_password_3")
+
+        expect(result.current[2].errors).toEqual({})
+
+        expect(renderCounter.current).toBe(4)
+    })
+
+    test("send form success", async () => {
+        const { result } = renderHookResults
+
+        const mockOnSend = jest.fn(() => Promise.resolve())
+
+        renderCounter.current = 0
+        console.log("[Rendered]", 0)
+
+        await act(async () => {
+            await result.current[2].send(mockOnSend)
+        })
+
+        expect(mockOnSend.mock.calls.length).toBe(1)
+
+        //@ts-ignore
+        expect(mockOnSend.mock.calls[0][0]).toEqual({
+            username: "some_user_name_3",
+            password: "some_password_3",
+        })
+
+        expect(result.current[2].values.username).toBe("some_user_name_3")
+        expect(result.current[2].values.password).toBe("some_password_3")
+
+        expect(result.current[2].errors).toEqual({})
+
+        expect(renderCounter.current).toBe(5)
     })
 })
