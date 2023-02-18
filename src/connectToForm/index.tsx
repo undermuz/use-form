@@ -18,6 +18,17 @@ export interface IConnectToForm {
     onRef?: Function
 }
 
+export interface IInputProps {
+    id: string
+    name: string
+    label: string
+    disabled: boolean
+    value: any
+    onChange: Function
+    onFocus: Function
+    onBlur: Function
+}
+
 const ConnectToForm = (props: IConnectToForm) => {
     const [isFocused, setFocus] = useState(false)
 
@@ -88,11 +99,11 @@ const ConnectToForm = (props: IConnectToForm) => {
         [setValue, name, type]
     )
 
-    const inputProps = {
+    const inputProps: IInputProps = {
         id: `field-${name}`,
         name: inputName || name,
         label: children?.props?.label || fields[name],
-        disabled: isSending || disabled,
+        disabled: isSending || disabled || false,
         value,
         onChange: (e: any) => onChange?.(e?.target?.value),
         onFocus,

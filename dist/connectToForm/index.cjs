@@ -87,7 +87,7 @@ var ConnectToForm = (props) => {
     id: `field-${name}`,
     name: inputName || name,
     label: ((_a = children == null ? void 0 : children.props) == null ? void 0 : _a.label) || fields[name],
-    disabled: isSending || disabled,
+    disabled: isSending || disabled || false,
     value,
     onChange: (e) => {
       var _a2;

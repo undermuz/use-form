@@ -2,7 +2,7 @@ const noop = () => {}
 
 import type { DispatchFunction, IAction, IStore } from "../../useReducer/index"
 import { FormSendError, FormValidateError } from "../errors"
-import { isFormHasErrors, type IUseFormSettings } from "../helpers"
+import { isFormHasErrors, type IUseIsFormSettings } from "../helpers"
 
 import {
     SET_ERRORS,
@@ -61,7 +61,7 @@ const setSendError = (value: any): IAction => {
 }
 
 const send = async (
-    settings: IUseFormSettings,
+    settings: IUseIsFormSettings,
     store: IStore<IFormState>,
     api: Function
 ) => {
@@ -159,7 +159,7 @@ const send = async (
 }
 
 const createSend =
-    (settings: IUseFormSettings) =>
+    (settings: IUseIsFormSettings) =>
     (store: IStore<IFormState>) =>
     (next: DispatchFunction) =>
     async (action: IAction) => {

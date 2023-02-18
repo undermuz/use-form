@@ -1,11 +1,13 @@
 import useForm from "./useForm/index"
 
 export {
+    type IUseFormSettings,
     type IInitialStateOptions,
     type SendFunction,
     type IUseForm,
     type UseFormConfig,
     type IUseFormOptions,
+    type IUseFormFieldRule,
 } from "./useForm/index"
 
 export {
@@ -22,6 +24,7 @@ export {
     type ITouched,
     type IValues,
     type IFormState,
+    type IError,
     EnumFormStatus,
 } from "./useForm/reducer"
 
@@ -30,7 +33,10 @@ export {
     useFormContext,
 } from "./connectToForm/formContext"
 
-export { default as ConnectToForm } from "./connectToForm/index"
+export {
+    default as ConnectToForm,
+    type IInputProps,
+} from "./connectToForm/index"
 
 export {
     useIsFormSuccess,

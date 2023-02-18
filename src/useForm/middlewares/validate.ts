@@ -1,5 +1,5 @@
 import type { DispatchFunction, IAction, IStore } from "../../useReducer/index"
-import type { IUseFormSettings } from "../helpers"
+import type { IUseIsFormSettings } from "../helpers"
 import {
     SET_VALUE,
     SET_VALUES,
@@ -115,7 +115,7 @@ export const getFormErrors = (
 }
 
 const createValidating =
-    (settings: IUseFormSettings = {}) =>
+    (settings: IUseIsFormSettings = {}) =>
     (store: IStore<IFormState>) =>
     (next: DispatchFunction) =>
     (action: IAction) => {

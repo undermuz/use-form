@@ -12,7 +12,9 @@ import {
   default as default3,
   useFormContext
 } from "./connectToForm/formContext.js";
-import { default as default4 } from "./connectToForm/index.js";
+import {
+  default as default4
+} from "./connectToForm/index.js";
 import {
   useIsFormSuccess,
   useIsFormCanceling,

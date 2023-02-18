@@ -18,13 +18,13 @@ import {
 
 import type { DispatchFunction, IStore } from "../useReducer/index"
 
-export interface IUseFormSettings {
+export interface IUseIsFormSettings {
     [k: string]: any
     debug?: boolean
 }
 
 export const isFormHasErrors = (
-    settings: IUseFormSettings,
+    settings: IUseIsFormSettings,
     store: IStore<IFormState>,
     checkOnlyFilled: boolean = true
 ): [boolean, IErrors] => {
@@ -46,7 +46,7 @@ export const isFormHasErrors = (
 }
 
 export const useIsFormValid = (
-    settings: IUseFormSettings,
+    settings: IUseIsFormSettings,
     store: IStore<IFormState>,
     _dispatch: DispatchFunction
 ) => {
@@ -56,7 +56,7 @@ export const useIsFormValid = (
 }
 
 export const useSetTouched = (
-    _settings: IUseFormSettings,
+    _settings: IUseIsFormSettings,
     _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
@@ -74,7 +74,7 @@ export const useSetTouched = (
 }
 
 export const useSetValues = (
-    _settings: IUseFormSettings,
+    _settings: IUseIsFormSettings,
     _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
@@ -97,7 +97,7 @@ export const useSetValues = (
 }
 
 export const useSetTests = (
-    _settings: IUseFormSettings,
+    _settings: IUseIsFormSettings,
     _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
@@ -115,7 +115,7 @@ export const useSetTests = (
 }
 
 export const useSetErrors = (
-    _settings: IUseFormSettings,
+    _settings: IUseIsFormSettings,
     _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
@@ -128,7 +128,7 @@ export const useSetErrors = (
 }
 
 export const useSetFieldValue = (
-    _settings: IUseFormSettings,
+    _settings: IUseIsFormSettings,
     _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
@@ -152,7 +152,7 @@ export const useSetFieldValue = (
 }
 
 export const useSetFieldTouched = (
-    _settings: IUseFormSettings,
+    _settings: IUseIsFormSettings,
     _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
@@ -172,7 +172,7 @@ export const useSetFieldTouched = (
 }
 
 export const useSetValidate = (
-    _settings: IUseFormSettings,
+    _settings: IUseIsFormSettings,
     _store: IStore<IFormState>,
     dispatch: DispatchFunction
 ) => {
