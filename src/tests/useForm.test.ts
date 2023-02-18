@@ -14,7 +14,7 @@ import useForm, {
     IUseFormField,
     IUseFormSettings,
     UseFormConfig,
-} from "../useForm"
+} from "../useForm/index"
 
 import { IValues } from "../useForm/reducer"
 

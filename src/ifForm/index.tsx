@@ -5,7 +5,7 @@ import {
     useIsFormHasErrors,
     useIsFormSending,
     useIsFormSuccess,
-} from "../utils"
+} from "../utils/index"
 
 export interface IIfFormProps {
     children: React.ReactNode

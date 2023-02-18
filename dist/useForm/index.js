@@ -18,7 +18,7 @@ import {
 } from "./helpers.js";
 import { isEqual } from "underscore";
 import useReducer from "../useReducer/index.js";
-import { useRefBy } from "../utils.js";
+import { useRefBy } from "../utils/index.js";
 var DEF_INITIAL_STATE_OPTIONS = {
   initialValues: {},
   valueTests: [],

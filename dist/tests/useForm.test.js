@@ -5,7 +5,7 @@ import {
   renderHook
 } from "@testing-library/react-hooks/pure";
 import { useCallback, useMemo, useState } from "react";
-import useForm from "../useForm.js";
+import useForm from "../useForm/index.js";
 var renderCounter = { current: 0 };
 var useControlledForm = (props) => {
   const [value, setValue] = useState(() => {

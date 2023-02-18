@@ -1,6 +1,6 @@
 // src/connectToForm/formContext.ts
 import { createContext, useContext } from "react";
-import { getInitialState } from "../useForm.js";
+import { getInitialState } from "../useForm/index.js";
 import { getFormErrors } from "../useForm/middlewares/validate.js";
 import { EnumFormStatus } from "../useForm/reducer.js";
 var defaultValidate = ({ errors = {} }) => errors;

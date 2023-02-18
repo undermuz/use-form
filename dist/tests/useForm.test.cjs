@@ -26,7 +26,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
 var import_jest_dom = require("@testing-library/jest-dom");
 var import_pure = require("@testing-library/react-hooks/pure");
 var import_react = require("react");
-var import_useForm = __toESM(require("../useForm.cjs"), 1);
+var import_useForm = __toESM(require("../useForm/index.cjs"), 1);
 var renderCounter = { current: 0 };
 var useControlledForm = (props) => {
   const [value, setValue] = (0, import_react.useState)(() => {

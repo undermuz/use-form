@@ -1,11 +1,11 @@
 // src/formSubmit/index.tsx
 import React from "react";
-import IfForm from "../ifForm.js";
+import IfForm from "../ifForm/index.js";
 import {
   useFormSubmit,
   useIsFormHasErrors,
   useIsFormSending
-} from "../utils.js";
+} from "../utils/index.js";
 var EnumFormSubmitStatus = /* @__PURE__ */ ((EnumFormSubmitStatus2) => {
   EnumFormSubmitStatus2["Default"] = "default";
   EnumFormSubmitStatus2["Succeed"] = "succeed";

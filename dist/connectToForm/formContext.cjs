@@ -26,7 +26,7 @@ __export(formContext_exports, {
 });
 module.exports = __toCommonJS(formContext_exports);
 var import_react = require("react");
-var import_useForm = require("../useForm.cjs");
+var import_useForm = require("../useForm/index.cjs");
 var import_validate = require("../useForm/middlewares/validate.cjs");
 var import_reducer = require("../useForm/reducer.cjs");
 var defaultValidate = ({ errors = {} }) => errors;

@@ -31,7 +31,7 @@ import {
 import { isEqual } from "underscore"
 
 import useReducer, { DispatchFunction, IStore } from "../useReducer/index"
-import { useRefBy } from "../utils"
+import { useRefBy } from "../utils/index"
 
 export interface IInitialStateOptions {
     initialValues: IValues

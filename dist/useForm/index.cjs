@@ -42,7 +42,7 @@ var import_send = __toESM(require("./middlewares/send.cjs"), 1);
 var import_helpers = require("./helpers.cjs");
 var import_underscore = require("underscore");
 var import_useReducer = __toESM(require("../useReducer/index.cjs"), 1);
-var import_utils = require("../utils.cjs");
+var import_utils = require("../utils/index.cjs");
 var DEF_INITIAL_STATE_OPTIONS = {
   initialValues: {},
   valueTests: [],

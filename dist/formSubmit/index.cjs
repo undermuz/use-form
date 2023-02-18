@@ -35,8 +35,8 @@ __export(formSubmit_exports, {
 });
 module.exports = __toCommonJS(formSubmit_exports);
 var import_react = __toESM(require("react"), 1);
-var import_ifForm = __toESM(require("../ifForm.cjs"), 1);
-var import_utils = require("../utils.cjs");
+var import_ifForm = __toESM(require("../ifForm/index.cjs"), 1);
+var import_utils = require("../utils/index.cjs");
 var EnumFormSubmitStatus = /* @__PURE__ */ ((EnumFormSubmitStatus2) => {
   EnumFormSubmitStatus2["Default"] = "default";
   EnumFormSubmitStatus2["Succeed"] = "succeed";

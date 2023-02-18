@@ -1,13 +1,13 @@
 import React from "react"
 
-import IfForm from "../ifForm"
+import IfForm from "../ifForm/index"
 
 import {
     useFormSubmit,
     useIsFormHasErrors,
     useIsFormSending,
     WebTarget,
-} from "../utils"
+} from "../utils/index"
 
 export enum EnumFormSubmitStatus {
     Default = "default",
