@@ -1,20 +1,28 @@
 {
   "name": "@undermuz/use-form",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "React library for build forms",
-  "main": "build/cjs/index.js",
-  "module": "build/esm/index.js",
-  "types": "build/types/index.d.js",
-  "typings": "build/types/index.d.js",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.js",
+  "typings": "dist/index.d.js",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.js",
+    "node": "./dist/index.cjs",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.cjs"
+  },
   "sideEffects": false,
+  "type": "module",
   "files": [
-    "build/cjs/",
-    "build/esm/",
-    "build/types/"
+    "dist/"
   ],
   "scripts": {
     "test": "jest",
-    "build": "node tools/cleanup && npm run build:cjs && npm run build:esm && npm run build:types",
+    "build": "npm run build:tsup",
+    "build:tsup": "tsup",
+    "build:old": "node tools/cleanup && npm run build:cjs && npm run build:esm && npm run build:types",
     "build:cjs": "tsc -p config/tsconfig.cjs.json",
     "build:esm": "tsc -p config/tsconfig.esm.json",
     "build:types": "tsc -p config/tsconfig.types.json",
@@ -50,6 +58,7 @@
     "@types/react": "^18.0.5",
     "@types/underscore": "^1.11.4",
     "babel-jest": "^28.1.1",
+    "esbuild-plugin-file-path-extensions": "^1.0.0",
     "eslint": "^8.9.0",
     "eslint-plugin-jest-dom": "^4.0.2",
     "eslint-plugin-react": "^7.28.0",
@@ -57,6 +66,7 @@
     "jest-cli": "^28.1.1",
     "jest-environment-jsdom": "^28.1.1",
     "ts-loader": "^9.2.8",
+    "tsup": "^6.6.3",
     "typescript": "^4.5.5",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2"
