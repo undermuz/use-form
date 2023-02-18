@@ -2,21 +2,21 @@ import "@testing-library/jest-dom"
 
 import {
     act,
-    Renderer,
     renderHook,
-    RenderHookResult,
+    type Renderer,
+    type RenderHookResult,
 } from "@testing-library/react-hooks/pure"
 
 import { useCallback, useMemo, useState } from "react"
 
 import useForm, {
-    FormSettingsTypeFields,
-    IUseFormField,
-    IUseFormSettings,
-    UseFormConfig,
+    type FormSettingsTypeFields,
+    type IUseFormField,
+    type IUseFormSettings,
+    type UseFormConfig,
 } from "../useForm/index"
 
-import { IValues } from "../useForm/reducer"
+import { type IValues } from "../useForm/reducer"
 
 type UseControlledForm = [IValues, (v: IValues) => void, UseFormConfig]
 

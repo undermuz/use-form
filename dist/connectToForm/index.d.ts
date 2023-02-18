@@ -1,4 +1,4 @@
-import * as React from 'react';
+import * as react from 'react';
 import { ReactElement } from 'react';
 
 interface IConnectToForm {
@@ -11,6 +11,6 @@ interface IConnectToForm {
     onRefInput?: Function;
     onRef?: Function;
 }
-declare const ConnectToForm: (props: IConnectToForm) => ReactElement<any, string | React.JSXElementConstructor<any>> | null;
+declare const ConnectToForm: (props: IConnectToForm) => ReactElement<any, string | react.JSXElementConstructor<any>> | null;
 
 export { IConnectToForm, ConnectToForm as default };

@@ -2,12 +2,16 @@
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended",
-        "plugin:react/jsx-runtime"
+        "plugin:react/jsx-runtime",
+        "plugin:@typescript-eslint/recommended"
     ],
+    "parser": "@typescript-eslint/parser",
+    "plugins": ["@typescript-eslint"],
     "root": true,
     "parserOptions": {
         "ecmaVersion": 13,
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": ["./tsconfig.json"]
     },
     "env": {
         "commonjs": true,
@@ -16,9 +20,10 @@
         "es2022": true
     },
     "rules": {
+        "no-unused-vars": "off",
+        "react/prop-types": "off",
         "no-useless-escape": 0,
         "no-prototype-builtins": "off",
-        "no-unused-vars": "warn",
         "no-debugger": 0,
         "no-console": 0,
         "new-cap": 0,
@@ -26,6 +31,13 @@
         "no-underscore-dangle": 0,
         "no-use-before-define": 0,
         "eol-last": 0,
-        "require-atomic-updates": 0
+        "require-atomic-updates": 0,
+        "@typescript-eslint/no-unused-vars": "warn",
+        "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/consistent-type-exports": "error",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/ban-types": "warn",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/ban-ts-comment": "off"
     }
 }

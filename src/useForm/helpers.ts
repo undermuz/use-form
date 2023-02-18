@@ -1,11 +1,11 @@
 import { useCallback } from "react"
 
 import {
-    IErrors,
-    IFormState,
-    ITouched,
-    IValues,
-    IValueTest,
+    type IErrors,
+    type IFormState,
+    type ITouched,
+    type IValues,
+    type IValueTest,
     SET_ERRORS,
     SET_TESTS,
     SET_TOUCHED,
@@ -13,10 +13,10 @@ import {
     SET_VALIDATE,
     SET_VALUE,
     SET_VALUES,
-    ValidateFunction,
+    type ValidateFunction,
 } from "./reducer"
 
-import { DispatchFunction, IStore } from "../useReducer/index"
+import type { DispatchFunction, IStore } from "../useReducer/index"
 
 export interface IUseFormSettings {
     [k: string]: any

@@ -92,7 +92,7 @@ var send = async (settings, store, api) => {
       if (formInfo.fieldsErrors) {
         Object.keys(formInfo.fieldsErrors).forEach((fieldName) => {
           var _a2;
-          let realFieldName = (_a2 = mapServerFields[fieldName]) != null ? _a2 : fieldName;
+          const realFieldName = (_a2 = mapServerFields[fieldName]) != null ? _a2 : fieldName;
           hasErrors = true;
           _errors[realFieldName] = formInfo.fieldsErrors[fieldName];
         });

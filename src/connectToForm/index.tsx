@@ -1,6 +1,6 @@
 import {
     cloneElement,
-    ReactElement,
+    type ReactElement,
     useCallback,
     useMemo,
     useState,

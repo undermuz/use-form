@@ -1,11 +1,11 @@
 // src/ifForm/index.tsx
-import React from "react";
 import {
   useIsFormCanceling,
   useIsFormHasErrors,
   useIsFormSending,
   useIsFormSuccess
 } from "../utils/index.js";
+import { Fragment, jsx } from "react/jsx-runtime";
 var IfForm = (props) => {
   const {
     children,
@@ -21,7 +21,7 @@ var IfForm = (props) => {
   if (hasErrors && !isFormHasErrors || isSuccess && !isFormSuccess || isCanceling && !isFormCanceling || isSending && !isFormSending) {
     return null;
   }
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, children);
+  return /* @__PURE__ */ jsx(Fragment, { children });
 };
 var ifForm_default = IfForm;
 export {

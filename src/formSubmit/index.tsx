@@ -1,4 +1,4 @@
-import React from "react"
+import type { ReactNode } from "react"
 
 import IfForm from "../ifForm/index"
 
@@ -6,7 +6,7 @@ import {
     useFormSubmit,
     useIsFormHasErrors,
     useIsFormSending,
-    WebTarget,
+    type WebTarget,
 } from "../utils/index"
 
 export enum EnumFormSubmitStatus {
@@ -18,7 +18,7 @@ export enum EnumFormSubmitStatus {
 
 interface IFormSubmitProps<Target = WebTarget> {
     as?: Target
-    children?: (status: EnumFormSubmitStatus) => React.ReactNode
+    children?: (status: EnumFormSubmitStatus) => ReactNode
     disableWhenErrors?: boolean
     onSend: Function
     onSucceed: (value: any) => any

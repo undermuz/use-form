@@ -12,7 +12,7 @@ import {
 } from "../reducer.js";
 var getFormErrors = (state, debug = false) => {
   const { tests } = state;
-  let errors = {};
+  const errors = {};
   debug = false;
   if (debug)
     console.log(`[useForm][getFormErrors]`, state);

@@ -1,8 +1,8 @@
 const noop = () => {}
 
-import { DispatchFunction, IAction, IStore } from "../../useReducer/index"
+import type { DispatchFunction, IAction, IStore } from "../../useReducer/index"
 import { FormSendError, FormValidateError } from "../errors"
-import { isFormHasErrors, IUseFormSettings } from "../helpers"
+import { isFormHasErrors, type IUseFormSettings } from "../helpers"
 
 import {
     SET_ERRORS,
@@ -12,9 +12,9 @@ import {
     SET_SEND_ERROR,
     SEND_FORM,
     SET_TOUCHED,
-    ITouched,
-    IFormState,
-    IErrors,
+    type ITouched,
+    type IFormState,
+    type IErrors,
 } from "../reducer"
 
 const setIsSending = (value: boolean): IAction => {
@@ -125,7 +125,8 @@ const send = async (
             //@ts-ignore
             if (formInfo.fieldsErrors) {
                 Object.keys(formInfo.fieldsErrors).forEach((fieldName) => {
-                    let realFieldName = mapServerFields[fieldName] ?? fieldName
+                    const realFieldName =
+                        mapServerFields[fieldName] ?? fieldName
 
                     hasErrors = true
                     _errors[realFieldName] = formInfo.fieldsErrors[fieldName]

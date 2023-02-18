@@ -1,5 +1,5 @@
-import { DispatchFunction, IAction, IStore } from "../../useReducer/index"
-import { IUseFormSettings } from "../helpers"
+import type { DispatchFunction, IAction, IStore } from "../../useReducer/index"
+import type { IUseFormSettings } from "../helpers"
 import {
     SET_VALUE,
     SET_VALUES,
@@ -10,9 +10,9 @@ import {
     SET_VALIDATE,
     SET_ERRORS,
     VALIDATE_FORM,
-    IValueTest,
-    IFormState,
-    IErrors,
+    type IValueTest,
+    type IFormState,
+    type IErrors,
 } from "../reducer"
 
 export const getFormErrors = (
@@ -21,7 +21,7 @@ export const getFormErrors = (
 ): IErrors => {
     const { tests } = state
 
-    let errors: IErrors = {}
+    const errors: IErrors = {}
 
     debug = false
 

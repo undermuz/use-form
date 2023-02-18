@@ -1,28 +1,28 @@
 import useForm from "./useForm/index"
 
 export {
-    IInitialStateOptions,
-    SendFunction,
-    IUseForm,
-    UseFormConfig,
-    IUseFormOptions,
+    type IInitialStateOptions,
+    type SendFunction,
+    type IUseForm,
+    type UseFormConfig,
+    type IUseFormOptions,
 } from "./useForm/index"
 
 export {
     default as useReducer,
-    IActionPayload,
-    IAction,
-    DispatchFunction,
-    IStore,
+    type IActionPayload,
+    type IAction,
+    type DispatchFunction,
+    type IStore,
 } from "./useReducer/index"
 
 export {
-    IValueTest,
-    IFields,
-    ITouched,
-    IValues,
+    type IValueTest,
+    type IFields,
+    type ITouched,
+    type IValues,
+    type IFormState,
     EnumFormStatus,
-    IFormState,
 } from "./useForm/reducer"
 
 export {
@@ -42,7 +42,7 @@ export {
     useFormSubmit,
 } from "./utils/index"
 
-export { default as IfForm, IIfFormProps } from "./ifForm/index"
+export { default as IfForm, type IIfFormProps } from "./ifForm/index"
 export { default as FormSubmit, EnumFormSubmitStatus } from "./formSubmit/index"
 
 export default useForm

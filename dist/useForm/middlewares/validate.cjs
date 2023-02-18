@@ -27,7 +27,7 @@ module.exports = __toCommonJS(validate_exports);
 var import_reducer = require("../reducer.cjs");
 var getFormErrors = (state, debug = false) => {
   const { tests } = state;
-  let errors = {};
+  const errors = {};
   debug = false;
   if (debug)
     console.log(`[useForm][getFormErrors]`, state);

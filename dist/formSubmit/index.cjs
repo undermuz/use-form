@@ -34,9 +34,9 @@ __export(formSubmit_exports, {
   default: () => formSubmit_default
 });
 module.exports = __toCommonJS(formSubmit_exports);
-var import_react = __toESM(require("react"), 1);
 var import_ifForm = __toESM(require("../ifForm/index.cjs"), 1);
 var import_utils = require("../utils/index.cjs");
+var import_jsx_runtime = require("react/jsx-runtime");
 var EnumFormSubmitStatus = /* @__PURE__ */ ((EnumFormSubmitStatus2) => {
   EnumFormSubmitStatus2["Default"] = "default";
   EnumFormSubmitStatus2["Succeed"] = "succeed";
@@ -58,18 +58,20 @@ var FormSubmit = (props) => {
   const hasErrors = (0, import_utils.useIsFormHasErrors)();
   const isSending = (0, import_utils.useIsFormSending)();
   const submit = (0, import_utils.useFormSubmit)(onSend, onSucceed, onError);
-  return /* @__PURE__ */ import_react.default.createElement(
+  return /* @__PURE__ */ (0, import_jsx_runtime.jsxs)(
     Component,
     {
       ...otherProps,
       disabled: isSending || hasErrors && disableWhenErrors || disabled,
       type: "submit",
-      onClick: submit
-    },
-    /* @__PURE__ */ import_react.default.createElement(import_ifForm.default, null, children ? children("default" /* Default */) : "Send"),
-    /* @__PURE__ */ import_react.default.createElement(import_ifForm.default, { isSuccess: true }, children ? children("succeed" /* Succeed */) : "Succeed"),
-    /* @__PURE__ */ import_react.default.createElement(import_ifForm.default, { isCanceling: true }, children ? children("canceling" /* Canceling */) : "Failed"),
-    /* @__PURE__ */ import_react.default.createElement(import_ifForm.default, { isSending: true }, children ? children("sending" /* Sending */) : "Sending...")
+      onClick: submit,
+      children: [
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ifForm.default, { children: children ? children("default" /* Default */) : "Send" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ifForm.default, { isSuccess: true, children: children ? children("succeed" /* Succeed */) : "Succeed" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ifForm.default, { isCanceling: true, children: children ? children("canceling" /* Canceling */) : "Failed" }),
+        /* @__PURE__ */ (0, import_jsx_runtime.jsx)(import_ifForm.default, { isSending: true, children: children ? children("sending" /* Sending */) : "Sending..." })
+      ]
+    }
   );
 };
 var formSubmit_default = FormSubmit;

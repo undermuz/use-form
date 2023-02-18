@@ -1,4 +1,4 @@
-import { IErrors } from "./reducer"
+import type { IErrors } from "./reducer"
 
 class FormValidateError extends Error {
     errors?: IErrors

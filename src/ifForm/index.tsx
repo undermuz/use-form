@@ -1,4 +1,4 @@
-import React from "react"
+import { type ReactNode } from "react"
 
 import {
     useIsFormCanceling,
@@ -8,7 +8,7 @@ import {
 } from "../utils/index"
 
 export interface IIfFormProps {
-    children: React.ReactNode
+    children: ReactNode
     hasErrors?: boolean
     isCanceling?: boolean
     isSending?: boolean

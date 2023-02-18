@@ -2,14 +2,14 @@ import { useCallback, useEffect, useMemo, useRef } from "react"
 
 import formReducer, {
     EnumFormStatus,
-    IErrors,
-    IFields,
-    IFormState,
-    ITouched,
-    IValues,
-    IValueTest,
+    type IErrors,
+    type IFields,
+    type IFormState,
+    type ITouched,
+    type IValues,
+    type IValueTest,
     SEND_FORM,
-    ValidateFunction,
+    type ValidateFunction,
 } from "./reducer"
 
 /* MIDDLEWARES */
@@ -30,7 +30,10 @@ import {
 
 import { isEqual } from "underscore"
 
-import useReducer, { DispatchFunction, IStore } from "../useReducer/index"
+import useReducer, {
+    type DispatchFunction,
+    type IStore,
+} from "../useReducer/index"
 import { useRefBy } from "../utils/index"
 
 export interface IInitialStateOptions {
