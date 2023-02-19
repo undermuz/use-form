@@ -1,11 +1,11 @@
 {
   "name": "@undermuz/use-form",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "React library for build forms",
   "main": "dist/index.js",
   "module": "dist/index.js",
-  "types": "dist/index.d.js",
-  "typings": "dist/index.d.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
   "exports": {
     "types": "./dist/index.d.ts",
     "import": "./dist/index.js",
@@ -16,7 +16,7 @@
   "sideEffects": false,
   "type": "module",
   "files": [
-    "dist/"
+    "dist"
   ],
   "scripts": {
     "test": "jest",
