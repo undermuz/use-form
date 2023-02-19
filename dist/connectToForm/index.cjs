@@ -100,7 +100,7 @@ var ConnectToForm = (props) => {
     console.error("ConnectToForm must have a children");
     return null;
   }
-  return (0, import_react.cloneElement)(children, {
+  const connectedProps = {
     inputProps,
     name: inputProps.name,
     value: inputProps.value,
@@ -118,7 +118,8 @@ var ConnectToForm = (props) => {
     onBlur,
     onRefInput,
     onRef
-  });
+  };
+  return (0, import_react.cloneElement)(children, connectedProps);
 };
 var connectToForm_default = ConnectToForm;
 // Annotate the CommonJS export names for ESM import in node:

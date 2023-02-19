@@ -81,7 +81,7 @@ var ConnectToForm = (props) => {
     console.error("ConnectToForm must have a children");
     return null;
   }
-  return cloneElement(children, {
+  const connectedProps = {
     inputProps,
     name: inputProps.name,
     value: inputProps.value,
@@ -99,7 +99,8 @@ var ConnectToForm = (props) => {
     onBlur,
     onRefInput,
     onRef
-  });
+  };
+  return cloneElement(children, connectedProps);
 };
 var connectToForm_default = ConnectToForm;
 export {
