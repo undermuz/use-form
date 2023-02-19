@@ -36,6 +36,7 @@ export {
 export {
     default as ConnectToForm,
     type IInputProps,
+    type IConnectedProps,
 } from "./connectToForm/index"
 
 export {

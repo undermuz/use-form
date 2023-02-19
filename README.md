@@ -61,7 +61,7 @@ ConnectToForm provides current field's value to your component, and wait new val
 ```javascript
 
     //Short-version
-    const Input: React.FC<IInputProps> = ({
+    const Input: React.FC<IConnectedProps> = ({
         inputProps = {}, //Provides by ConnectToForm
         ...rest
     }) => {
@@ -77,7 +77,7 @@ ConnectToForm provides current field's value to your component, and wait new val
     }
 
     //Full-version
-    const Input: React.FC<IInputProps> = ({
+    const Input: React.FC<IConnectedProps> = ({
         type = "text",
         placeholder = "",
         name = "", //Provides by ConnectToForm
@@ -128,7 +128,7 @@ ConnectToForm provides current field's value to your component, and wait new val
     
     ...
 
-    const DateInput: React.FC<IInputProps> = ({
+    const DateInput: React.FC<IConnectedProps> = ({
         onChange, //Provides by ConnectToForm
         label, //Provides by ConnectToForm
         value, //Provides by ConnectToForm
@@ -156,7 +156,7 @@ ConnectToForm provides current field's value to your component, and wait new val
 ### Input's states
 
 ```javascript
-    const Input: React.FC<IInputProps> = ({
+    const Input: React.FC<IConnectedProps> = ({
         inputProps = {}, //Provides by ConnectToForm
         label, //Provides by ConnectToForm
         isSucceed, //Provides by ConnectToForm
@@ -327,7 +327,7 @@ const form = useForm({
 ## Examples
 
 ```javascript
-const Input: React.FC<IInputProps> = ({
+const Input: React.FC<IConnectedProps> = ({
     type = "text",
     placeholder = "",
     onChange,

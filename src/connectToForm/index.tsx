@@ -5,6 +5,7 @@ import {
     useMemo,
     useState,
 } from "react"
+import type { IError } from "../useForm/reducer"
 import { useFormContext } from "./formContext"
 
 export interface IConnectToForm {
@@ -27,6 +28,29 @@ export interface IInputProps {
     onChange: Function
     onFocus: Function
     onBlur: Function
+}
+
+export interface IConnectedProps {
+    inputProps: IInputProps
+
+    name: string
+    value: string
+    label: string
+    error: IError | null
+    disabled: boolean
+
+    isFocused: boolean
+    isTouched: boolean
+    isFilled: boolean
+    isSucceed: boolean
+    isDisabled: boolean
+    hasError: boolean
+
+    onChange: Function
+    onFocus: Function
+    onBlur: Function
+    onRefInput?: Function
+    onRef?: Function
 }
 
 const ConnectToForm = (props: IConnectToForm) => {
@@ -116,7 +140,7 @@ const ConnectToForm = (props: IConnectToForm) => {
         return null
     }
 
-    return cloneElement(children, {
+    const connectedProps: IConnectedProps = {
         inputProps,
 
         name: inputProps.name,
@@ -137,7 +161,9 @@ const ConnectToForm = (props: IConnectToForm) => {
         onBlur,
         onRefInput,
         onRef,
-    })
+    }
+
+    return cloneElement(children, connectedProps)
 }
 
 export default ConnectToForm
