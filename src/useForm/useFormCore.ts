@@ -1,11 +1,11 @@
-import type { IUseFormOptions, UseFormConfig } from "./useForm"
+import type { IFormConfig, UseFormConfig } from "./useForm"
 import type { FormState } from "./useFormState"
 
 import { useIsFormValid } from "./helpers"
 import useFormControl from "./useFormControl"
 
 const useFormCore = (
-    formConfig: IUseFormOptions,
+    formConfig: IFormConfig,
     formState: FormState
 ): UseFormConfig => {
     const { state, dispatch, store } = formState

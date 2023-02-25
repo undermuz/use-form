@@ -1,4 +1,4 @@
-import type { IUseFormOptions } from "./useForm"
+import type { IFormConfig } from "./useForm"
 import { formReducer, type IFormState } from "./reducer"
 
 import { useMemo } from "react"
@@ -14,7 +14,7 @@ export type FormState = {
     store: IStore<IFormState>
 }
 
-const useFormState = (props: IUseFormOptions): FormState => {
+const useFormState = (props: IFormConfig): FormState => {
     const initialState = useMemo(() => getInitialState(props), [])
 
     const middlewares = useMemo(

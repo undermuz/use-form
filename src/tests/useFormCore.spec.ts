@@ -28,7 +28,7 @@ const useCustomForm = (formSettings: IUseFormSettings): UseControlledForm => {
 
     const form = useFormCore(formConfig, formState)
 
-    const onChange = useCallback((v: any) => {
+    const onChange = useCallback((v: unknown) => {
         if (isDebug) console.log("[useCustomForm][setValue]", v)
         // form.setValues(v)
 

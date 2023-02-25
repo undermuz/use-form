@@ -3,13 +3,13 @@ import { useMemo } from "react"
 import type {
     IUseFormField,
     IUseFormFieldRule,
-    IUseFormOptions,
+    IFormConfig,
     IUseFormSettings,
     TypeUseFormField,
 } from "./useForm"
 
-const useFormConfigBySettings = (props: IUseFormSettings): IUseFormOptions => {
-    return useMemo<IUseFormOptions>(() => {
+const useFormConfigBySettings = (props: IUseFormSettings): IFormConfig => {
+    return useMemo<IFormConfig>(() => {
         const _config = {
             initialValues: props.value ? props.value : {},
             valueTests: [],

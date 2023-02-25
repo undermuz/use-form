@@ -41,10 +41,10 @@ export { type SendFunction } from "./useForm/useFormControl"
 export {
     type UseFormFieldRuleFunction,
     type IUseFormSettings,
-    type IInitialStateOptions,
+    type IInitialFormConfig as IInitialStateOptions,
     type IUseForm,
     type UseFormConfig,
-    type IUseFormOptions,
+    type IFormConfig as IUseFormOptions,
     type IUseFormFieldRule,
 } from "./useForm/useForm"
 

@@ -15,8 +15,10 @@ React library for build forms
 ### Setup form
 
 For example, setup a login form with username and password fields with rules
-Rules work like: !yourFn(filedValue) && errorText, your should provide an array: [Rule1, Rule2, RuleN]
-Every rule is array: [yourFnList, errorText], yourFnList is array of functions: yourFn(filedValue) => boolean
+Rules work like: `!yourFn(filedValue) && errorText`, your should provide an array: `[Rule1, Rule2, RuleN]`
+Every rule is array: `[yourFnArray, errorText]`, yourFnArray is array of functions: `yourFn(filedValue: unknown) => boolean`
+
+This example uses built-in JS function `Boolean` to validate input's values
 
 ```javascript
     const form = useForm({
@@ -129,9 +131,9 @@ ConnectToForm provides current field's value to your component, and wait new val
     ...
 
     const DateInput: React.FC<IConnectedProps> = ({
-        onChange, //Provides by ConnectToForm
         label, //Provides by ConnectToForm
         value, //Provides by ConnectToForm
+        onChange, //Provides by ConnectToForm
         ...rest
     }) => {
         return (
@@ -139,7 +141,7 @@ ConnectToForm provides current field's value to your component, and wait new val
                 {label}
                 <DateTime
                     {...rest}
-                    value={moment(value)}
+                    value={fromDate(value)}
                     onChange={(m) => onChange(m.toDate())}
                 />
             </label>
@@ -159,27 +161,40 @@ ConnectToForm provides current field's value to your component, and wait new val
     const Input: React.FC<IConnectedProps> = ({
         inputProps = {}, //Provides by ConnectToForm
         label, //Provides by ConnectToForm
+        errors, //Provides by ConnectToForm
         isSucceed, //Provides by ConnectToForm
         hasError, //Provides by ConnectToForm
         isFocused, //Provides by ConnectToForm
         isTouched, //Provides by ConnectToForm
         isFilled, //Provides by ConnectToForm
         isDisabled //Provides by ConnectToForm
-        ...rest
+        ...rest // You've provided
     }) => {
         return (
             <label>
                 {label}
+
                 <input
-                    {..._.pick(rest, ["type", "placeholder"])}
+                    {..._.pick(rest, ["type", "placeholder", "etc"])}
                     {...inputProps}
                     className={isSucceed ? "succeed" : hasError ? "has-error" : "default"}
                 />
+
                 {/*  Other states */}
                 {isFocused && "Tip: type something funny"}
-                {isTouched && "You have already touched this field"}
-                {isFilled && "You have already filled this field"}
-                {isDisabled && "This field is disabled now"}
+                {isTouched && "You've already touched this field"}
+                {isFilled && "You've already filled this field"}
+                {isDisabled && "This field is disabled"}
+
+                {/* Filed errors */}
+                {hasError && <>
+                    <span>Errors:</span>
+                    <ul>
+                        {errors.map((error: string, i: number) => (
+                            <li key={i}>{error}</li>
+                        ))}
+                    </ul>
+                </>}
             </label>
         )
     }
@@ -189,11 +204,11 @@ ConnectToForm provides current field's value to your component, and wait new val
 
 ```javascript
     <IfForm>
-        <p>Nothing happens</p>
+        <p>Show when form is default</p>
     </IfForm>
 
     <IfForm isSuccess>
-        <p>Form has sent success</p>
+        <p>Form has been sent success</p>
     </IfForm>
 
     <IfForm isCanceling>
@@ -241,7 +256,7 @@ Or by context inside FormContext.Provider:
 
 ### Submit
 
-#### Create callbacks
+Create callbacks
 
 ```javascript
     const form = useForm(/*Form config*/)
@@ -261,9 +276,11 @@ Or by context inside FormContext.Provider:
     const onError = useCallback(() => {
         console.log("Login failed")
     }, [])
+
+    const submit = useFormSubmit(onSend, onSucceed, onError)
 ```
 
-#### Get submit callback by hook
+Get submit callback by hook
 
 ```javascript
 
@@ -271,13 +288,13 @@ Or by context inside FormContext.Provider:
 
     ...
 
-    <Button disabled={form.isSending} onClick={submit}>
+    <Button disabled={form.isSending || form.isCanceling || form.hasErrors} onClick={submit}>
         Submit
     </Button>
 
 ```
 
-#### OR Get submit by component
+OR Get submit by component
 
 ```javascript
     //Component version
@@ -286,6 +303,14 @@ Or by context inside FormContext.Provider:
         {(status: EnumFormSubmitStatus) => {
             if (status === EnumFormSubmitStatus.Sending) {
                 return "Sending..."
+            }
+
+            if (status === EnumFormSubmitStatus.Canceling) {
+                return "Failed"
+            }
+
+            if (status === EnumFormSubmitStatus.Succeed) {
+                return "Succeed"
             }
 
             return "Submit"
@@ -297,8 +322,6 @@ Or by context inside FormContext.Provider:
 ## Controlled form
 
 You can control form's values from outside by providing `value` and `onChange` to useForm's config
-
-### Example
 
 ```javascript
 const [value, onChange] = useState<IValues>(() => {
@@ -322,6 +345,116 @@ const form = useForm({
     value,
     onChange
 })
+```
+
+You can get *more* control
+
+```javascript
+/*
+    FORM_ACTIONS = {
+        SET_VALUES
+        SET_VALUE
+        SET_TESTS
+        SET_TOUCHED_FIELD
+        SET_TOUCHED
+        SET_ERRORS
+        SET_FIELDS
+        SET_VALIDATE
+        SET_IS_SENDING
+        SET_IS_CANCELING
+        SET_IS_SUCCESS
+        SET_SEND_ERROR
+        VALIDATE_FORM
+        SEND_FORM
+    }
+*/
+
+const [formConfig, formState] = useFormCoreParams({
+    fields: {
+        username: {
+            label: "Login",
+            rules: [[[Boolean], "Username is required"]],
+        },
+        password: {
+            label: "Password",
+            rules: [[[Boolean], "Password is required"]],
+        },
+    },
+    options: {
+        middlewares: [
+            /* --> */createYourCustomMiddleware()/* <-- */
+        ]
+    }
+})
+
+const form = useFormCore(formConfig, formState)
+
+const setValue = useCallback((values: any) => {
+    if (isDebug) console.log("[useCustomForm][setValue]", values)
+
+    formState.dispatch({
+        type: FORM_ACTIONS.SET_VALUES,
+        payload: {
+            values,
+            /* --> */yourCustomPayload: "some-additional-info"/* <-- */
+        },
+    })
+}, [])
+```
+
+You can get even *more* control
+
+```javascript
+    const useCustomFormState = (props: IFormConfig): FormState => {
+        const initialState = useMemo(() => getInitialState(props), [])
+
+        const middlewares = useMemo(
+            () => [
+                ...(props?.middlewares || []),
+
+                /* --> */YOUR_CUSTOM_MIDDLEWARE(props)/* <-- */,
+
+                /*  You can remove default middlewares: */
+                //createValidating(props),
+                //createSend(props),
+            ],
+            []
+        )
+
+        const [state, dispatch, store] = useReducer<IFormState>(
+            formReducer,
+            initialState,
+            middlewares
+        )
+
+        return { state, dispatch, store }
+    }
+
+    const useCustomFormParams = (
+        formSettings: IUseFormSettings
+    ): [IFormConfig, FormState] => {
+        const formConfig = useFormConfigBySettings(formSettings)
+        const formState = useCustomFormState(formConfig)
+
+        return [formConfig, formState]
+    }
+
+    ...
+        const [formConfig, formState] = useCustomFormParams({
+            fields: {
+                username: {
+                    label: "Login",
+                    rules: [[[Boolean], "Username is required"]],
+                },
+                password: {
+                    label: "Password",
+                    rules: [[[Boolean], "Password is required"]],
+                },
+            }
+        })
+
+        const form = useFormCore(formConfig, formState)
+    ...
 ```
 
 ## Examples

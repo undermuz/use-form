@@ -15,14 +15,14 @@ import useFormState, { type FormState } from "./useFormState"
 import useFormConfigBySettings from "./useFormConfigBySettings"
 import useFormOnError from "./events/useFormOnError"
 
-export interface IInitialStateOptions {
+export interface IInitialFormConfig {
     initialValues: IValues
     valueTests: IValueTest[]
     fields: IFields
     validate?: ValidateFunction
 }
 
-export interface IUseFormOptions extends Partial<IInitialStateOptions> {
+export interface IFormConfig extends Partial<IInitialFormConfig> {
     middlewares?: any[]
     debug?: boolean
 }
@@ -58,12 +58,12 @@ export interface IUseFormSettings {
     value?: IValues
     onChange?: (v: IValues) => void
     onError?: (v: IErrors) => void
-    options?: IUseFormOptions
+    options?: IFormConfig
 }
 
 export const useFormCoreParams = (
     formSettings: IUseFormSettings
-): [IUseFormOptions, FormState] => {
+): [IFormConfig, FormState] => {
     const formConfig = useFormConfigBySettings(formSettings)
     const formState = useFormState(formConfig)
 

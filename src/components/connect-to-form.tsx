@@ -36,7 +36,7 @@ export interface IConnectedProps {
     name: string
     value: string
     label: string
-    error: IError | null
+    errors: IError | null
     disabled: boolean
 
     isFocused: boolean
@@ -73,18 +73,18 @@ const ConnectToForm = (props: IConnectToForm) => {
         isSending = false,
         values = {},
         touched = [],
-        errors = {},
+        errors: allErrors = {},
         fields = {},
         setValue,
         setTouchedByName,
     } = params
 
     const value = values[name]
-    const error = errors[name]
+    const errors = allErrors[name]
 
     const isTouched = touched.indexOf(name) > -1
 
-    const hasError = Boolean(error) && isTouched
+    const hasError = Boolean(errors) && errors?.length > 0 && isTouched
 
     const isFilled = IsFilled(value)
     const isSucceed = !hasError && isTouched && IsFilled(value)
@@ -146,7 +146,7 @@ const ConnectToForm = (props: IConnectToForm) => {
         name: inputProps.name,
         value: inputProps.value,
         label: inputProps.label,
-        error: hasError ? error : null,
+        errors: hasError ? errors : null,
         disabled: inputProps.disabled,
 
         isFocused,

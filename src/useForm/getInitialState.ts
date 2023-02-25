@@ -1,4 +1,4 @@
-import type { IInitialStateOptions } from "./useForm"
+import type { IInitialFormConfig } from "./useForm"
 import { getFormErrors } from "./middlewares/validate"
 import { EnumFormStatus, type IFormState } from "./reducer"
 
@@ -10,7 +10,7 @@ const DEF_INITIAL_STATE_OPTIONS = {
 }
 
 const getInitialState = (
-    props: Partial<IInitialStateOptions> = DEF_INITIAL_STATE_OPTIONS
+    props: Partial<IInitialFormConfig> = DEF_INITIAL_STATE_OPTIONS
 ): IFormState => {
     const {
         initialValues = {},

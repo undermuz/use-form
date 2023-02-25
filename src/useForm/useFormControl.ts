@@ -1,4 +1,4 @@
-import type { IUseFormOptions } from "./useForm"
+import type { IFormConfig } from "./useForm"
 import type { DispatchFunction, IStore } from "../utils/useReducer"
 import {
     SEND_FORM,
@@ -59,7 +59,7 @@ export interface IUseFormControl {
 }
 
 const useFormControl = (
-    props: IUseFormOptions,
+    props: IFormConfig,
     store: IStore<IFormState>,
     dispatch: DispatchFunction
 ): IUseFormControl => {
