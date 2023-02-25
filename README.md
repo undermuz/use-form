@@ -186,7 +186,7 @@ ConnectToForm provides current field's value to your component, and wait new val
                 {isFilled && "You've already filled this field"}
                 {isDisabled && "This field is disabled"}
 
-                {/* Filed errors */}
+                {/* Field errors */}
                 {hasError && <>
                     <span>Errors:</span>
                     <ul>
