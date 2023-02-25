@@ -1,4 +1,4 @@
-import type { IAction } from "../useReducer/index"
+import type { IAction } from "../utils/useReducer"
 import { getFormErrors } from "./middlewares/validate"
 
 const IsFunction = (value: any): boolean =>

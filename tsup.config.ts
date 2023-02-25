@@ -4,7 +4,7 @@ import { esbuildPluginFilePathExtensions } from "esbuild-plugin-file-path-extens
 const env = process.env.NODE_ENV
 
 export default defineConfig({
-    entry: ["./src"],
+    entry: ["./src", "!src/**/*.spec.*"],
     sourcemap: false,
     clean: true,
     target: "es2019",

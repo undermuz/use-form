@@ -1,6 +1,6 @@
 const noop = () => {}
 
-import type { DispatchFunction, IAction, IStore } from "../../useReducer/index"
+import type { DispatchFunction, IAction, IStore } from "../../utils/useReducer"
 import { FormSendError, FormValidateError } from "../errors"
 import { isFormHasErrors, type IUseIsFormSettings } from "../helpers"
 

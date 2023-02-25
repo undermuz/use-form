@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-unused-vars */
 import { createContext, useContext } from "react"
-import { getInitialState, type UseFormConfig } from "../useForm/index"
+import getInitialState from "../useForm/getInitialState"
+import type { UseFormConfig } from "../useForm/useForm"
 import { getFormErrors } from "../useForm/middlewares/validate"
 import { EnumFormStatus } from "../useForm/reducer"
 

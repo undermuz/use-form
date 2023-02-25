@@ -1,4 +1,4 @@
-import type { DispatchFunction, IAction, IStore } from "../../useReducer/index"
+import type { DispatchFunction, IAction, IStore } from "../../utils/useReducer"
 import type { IUseIsFormSettings } from "../helpers"
 import {
     SET_VALUE,

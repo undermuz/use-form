@@ -6,7 +6,7 @@ import {
     useState,
 } from "react"
 import type { IError } from "../useForm/reducer"
-import { useFormContext } from "./formContext"
+import { useFormContext } from "./form-context"
 
 export interface IConnectToForm {
     name: string

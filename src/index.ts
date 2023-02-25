@@ -1,14 +1,17 @@
-import useForm from "./useForm/index"
+import useForm from "./useForm/useForm"
+import useFormCore from "./useForm/useFormCore"
+import useFormState from "./useForm/useFormState"
+
+export { type SendFunction } from "./useForm/useFormControl"
 
 export {
     type IUseFormSettings,
     type IInitialStateOptions,
-    type SendFunction,
     type IUseForm,
     type UseFormConfig,
     type IUseFormOptions,
     type IUseFormFieldRule,
-} from "./useForm/index"
+} from "./useForm/useForm"
 
 export {
     default as useReducer,
@@ -16,7 +19,7 @@ export {
     type IAction,
     type DispatchFunction,
     type IStore,
-} from "./useReducer/index"
+} from "./utils/useReducer"
 
 export {
     type IValueTest,
@@ -31,13 +34,13 @@ export {
 export {
     default as FormContext,
     useFormContext,
-} from "./connectToForm/formContext"
+} from "./components/form-context"
 
 export {
     default as ConnectToForm,
     type IInputProps,
     type IConnectedProps,
-} from "./connectToForm/index"
+} from "./components/connect-to-form"
 
 export {
     useIsFormSuccess,
@@ -47,9 +50,11 @@ export {
     useFormFields,
     useFormErrors,
     useFormSubmit,
-} from "./utils/index"
+} from "./utils/common"
 
-export { default as IfForm, type IIfFormProps } from "./ifForm/index"
-export { default as FormSubmit, EnumFormSubmitStatus } from "./formSubmit/index"
+export { default as IfForm, type IIfFormProps } from "./utils/ifForm"
+export { default as FormSubmit, EnumFormSubmitStatus } from "./components/form-submit"
+
+export { useFormState, useFormCore }
 
 export default useForm

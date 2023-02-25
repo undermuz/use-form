@@ -16,7 +16,7 @@ import {
     type ValidateFunction,
 } from "./reducer"
 
-import type { DispatchFunction, IStore } from "../useReducer/index"
+import type { DispatchFunction, IStore } from "../utils/useReducer"
 
 export interface IUseIsFormSettings {
     [k: string]: any
