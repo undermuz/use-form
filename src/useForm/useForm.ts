@@ -10,7 +10,8 @@ import type { DispatchFunction, IStore } from "../utils/useReducer"
 import useControlledForm from "./useControlledForm"
 import useFormCore from "./useFormCore"
 import type { IUseFormControl, SendFunction } from "./useFormControl"
-import useFormState from "./useFormState"
+import useFormState, { type FormState } from "./useFormState"
+import useFormConfigBySettings from "./useFormConfigBySettings"
 
 export interface IInitialStateOptions {
     initialValues: IValues
@@ -57,10 +58,19 @@ export interface IUseFormSettings {
     options?: IUseFormOptions
 }
 
-const useForm = (formSettings: IUseFormSettings) => {
-    const formState = useFormState(formSettings)
+export const useFormCoreParams = (
+    formSettings: IUseFormSettings
+): [IUseFormOptions, FormState] => {
+    const formConfig = useFormConfigBySettings(formSettings)
+    const formState = useFormState(formConfig)
 
-    const form = useFormCore(formSettings, formState)
+    return [formConfig, formState]
+}
+
+const useForm = (formSettings: IUseFormSettings) => {
+    const [formConfig, formState] = useFormCoreParams(formSettings)
+
+    const form = useFormCore(formConfig, formState)
 
     useControlledForm(form, formSettings)
 

@@ -54,6 +54,8 @@ const useControlledForm = (props: IUseFormSettings): UseControlledForm => {
 
     console.log("Rendered: ", renderCounter.current)
 
+    console.log("[useControlledForm]", form.values)
+
     return [value, onChange, form]
 }
 
