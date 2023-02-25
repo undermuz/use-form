@@ -1,4 +1,5 @@
 import {
+    type IErrors,
     type IFields,
     type IFormState,
     type IValues,
@@ -12,6 +13,7 @@ import useFormCore from "./useFormCore"
 import type { IUseFormControl, SendFunction } from "./useFormControl"
 import useFormState, { type FormState } from "./useFormState"
 import useFormConfigBySettings from "./useFormConfigBySettings"
+import useFormOnError from "./events/useFormOnError"
 
 export interface IInitialStateOptions {
     initialValues: IValues
@@ -55,6 +57,7 @@ export interface IUseFormSettings {
     fields: FormSettingsTypeFields
     value?: IValues
     onChange?: (v: IValues) => void
+    onError?: (v: IErrors) => void
     options?: IUseFormOptions
 }
 
@@ -73,6 +76,7 @@ const useForm = (formSettings: IUseFormSettings) => {
     const form = useFormCore(formConfig, formState)
 
     useControlledForm(form, formSettings)
+    useFormOnError(form, formSettings)
 
     return form
 }
