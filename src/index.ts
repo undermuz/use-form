@@ -1,4 +1,4 @@
-import useForm from "./useForm/useForm"
+import useForm, { useFormCoreParams } from "./useForm/useForm"
 import useFormCore from "./useForm/useFormCore"
 import useFormState from "./useForm/useFormState"
 
@@ -53,8 +53,11 @@ export {
 } from "./utils/common"
 
 export { default as IfForm, type IIfFormProps } from "./utils/ifForm"
-export { default as FormSubmit, EnumFormSubmitStatus } from "./components/form-submit"
+export {
+    default as FormSubmit,
+    EnumFormSubmitStatus,
+} from "./components/form-submit"
 
-export { useFormState, useFormCore }
+export { useFormState, useFormCore, useFormCoreParams }
 
 export default useForm
