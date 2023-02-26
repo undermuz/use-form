@@ -63,6 +63,7 @@ export {
     type IValues,
     type IFormState,
     type IError,
+    type IErrors,
     EnumFormStatus,
 } from "./useForm/reducer"
 
