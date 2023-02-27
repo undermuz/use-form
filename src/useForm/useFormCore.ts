@@ -44,11 +44,19 @@ const useFormCore = (
             const fieldSecondaryErrors = state.customErrors[fieldName]
 
             if (fieldPrimaryErrors) {
-                fieldErrors.push(...fieldPrimaryErrors)
+                if (Array.isArray(fieldPrimaryErrors)) {
+                    fieldErrors.push(...fieldPrimaryErrors)
+                } else {
+                    fieldErrors.push(fieldPrimaryErrors)
+                }
             }
 
             if (fieldSecondaryErrors) {
-                fieldErrors.push(...fieldSecondaryErrors)
+                if (Array.isArray(fieldSecondaryErrors)) {
+                    fieldErrors.push(...fieldSecondaryErrors)
+                } else {
+                    fieldErrors.push(fieldSecondaryErrors)
+                }
             }
 
             if (fieldErrors.length) allErrors[fieldName] = fieldErrors

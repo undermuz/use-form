@@ -60,7 +60,7 @@ export interface IValues {
     [s: string]: any
 }
 
-export type IError = string[]
+export type IError = Array<string | IErrors>
 
 export interface IErrors {
     [s: string]: IError

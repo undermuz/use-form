@@ -24,7 +24,9 @@ export const getFormErrors = (state: IFormState): IErrors => {
                     errors[name] = []
                 }
 
-                errors[name].push(errorText)
+                const fieldErrors: string[] = errors[name] as string[]
+
+                fieldErrors.push(errorText)
 
                 break
             }
