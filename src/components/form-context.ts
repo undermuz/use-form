@@ -20,6 +20,7 @@ const DEF_VALUES: UseFormConfig = {
     touched: [],
     fields: [],
     errors: {},
+    customErrors: {},
     send: () => {
         return Promise.resolve()
     },
@@ -37,6 +38,8 @@ const DEF_VALUES: UseFormConfig = {
     setTests: (_newTests, _silent, _checkOnlyFilled) => {},
     setValidate: (_newValidate, _silent, _checkOnlyFilled) => {},
     setErrors: (_newErrors) => {},
+    setCustomErrors: (_newErrors) => {},
+    setCustomErrorByName: (name, error) => {},
 
     store: {
         getState: () => {

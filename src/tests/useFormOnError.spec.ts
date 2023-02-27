@@ -94,18 +94,60 @@ describe("useFormOnError", () => {
         })
     })
 
-    test("correct errors", () => {
-        act(() => getForm().setValue("username", "some_user_name_2"))
-        act(() => getForm().setValue("password", "some_password_2"))
+    test("custom errors", () => {
+        act(() => getForm().setCustomErrorByName("username", ["custom error"]))
 
+        expect(mockOnError.mock.calls.length).toBe(3)
+
+        expect(mockOnError.mock.calls[2][0]).toEqual({
+            password: ["Password is required"],
+            username: ["Username is required", "custom error"],
+        })
+
+        expect(getForm().errors).toEqual({
+            password: ["Password is required"],
+            username: ["Username is required", "custom error"],
+        })
+
+        expect(getForm().customErrors).toEqual({
+            username: ["custom error"],
+        })
+
+        act(() => getForm().setValue("username", "some_user_name_2"))
         expect(getForm().values.username).toBe("some_user_name_2")
-        expect(getForm().values.password).toBe("some_password_2")
 
         expect(mockOnError.mock.calls.length).toBe(4)
 
+        expect(mockOnError.mock.calls[3][0]).toEqual({
+            password: ["Password is required"],
+            username: ["custom error"],
+        })
+
+        expect(getForm().errors).toEqual({
+            password: ["Password is required"],
+            username: ["custom error"],
+        })
+
+        expect(getForm().customErrors).toEqual({
+            username: ["custom error"],
+        })
+    })
+
+    test("correct errors", () => {
+        act(() => getForm().setCustomErrorByName("username", []))
+        act(() => getForm().setValue("password", "some_password_2"))
+
+        expect(getForm().values.password).toBe("some_password_2")
+
+        expect(mockOnError.mock.calls.length).toBe(6)
+
         //@ts-ignore
-        expect(mockOnError.mock.calls[3][0]).toEqual({})
+        expect(mockOnError.mock.calls[5][0]).toEqual({})
 
         expect(getForm().errors).toEqual({})
+
+        expect(getForm().customErrors).toEqual({
+            username: [],
+        })
     })
 })

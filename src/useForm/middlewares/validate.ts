@@ -1,117 +1,89 @@
 import type { DispatchFunction, IAction, IStore } from "../../utils/useReducer"
 import type { IUseIsFormSettings } from "../helpers"
-import {
-    SET_VALUE,
-    SET_VALUES,
-    SET_TESTS,
-    SET_TOUCHED_FIELD,
-    SET_TOUCHED,
-    SET_FIELDS,
-    SET_VALIDATE,
-    SET_ERRORS,
-    VALIDATE_FORM,
-    type IValueTest,
-    type IFormState,
-    type IErrors,
-} from "../reducer"
+import { FORM_ACTIONS, type IFormState, type IErrors } from "../reducer"
 
-export const getFormErrors = (
-    state: IFormState,
-    debug: boolean = false
-): IErrors => {
-    const { tests } = state
+export const getFormErrors = (state: IFormState): IErrors => {
+    const { tests, touched, values } = state
 
     const errors: IErrors = {}
 
-    debug = false
+    for (let index = 0; index < tests.length; index++) {
+        const [names, testList, errorText = "Invalid"] = tests[index]
 
-    if (debug) console.log(`[useForm][getFormErrors]`, state)
-
-    if (!tests?.length) {
-        if (debug)
-            console.log(`[useForm][getFormErrors][Tests are not set]`, state)
-
-        return errors
-    }
-
-    tests.forEach((test: IValueTest, index: number) => {
-        const [names, testList, errorText] = test
-
-        if (debug)
-            console.log(`[useForm][getFormErrors][Test #${index + 1}]`, {
-                names,
-                testList,
-                errorText,
-            })
-
-        names?.forEach((name) => {
-            let isError = false
-
-            if (state.touched.indexOf(name) > -1) {
-                testList.forEach((valueTest) => {
-                    const value = state.values[name]
-
-                    if (debug)
-                        console.log(
-                            `[useForm][getFormErrors][Test #${
-                                index + 1
-                            }][${name}][Begin]`,
-                            {
-                                test: valueTest,
-                                value,
-                            }
-                        )
-
-                    if (!valueTest(value)) {
-                        isError = true
-
-                        if (debug)
-                            console.log(
-                                `[useForm][getFormErrors][Test #${
-                                    index + 1
-                                }][${name}][Error: ${errorText}]`,
-                                {
-                                    test: valueTest,
-                                    value: value,
-                                }
-                            )
-                    } else {
-                        if (debug)
-                            console.log(
-                                `[useForm][getFormErrors][Test #${
-                                    index + 1
-                                }][${name}][Success]`
-                            )
-                    }
-                })
-            } else {
-                if (debug)
-                    console.log(
-                        `[useForm][getFormErrors][Test #${
-                            index + 1
-                        }][${name}][Skip - isn't touched]`
-                    )
+        for (const name of names) {
+            if (!touched.includes(name)) {
+                continue
             }
 
-            if (isError) {
-                if (Object.keys(errors).indexOf(name) === -1) {
-                    //@ts-ignore
+            for (const valueTest of testList) {
+                if (valueTest(values[name])) {
+                    continue
+                }
+
+                if (!errors[name]) {
                     errors[name] = []
                 }
 
-                //@ts-ignore
                 errors[name].push(errorText)
-            }
-        })
-    })
 
-    if (debug)
-        console.log(
-            `[useForm][getFormErrors][Errors: ${Object.keys(errors).length}]`,
-            errors
-        )
+                break
+            }
+        }
+    }
 
     return errors
+}
+
+const getValidateFunction = (action: IAction, store: IStore<IFormState>) => {
+    const { validate: customValidate = null } = action.payload
+
+    const state = store.getState()
+
+    return customValidate ?? state.validate
+}
+
+const validateEffect = (
+    action: IAction,
+    store: IStore<IFormState>,
+    settings: IUseIsFormSettings = {}
+) => {
+    const { silent = false, checkOnlyFilled = true } = action
+    const { debug = false } = settings
+
+    const triggers = [
+        FORM_ACTIONS.SET_VALUE,
+        FORM_ACTIONS.SET_VALUES,
+        FORM_ACTIONS.SET_TESTS,
+        FORM_ACTIONS.SET_TOUCHED_FIELD,
+        FORM_ACTIONS.SET_TOUCHED,
+        FORM_ACTIONS.SET_FIELDS,
+        FORM_ACTIONS.SET_VALIDATE,
+        FORM_ACTIONS.VALIDATE_FORM,
+    ]
+
+    if (!triggers.some((t) => action.type === t) || silent) {
+        return
+    }
+
+    const state = store.getState()
+
+    const validate = getValidateFunction(action, store)
+
+    const validatedTouched = checkOnlyFilled
+        ? state.touched
+        : Object.keys(state.fields)
+
+    const validateState = {
+        ...state,
+        touched: validatedTouched,
+    }
+
+    const newErrors: IErrors = validate(validateState, debug)
+
+    store.dispatch({
+        type: FORM_ACTIONS.SET_ERRORS,
+        payload: { errors: newErrors },
+    })
 }
 
 const createValidating =
@@ -119,45 +91,9 @@ const createValidating =
     (store: IStore<IFormState>) =>
     (next: DispatchFunction) =>
     (action: IAction) => {
-        const { debug = false } = settings
-
         const result = next(action)
 
-        if (
-            action.type === SET_VALUE ||
-            action.type === SET_VALUES ||
-            action.type === SET_TESTS ||
-            action.type === SET_TOUCHED_FIELD ||
-            action.type === SET_TOUCHED ||
-            action.type === SET_FIELDS ||
-            action.type === SET_VALIDATE ||
-            action.type === VALIDATE_FORM
-        ) {
-            const { silent = false, checkOnlyFilled = true } = action
-
-            if (!silent) {
-                const state = store.getState()
-
-                const { validate: customValidate = null } = action.payload
-
-                const validateFn = customValidate ?? state.validate
-
-                const newErrors: IErrors = validateFn(
-                    {
-                        ...state,
-                        touched: checkOnlyFilled
-                            ? state.touched
-                            : Object.keys(state.fields),
-                    },
-                    debug
-                )
-
-                store.dispatch({
-                    type: SET_ERRORS,
-                    payload: { errors: newErrors },
-                })
-            }
-        }
+        validateEffect(action, store, settings)
 
         return result
     }

@@ -1,19 +1,14 @@
 import { useCallback } from "react"
 
 import {
+    FORM_ACTIONS,
     type IErrors,
     type IFormState,
     type ITouched,
     type IValues,
     type IValueTest,
-    SET_ERRORS,
-    SET_TESTS,
-    SET_TOUCHED,
-    SET_TOUCHED_FIELD,
-    SET_VALIDATE,
-    SET_VALUE,
-    SET_VALUES,
     type ValidateFunction,
+    type IError,
 } from "./reducer"
 
 import type { DispatchFunction, IStore } from "../utils/useReducer"
@@ -63,7 +58,7 @@ export const useSetTouched = (
     return useCallback(
         (newTouched: ITouched, silent = false, checkOnlyFilled = true) => {
             dispatch({
-                type: SET_TOUCHED,
+                type: FORM_ACTIONS.SET_TOUCHED,
                 payload: { touched: newTouched },
                 silent,
                 checkOnlyFilled,
@@ -86,7 +81,7 @@ export const useSetValues = (
             type = "system"
         ) => {
             dispatch({
-                type: SET_VALUES,
+                type: FORM_ACTIONS.SET_VALUES,
                 payload: { values: newValues, type },
                 silent,
                 checkOnlyFilled,
@@ -104,7 +99,7 @@ export const useSetTests = (
     return useCallback(
         (newTests: IValueTest[], silent = false, checkOnlyFilled = true) => {
             dispatch({
-                type: SET_TESTS,
+                type: FORM_ACTIONS.SET_TESTS,
                 payload: { tests: newTests },
                 silent,
                 checkOnlyFilled,
@@ -121,8 +116,37 @@ export const useSetErrors = (
 ) => {
     return useCallback((newErrors: IErrors) => {
         dispatch({
-            type: SET_ERRORS,
+            type: FORM_ACTIONS.SET_ERRORS,
             payload: { errors: newErrors },
+        })
+    }, [])
+}
+
+export const useSetCustomErrors = (
+    _settings: IUseIsFormSettings,
+    _store: IStore<IFormState>,
+    dispatch: DispatchFunction
+) => {
+    return useCallback((newErrors: IErrors) => {
+        dispatch({
+            type: FORM_ACTIONS.SET_CUSTOM_ERRORS,
+            payload: { errors: newErrors },
+        })
+    }, [])
+}
+
+export const useSetCustomErrorByName = (
+    _settings: IUseIsFormSettings,
+    _store: IStore<IFormState>,
+    dispatch: DispatchFunction
+) => {
+    return useCallback((name: string, value: IError) => {
+        dispatch({
+            type: FORM_ACTIONS.SET_CUSTOM_ERROR_FIELD,
+            payload: {
+                name,
+                value,
+            },
         })
     }, [])
 }
@@ -141,7 +165,7 @@ export const useSetFieldValue = (
             type = "system"
         ) => {
             dispatch({
-                type: SET_VALUE,
+                type: FORM_ACTIONS.SET_VALUE,
                 payload: { name, value, type },
                 silent,
                 checkOnlyFilled,
@@ -159,7 +183,7 @@ export const useSetFieldTouched = (
     return useCallback(
         (name: string, value: boolean = true, silent = false) => {
             dispatch({
-                type: SET_TOUCHED_FIELD,
+                type: FORM_ACTIONS.SET_TOUCHED_FIELD,
                 payload: {
                     name,
                     value,
@@ -183,7 +207,7 @@ export const useSetValidate = (
             checkOnlyFilled = true
         ) => {
             dispatch({
-                type: SET_VALIDATE,
+                type: FORM_ACTIONS.SET_VALIDATE,
                 payload: newValidate,
                 silent,
                 checkOnlyFilled,

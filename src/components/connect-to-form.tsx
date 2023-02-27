@@ -51,6 +51,7 @@ export interface IConnectedProps {
     onBlur: Function
     onRefInput?: Function
     onRef?: Function
+    onError: Function
 }
 
 const ConnectToForm = (props: IConnectToForm) => {
@@ -77,6 +78,7 @@ const ConnectToForm = (props: IConnectToForm) => {
         fields = {},
         setValue,
         setTouchedByName,
+        setCustomErrorByName,
     } = params
 
     const value = values[name]
@@ -88,6 +90,13 @@ const ConnectToForm = (props: IConnectToForm) => {
 
     const isFilled = IsFilled(value)
     const isSucceed = !hasError && isTouched && IsFilled(value)
+
+    const onError = useCallback(
+        (error: IError) => {
+            setCustomErrorByName(name, error)
+        },
+        [setCustomErrorByName, name]
+    )
 
     const onRefInput = useMemo(() => {
         if (_onRefInput) {
@@ -161,6 +170,7 @@ const ConnectToForm = (props: IConnectToForm) => {
         onBlur,
         onRefInput,
         onRef,
+        onError,
     }
 
     return cloneElement(children, connectedProps)

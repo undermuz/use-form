@@ -5,13 +5,7 @@ import { FormSendError, FormValidateError } from "../errors"
 import { isFormHasErrors, type IUseIsFormSettings } from "../helpers"
 
 import {
-    SET_ERRORS,
-    SET_IS_SENDING,
-    SET_IS_CANCELING,
-    SET_IS_SUCCESS,
-    SET_SEND_ERROR,
-    SEND_FORM,
-    SET_TOUCHED,
+    FORM_ACTIONS,
     type ITouched,
     type IFormState,
     type IErrors,
@@ -19,35 +13,35 @@ import {
 
 const setIsSending = (value: boolean): IAction => {
     return {
-        type: SET_IS_SENDING,
+        type: FORM_ACTIONS.SET_IS_SENDING,
         payload: value,
     }
 }
 
 const setIsCanceling = (value: boolean): IAction => {
     return {
-        type: SET_IS_CANCELING,
+        type: FORM_ACTIONS.SET_IS_CANCELING,
         payload: value,
     }
 }
 
 const setIsSuccess = (value: boolean): IAction => {
     return {
-        type: SET_IS_SUCCESS,
+        type: FORM_ACTIONS.SET_IS_SUCCESS,
         payload: value,
     }
 }
 
 const setErrors = (value: IErrors): IAction => {
     return {
-        type: SET_ERRORS,
+        type: FORM_ACTIONS.SET_ERRORS,
         payload: { errors: value },
     }
 }
 
 const setTouched = (value: ITouched, silent = false): IAction => {
     return {
-        type: SET_TOUCHED,
+        type: FORM_ACTIONS.SET_TOUCHED,
         payload: { touched: value },
         silent,
     }
@@ -55,7 +49,7 @@ const setTouched = (value: ITouched, silent = false): IAction => {
 
 const setSendError = (value: any): IAction => {
     return {
-        type: SET_SEND_ERROR,
+        type: FORM_ACTIONS.SET_SEND_ERROR,
         payload: value,
     }
 }
@@ -165,7 +159,7 @@ const createSend =
     async (action: IAction) => {
         const result = next(action)
 
-        if (action.type !== SEND_FORM) {
+        if (action.type !== FORM_ACTIONS.SEND_FORM) {
             return result
         }
 

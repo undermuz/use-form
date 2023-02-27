@@ -1,18 +1,21 @@
 import type { IFormConfig } from "./useForm"
 import type { DispatchFunction, IStore } from "../utils/useReducer"
 import {
-    SEND_FORM,
+    FORM_ACTIONS,
     type IFormState,
     type ITouched,
     type IValues,
     type IValueTest,
     type ValidateFunction,
     type IErrors,
+    type IError,
 } from "./reducer"
 
 import { useCallback } from "react"
 
 import {
+    useSetCustomErrorByName,
+    useSetCustomErrors,
     useSetErrors,
     useSetFieldTouched,
     useSetFieldValue,
@@ -56,6 +59,8 @@ export interface IUseFormControl {
         checkOnlyFilled?: boolean
     ) => void
     setErrors: (newErrors: IErrors) => void
+    setCustomErrors: (newErrors: IErrors) => void
+    setCustomErrorByName: (name: string, error: IError) => void
 }
 
 const useFormControl = (
@@ -69,13 +74,15 @@ const useFormControl = (
     const setTests = useSetTests(props, store, dispatch)
     const setValidate = useSetValidate(props, store, dispatch)
     const setErrors = useSetErrors(props, store, dispatch)
+    const setCustomErrors = useSetCustomErrors(props, store, dispatch)
+    const setCustomErrorByName = useSetCustomErrorByName(props, store, dispatch)
     const setValue = useSetFieldValue(props, store, dispatch)
     const setTouchedByName = useSetFieldTouched(props, store, dispatch)
 
     const send = useCallback<SendFunction>((api: Function) => {
         return new Promise((onResolve, onReject) => {
             dispatch({
-                type: SEND_FORM,
+                type: FORM_ACTIONS.SEND_FORM,
                 payload: {
                     api,
                     onResolve,
@@ -94,6 +101,8 @@ const useFormControl = (
         setTests,
         setValidate,
         setErrors,
+        setCustomErrors,
+        setCustomErrorByName,
     }
 }
 

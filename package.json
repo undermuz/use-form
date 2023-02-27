@@ -20,7 +20,7 @@
   ],
   "scripts": {
     "test": "jest",
-    "lint": "eslint",
+    "lint": "eslint && tsc --noEmit",
     "build": "npm run build:tsup",
     "build:tsup": "tsup",
     "build:old": "node tools/cleanup && npm run build:cjs && npm run build:esm && npm run build:types",

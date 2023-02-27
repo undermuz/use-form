@@ -16,7 +16,7 @@ import useForm, {
     type UseFormConfig,
 } from "../useForm/useForm"
 
-import { SET_VALUES, type IValues } from "../useForm/reducer"
+import { FORM_ACTIONS, type IValues } from "../useForm/reducer"
 import useFormCore from "../useForm/useFormCore"
 
 const isDebug = false
@@ -33,7 +33,7 @@ const useCustomForm = (formSettings: IUseFormSettings): UseControlledForm => {
         // form.setValues(v)
 
         formState.dispatch({
-            type: SET_VALUES,
+            type: FORM_ACTIONS.SET_VALUES,
             payload: { values: v },
         })
     }, [])

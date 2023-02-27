@@ -31,6 +31,7 @@ const getInitialState = (
         touched: [],
         fields,
         errors: {},
+        customErrors: {},
     }
 }
 

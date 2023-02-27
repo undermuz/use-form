@@ -7,21 +7,41 @@ const IsFunction = (value: any): boolean =>
         {}.toString.call(value)
     )
 
-export const SET_VALUES = "set_values"
-export const SET_VALUE = "set_value"
-export const SET_TESTS = "set_tests"
-export const SET_TOUCHED_FIELD = "set_touched_field"
-export const SET_TOUCHED = "set_touched"
-export const SET_ERRORS = "set_errors"
-export const SET_FIELDS = "set_fields"
-export const SET_VALIDATE = "set_validate"
-export const SET_IS_SENDING = "set_is_sending"
-export const SET_IS_CANCELING = "set_is_canceling"
-export const SET_IS_SUCCESS = "set_is_success"
-export const SET_SEND_ERROR = "set_send_error"
+const SET_VALUES = "set_values"
+const SET_VALUE = "set_value"
+const SET_TESTS = "set_tests"
+const SET_TOUCHED_FIELD = "set_touched_field"
+const SET_TOUCHED = "set_touched"
+const SET_ERRORS = "set_errors"
+const SET_CUSTOM_ERRORS = "set_custom_errors"
+const SET_CUSTOM_ERROR_FIELD = "set_custom_error_field"
+const SET_FIELDS = "set_fields"
+const SET_VALIDATE = "set_validate"
+const SET_IS_SENDING = "set_is_sending"
+const SET_IS_CANCELING = "set_is_canceling"
+const SET_IS_SUCCESS = "set_is_success"
+const SET_SEND_ERROR = "set_send_error"
+const VALIDATE_FORM = "validate_form"
+const SEND_FORM = "send_form"
 
-export const VALIDATE_FORM = "validate_form"
-export const SEND_FORM = "send_form"
+export const FORM_ACTIONS = {
+    SET_ERRORS,
+    SET_VALUES,
+    SET_VALUE,
+    SET_TESTS,
+    SET_TOUCHED_FIELD,
+    SET_TOUCHED,
+    SET_CUSTOM_ERRORS,
+    SET_CUSTOM_ERROR_FIELD,
+    SET_FIELDS,
+    SET_VALIDATE,
+    SET_IS_SENDING,
+    SET_IS_CANCELING,
+    SET_IS_SUCCESS,
+    SET_SEND_ERROR,
+    VALIDATE_FORM,
+    SEND_FORM,
+}
 
 export type IValueTest = [Array<string>, Array<Function>, string?]
 
@@ -62,17 +82,18 @@ export interface IFormState {
     touched: ITouched
     fields: IFields
     errors: IErrors
+    customErrors: IErrors
 }
 
 export const valuesReducer = (state: IValues, action: IAction): IValues => {
     switch (action.type) {
-        case SET_VALUES:
+        case FORM_ACTIONS.SET_VALUES:
             if (IsFunction(action.payload.values)) {
                 return action.payload.values(state)
             }
 
             return action.payload.values
-        case SET_VALUE:
+        case FORM_ACTIONS.SET_VALUE:
             if (IsFunction(action.payload.value)) {
                 return {
                     ...state,
@@ -96,7 +117,7 @@ export const testsReducer = (
     action: IAction
 ): IValueTest[] => {
     switch (action.type) {
-        case SET_TESTS:
+        case FORM_ACTIONS.SET_TESTS:
             if (IsFunction(action.payload.tests)) {
                 return action.payload.tests(state)
             }
@@ -109,13 +130,13 @@ export const testsReducer = (
 
 export const touchedReducer = (state: ITouched, action: IAction): ITouched => {
     switch (action.type) {
-        case SET_TOUCHED:
+        case FORM_ACTIONS.SET_TOUCHED:
             if (IsFunction(action.payload.touched)) {
                 return action.payload.touched(state)
             }
 
             return action.payload.touched
-        case SET_TOUCHED_FIELD: {
+        case FORM_ACTIONS.SET_TOUCHED_FIELD: {
             const { name, value = true } = action.payload
 
             let newTouched = state
@@ -135,7 +156,7 @@ export const touchedReducer = (state: ITouched, action: IAction): ITouched => {
 
 export const errorsReducer = (state: IErrors, action: IAction): IErrors => {
     switch (action.type) {
-        case SET_ERRORS:
+        case FORM_ACTIONS.SET_ERRORS:
             if (IsFunction(action.payload.errors)) {
                 return action.payload.errors(state)
             }
@@ -146,9 +167,33 @@ export const errorsReducer = (state: IErrors, action: IAction): IErrors => {
     }
 }
 
+export const customErrorsReducer = (
+    state: IErrors,
+    action: IAction
+): IErrors => {
+    switch (action.type) {
+        case FORM_ACTIONS.SET_CUSTOM_ERRORS:
+            if (IsFunction(action.payload.errors)) {
+                return action.payload.errors(state)
+            }
+
+            return action.payload.errors
+        case FORM_ACTIONS.SET_CUSTOM_ERROR_FIELD: {
+            const { name, value } = action.payload as {
+                name: string
+                value: IError
+            }
+
+            return { ...state, [name]: value }
+        }
+        default:
+            return state
+    }
+}
+
 export const fieldsReducer = (state: IFields, action: IAction): IFields => {
     switch (action.type) {
-        case SET_FIELDS:
+        case FORM_ACTIONS.SET_FIELDS:
             if (IsFunction(action.payload.fields)) {
                 return action.payload.fields(state)
             }
@@ -164,7 +209,7 @@ export const validateReducer = (
     action: IAction
 ): ValidateFunction => {
     switch (action.type) {
-        case SET_VALIDATE:
+        case FORM_ACTIONS.SET_VALIDATE:
             if (!action.payload.validate) {
                 return getFormErrors
             }
@@ -177,7 +222,7 @@ export const validateReducer = (
 
 export const isSendingReducer = (state: boolean, action: IAction): boolean => {
     switch (action.type) {
-        case SET_IS_SENDING:
+        case FORM_ACTIONS.SET_IS_SENDING:
             return Boolean(action.payload)
         default:
             return state
@@ -189,7 +234,7 @@ export const isCancelingReducer = (
     action: IAction
 ): boolean => {
     switch (action.type) {
-        case SET_IS_CANCELING:
+        case FORM_ACTIONS.SET_IS_CANCELING:
             return Boolean(action.payload)
         default:
             return state
@@ -198,7 +243,7 @@ export const isCancelingReducer = (
 
 export const isSuccessReducer = (state: boolean, action: IAction): boolean => {
     switch (action.type) {
-        case SET_IS_SUCCESS:
+        case FORM_ACTIONS.SET_IS_SUCCESS:
             return Boolean(action.payload)
         default:
             return state
@@ -207,7 +252,7 @@ export const isSuccessReducer = (state: boolean, action: IAction): boolean => {
 
 export const sendErrorReducer = (state: any, action: IAction) => {
     switch (action.type) {
-        case SET_SEND_ERROR:
+        case FORM_ACTIONS.SET_SEND_ERROR:
             return action.payload || null
         default:
             return state
@@ -222,6 +267,7 @@ export const formReducer = (state: IFormState, action: IAction): IFormState => {
         tests: testsReducer(state.tests, action),
         touched: touchedReducer(state.touched, action),
         errors: errorsReducer(state.errors, action),
+        customErrors: customErrorsReducer(state.customErrors, action),
         validate: validateReducer(state.validate, action),
         isSending: isSendingReducer(state.isSending, action),
         isCanceling: isCancelingReducer(state.isCanceling, action),
