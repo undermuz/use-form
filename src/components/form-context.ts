@@ -39,7 +39,7 @@ const DEF_VALUES: UseFormConfig = {
     setValidate: (_newValidate, _silent, _checkOnlyFilled) => {},
     setErrors: (_newErrors) => {},
     setCustomErrors: (_newErrors) => {},
-    setCustomErrorByName: (name, error) => {},
+    setCustomErrorByName: (_name, _error) => {},
 
     store: {
         getState: () => {
