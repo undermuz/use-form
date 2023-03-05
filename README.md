@@ -12,6 +12,8 @@ React library for build forms
 
 ## Basic usage
 
+[Storybook](https://undermuz.github.io/use-form/)
+
 ### Setup form
 
 For example, setup a login form with username and password fields with rules
