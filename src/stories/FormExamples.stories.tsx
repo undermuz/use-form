@@ -1,8 +1,10 @@
 import type { ComponentMeta } from "@storybook/react"
 import { type FC } from "react"
-import LoginForm from "./form-examples/login-form"
+import ChakraUiExample from "./form-examples/chakra-ui"
+import BrowserInputsExample from "./form-examples/browser-inputs"
+import DatePickerExample from "./form-examples/date-picker"
 
-export { LoginForm }
+export { ChakraUiExample, BrowserInputsExample, DatePickerExample }
 
 const FormExamples: FC = () => {
     return null

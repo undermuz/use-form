@@ -45,7 +45,7 @@ export type UseFormFieldRuleFunction = (v: unknown) => boolean
 export type IUseFormFieldRule = [UseFormFieldRuleFunction[], string?]
 export interface IUseFormField {
     label: string
-    initialValue?: string
+    initialValue?: any
     rules?: IUseFormFieldRule[]
 }
 

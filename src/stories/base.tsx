@@ -1,10 +1,17 @@
-import { type FC, type PropsWithChildren, type ReactNode, useEffect } from "react"
+import {
+    type FC,
+    type PropsWithChildren,
+    type ReactNode,
+    useEffect,
+    Fragment,
+} from "react"
 
 import { Box, ChakraProvider, HStack, useColorMode } from "@chakra-ui/react"
 import { useDarkMode } from "storybook-dark-mode"
 
 type BaseStoryLayoutProps = PropsWithChildren<{
     left?: ReactNode
+    isChakra?: boolean
 }>
 
 const DarkMode: FC = () => {
@@ -19,10 +26,16 @@ const DarkMode: FC = () => {
     return null
 }
 
-const BaseStoryLayout: FC<BaseStoryLayoutProps> = ({ left, children }) => {
+const BaseStoryLayout: FC<BaseStoryLayoutProps> = ({
+    left,
+    children,
+    isChakra = false,
+}) => {
+    const Wrapper = isChakra ? ChakraProvider : Fragment
+
     return (
-        <ChakraProvider>
-            <DarkMode />
+        <Wrapper>
+            {isChakra && <DarkMode />}
             <HStack alignItems={"flex-start"}>
                 <Box w="40%" p={"md"}>
                     {left}
@@ -30,7 +43,7 @@ const BaseStoryLayout: FC<BaseStoryLayoutProps> = ({ left, children }) => {
 
                 <Box w="60%">{children}</Box>
             </HStack>
-        </ChakraProvider>
+        </Wrapper>
     )
 }
 

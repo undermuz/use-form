@@ -4,6 +4,8 @@ import {
     useCallback,
     useMemo,
     useState,
+    type ChangeEvent,
+    type FocusEvent,
 } from "react"
 import type { IError } from "../useForm/reducer"
 import { useFormContext } from "./form-context"
@@ -25,16 +27,16 @@ export interface IInputProps {
     label: string
     disabled: boolean
     value: any
-    onChange: Function
-    onFocus: Function
-    onBlur: Function
+    onChange: (event: ChangeEvent<HTMLInputElement>) => void
+    onFocus: (event: FocusEvent<HTMLInputElement>) => void
+    onBlur: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
 export interface IConnectedProps {
     inputProps: IInputProps
 
     name: string
-    value: string
+    value: any
     label: string
     errors: IError | null
     disabled: boolean

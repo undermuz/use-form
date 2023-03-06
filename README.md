@@ -6,6 +6,8 @@ React library for build forms
 
 `npm i @undermuz/use-form`
 
+[NPM: @undermuz/use-form](https://www.npmjs.com/package/@undermuz/use-form)
+
 ## Update
 
 `npm update @undermuz/use-form`
@@ -23,7 +25,7 @@ Every rule is array: `[yourFnArray, errorText]`, yourFnArray is array of functio
 This example uses built-in JS function `Boolean` to validate input's values
 
 ```javascript
-    const form = useForm({
+    const formConfig: IUseFormSettings = {
         fields: {
             username: {
                 label: "Login",
@@ -34,7 +36,11 @@ This example uses built-in JS function `Boolean` to validate input's values
                 rules: [[[Boolean], "Password is required"]],
             },
         },
-    })
+    }
+
+    ...
+
+    const form = useForm(formConfig)
 ```
 
 You should wrapp your inputs and components witch use form-hooks by FormContext.Provider
@@ -62,98 +68,291 @@ ConnectToForm provides current field's value to your component, and wait new val
 
 #### Browser's input
 
-```javascript
+[Storybook: browsers inputs example](https://undermuz.github.io/use-form/?path=/story/form-examples--browser-inputs-example)
+
+```tsx
+    type InputProps = Partial<IConnectedProps> & {
+        type?: string
+        placeholder?: string
+    }
 
     //Short-version
-    const Input: React.FC<IConnectedProps> = ({
+    const FormInputV1: React.FC<InputProps> = ({
         inputProps = {}, //Provides by ConnectToForm
         ...rest
     }) => {
         return (
-            <label>
-                {inputProps.label}
-                <input
-                    {..._.pick(rest, ["type", "placeholder"])}
-                    {...inputProps}
-                />
+            <label style={styles}>
+                {inputProps.label}:
+                <input {..._.pick(rest, ["type", "placeholder"])} {...inputProps} />
             </label>
         )
     }
 
     //Full-version
-    const Input: React.FC<IConnectedProps> = ({
-        type = "text",
-        placeholder = "",
-        name = "", //Provides by ConnectToForm
-        onChange, //Provides by ConnectToForm
-        label, //Provides by ConnectToForm
-        value, //Provides by ConnectToForm
-    }) => {
+    const FormInputV2: React.FC<InputProps> = (props) => {
+        const {
+            type = "text",
+            placeholder = "",
+            label, //Provides by ConnectToForm
+            name, //Provides by ConnectToForm
+            value, //Provides by ConnectToForm
+            onChange, //Provides by ConnectToForm
+            onBlur, //Provides by ConnectToForm
+        } = props
+
         return (
-            <label>
-                {label}
+            <div style={styles}>
+                <label htmlFor={name}>{label}:</label>
                 <input
                     type={type}
+                    id={name}
                     name={name}
+                    value={value}
                     placeholder={placeholder}
                     onChange={(e) => onChange?.(e.target.value)}
+                    onBlur={() => onBlur?.()}
+                />
+            </div>
+        )
+    }
+
+    ...
+    
+    <FormContext.Provider value={form}>
+        <ConnectToForm name="username">
+            <FormInputV1 placeholder="Enter your login" />
+        </ConnectToForm>
+
+        <ConnectToForm name="password">
+            <FormInputV2
+                type="password"
+                placeholder="Enter your password"
+            />
+        </ConnectToForm>
+    </FormContext.Provider>
+```
+
+#### Ui framework's input
+
+[Storybook: chakra-ui example](https://undermuz.github.io/use-form/?path=/story/form-examples--chakra-ui-example)
+
+```tsx
+    type InputProps = Partial<IConnectedProps> & {
+        type?: string
+        placeholder?: string
+        description?: string
+    }
+
+    const FormField: FC<PropsWithChildren<InputProps>> = (props) => {
+        const {
+            label,
+            description = null,
+            errors, //Provides by ConnectToForm
+            children,
+            hasError = false, //Provides by ConnectToForm
+        } = props
+
+        return (
+            <FormControl isInvalid={hasError}>
+                <FormLabel>{label}</FormLabel>
+
+                {children}
+
+                {description !== null && !hasError && (
+                    <FormHelperText>{description}</FormHelperText>
+                )}
+
+                {errors?.map((errorText, index) => {
+                    if (typeof errorText !== "string") {
+                        return null
+                    }
+
+                    return (
+                        <FormErrorMessage key={index}>{errorText}</FormErrorMessage>
+                    )
+                })}
+            </FormControl>
+        )
+    }
+
+    const FormInput: React.FC<InputProps> = (props) => {
+        const {
+            type = "text",
+            placeholder = "",
+            value, //Provides by ConnectToForm
+            onChange, //Provides by ConnectToForm
+            onBlur, //Provides by ConnectToForm
+        } = props
+
+        return (
+            <FormField {...props}>
+                <Input
+                    type={type}
+                    placeholder={placeholder}
+                    onChange={(e) => onChange?.(e.target.value)}
+                    onBlur={() => onBlur?.()}
                     value={value}
                 />
-            </label>
+            </FormField>
+        )
+    }
+
+    const ErrorBlock = () => {
+        const errors = useFormErrors()
+        const fields = useFormFields()
+
+        return (
+            <>
+                {Object.keys(errors).map((name) => (
+                    <>
+                        <p key={name}>{fields?.[name] || name}:</p>
+                        <ul>
+                            {errors[name].map((error, i) => (
+                                <li key={i}>{error as string}</li>
+                            ))}
+                        </ul>
+                    </>
+                ))}
+            </>
         )
     }
 
     ...
 
-    <ConnectToForm name="username">
-        <Input type="text" />
-    </ConnectToForm>
+    <VStack alignItems={"flex-start"}>
+        <ConnectToForm name="username">
+            <FormInput placeholder="Enter your login" />
+        </ConnectToForm>
 
-    <ConnectToForm name="password">
-        <Input type="password" />
-    </ConnectToForm>
+        <ConnectToForm name="password">
+            <FormInput
+                type="password"
+                placeholder="Enter your password"
+            />
+        </ConnectToForm>
+
+        <FormSubmit
+            as={Button}
+            onSend={onSend}
+            onSucceed={onSucceed}
+        >
+            {(status: EnumFormSubmitStatus) => {
+                if (status === EnumFormSubmitStatus.Sending) {
+                    return "Sending..."
+                }
+
+                return "Send"
+            }}
+        </FormSubmit>
+
+        <IfForm hasErrors>
+            <ErrorBlock />
+        </IfForm>
+    </VStack>
 ```
 
 #### Third-party components
 
-```javascript
-    const form = useForm({
+[Storybook: Date-picker example](https://undermuz.github.io/use-form/?path=/story/form-examples--date-picker-example)
+
+```tsx
+    const formConfig: IUseFormSettings = {
         fields: {
             date: {
-                label: "Start date",
+                label: "Date picker",
+                rules: [[[Boolean], "Date is required"]],
                 initialValue: new Date(),
-                rules: [
-                    [[Boolean], "Start date is required"],
-                    [[SomeDateValidationFunction], "Start date is invalid"]
-                ],
+            },
+            rangeDates: {
+                label: "Date picker: Range",
+                rules: [[[Boolean], "Username is required"]],
+                initialValue: [new Date(), new Date()],
             },
         },
-    })
+    }
+
+    const form = useForm(formConfig)
     
     ...
 
-    const DateInput: React.FC<IConnectedProps> = ({
-        label, //Provides by ConnectToForm
-        value, //Provides by ConnectToForm
-        onChange, //Provides by ConnectToForm
-        ...rest
-    }) => {
+    type InputProps = Partial<IConnectedProps> & {
+        type?: string
+        placeholder?: string
+        description?: string
+    }
+
+    const FormField: FC<PropsWithChildren<InputProps>> = (props) => {
+        const {
+            label,
+            description = null,
+            errors, //Provides by ConnectToForm
+            children,
+            hasError = false, //Provides by ConnectToForm
+        } = props
+
         return (
-            <label>
-                {label}
-                <DateTime
-                    {...rest}
-                    value={fromDate(value)}
-                    onChange={(m) => onChange(m.toDate())}
-                />
-            </label>
+            <FormControl isInvalid={hasError}>
+                <FormLabel>{label}</FormLabel>
+
+                {children}
+
+                {description !== null && !hasError && (
+                    <FormHelperText>{description}</FormHelperText>
+                )}
+
+                {errors?.map((errorText, index) => {
+                    if (typeof errorText !== "string") {
+                        return null
+                    }
+
+                    return (
+                        <FormErrorMessage key={index}>{errorText}</FormErrorMessage>
+                    )
+                })}
+            </FormControl>
+        )
+    }
+
+    const FormDatePicker: React.FC<InputProps & { isRange?: boolean }> = (
+        props
+    ) => {
+        const {
+            isRange = false,
+            name, //Provides by ConnectToForm
+            value, //Provides by ConnectToForm
+            onChange, //Provides by ConnectToForm
+        } = props
+
+        return (
+            <FormField {...props}>
+                {!isRange && (
+                    <SingleDatepicker
+                        name={name}
+                        date={value}
+                        onDateChange={(date) => onChange?.(date)}
+                    />
+                )}
+
+                {isRange && (
+                    <RangeDatepicker
+                        name={name}
+                        selectedDates={value}
+                        onDateChange={(date) => onChange?.(date)}
+                    />
+                )}
+            </FormField>
         )
     }
 
     ...
 
     <ConnectToForm name="date">
-        <DateInput dateFormat={"YYYY-MM-DD"} />
+        <FormDatePicker />
+    </ConnectToForm>
+
+    <ConnectToForm name="rangeDates">
+        <FormDatePicker isRange />
     </ConnectToForm>
 ```
 
