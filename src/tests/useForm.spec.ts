@@ -3,9 +3,9 @@ import "@testing-library/jest-dom"
 import {
     act,
     renderHook,
-    type Renderer,
+    waitFor,
     type RenderHookResult,
-} from "@testing-library/react-hooks/pure"
+} from "@testing-library/react/pure"
 
 import useForm, {
     type IUseFormSettings,
@@ -29,15 +29,11 @@ describe("useForm", () => {
             },
         },
         options: {
-            debug: isDebug
-        }
+            debug: isDebug,
+        },
     }
 
-    let renderHookResults: RenderHookResult<
-        IUseFormSettings,
-        UseFormConfig,
-        Renderer<IUseFormSettings>
-    >
+    let renderHookResults: RenderHookResult<UseFormConfig, IUseFormSettings>
 
     beforeAll(() => {
         renderHookResults = renderHook((config) => useForm(config), {
@@ -45,53 +41,63 @@ describe("useForm", () => {
         })
     })
 
-    test("initials values", () => {
+    test("initials values", async () => {
         const { result } = renderHookResults
 
-        expect(result.current.values.username).toBe("")
-        expect(result.current.values.password).toBe("")
+        await waitFor(() => expect(result.current.values.username).toBe(""))
+        await waitFor(() => expect(result.current.values.password).toBe(""))
     })
 
-    test("set values", () => {
+    test("set values", async () => {
         const { result } = renderHookResults
 
         act(() => result.current.setValue("username", "some_user_name"))
         act(() => result.current.setValue("password", "some_password"))
 
-        expect(result.current.values.username).toBe("some_user_name")
-        expect(result.current.values.password).toBe("some_password")
+        await waitFor(() =>
+            expect(result.current.values.username).toBe("some_user_name")
+        )
+        await waitFor(() =>
+            expect(result.current.values.password).toBe("some_password")
+        )
     })
 
-    test("validate values without any error", () => {
+    test("validate values without any error", async () => {
         const { result } = renderHookResults
 
         act(() => result.current.setTouchedByName("username"))
         act(() => result.current.setTouchedByName("password"))
 
-        expect(result.current.errors).toEqual({})
+        await waitFor(() => expect(result.current.errors).toEqual({}))
     })
 
-    test("validate values with errors", () => {
+    test("validate values with errors", async () => {
         const { result } = renderHookResults
 
         act(() => result.current.setValue("username", ""))
         act(() => result.current.setValue("password", ""))
 
-        expect(result.current.errors).toEqual({
-            password: ["Password is required"],
-            username: ["Username is required"],
-        })
+        await waitFor(() =>
+            expect(result.current.errors).toEqual({
+                password: ["Password is required"],
+                username: ["Username is required"],
+            })
+        )
     })
 
-    test("correct errors", () => {
+    test("correct errors", async () => {
         const { result } = renderHookResults
 
         act(() => result.current.setValue("username", "some_user_name_2"))
         act(() => result.current.setValue("password", "some_password_2"))
 
-        expect(result.current.values.username).toBe("some_user_name_2")
-        expect(result.current.values.password).toBe("some_password_2")
+        await waitFor(() =>
+            expect(result.current.values.username).toBe("some_user_name_2")
+        )
+        await waitFor(() =>
+            expect(result.current.values.password).toBe("some_password_2")
+        )
 
-        expect(result.current.errors).toEqual({})
+        await waitFor(() => expect(result.current.errors).toEqual({}))
     })
 })

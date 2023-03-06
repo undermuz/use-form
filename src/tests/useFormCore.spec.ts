@@ -3,9 +3,9 @@ import "@testing-library/jest-dom"
 import {
     act,
     renderHook,
-    type Renderer,
+    waitFor,
     type RenderHookResult,
-} from "@testing-library/react-hooks/pure"
+} from "@testing-library/react/pure"
 
 import { useCallback } from "react"
 
@@ -62,11 +62,7 @@ describe("useFormCore", () => {
         },
     }
 
-    let renderHookResults: RenderHookResult<
-        IUseFormSettings,
-        UseFormConfig,
-        Renderer<IUseFormSettings>
-    >
+    let renderHookResults: RenderHookResult<UseFormConfig, IUseFormSettings>
 
     const getForm = () => {
         const { result } = renderHookResults
@@ -80,44 +76,54 @@ describe("useFormCore", () => {
         })
     })
 
-    test("initials values", () => {
-        expect(getForm().values.username).toBe("")
-        expect(getForm().values.password).toBe("")
+    test("initials values", async () => {
+        await waitFor(() => expect(getForm().values.username).toBe(""))
+        await waitFor(() => expect(getForm().values.password).toBe(""))
     })
 
-    test("set values", () => {
+    test("set values", async () => {
         act(() => getForm().setValue("username", "some_user_name"))
         act(() => getForm().setValue("password", "some_password"))
 
-        expect(getForm().values.username).toBe("some_user_name")
-        expect(getForm().values.password).toBe("some_password")
+        await waitFor(() =>
+            expect(getForm().values.username).toBe("some_user_name")
+        )
+        await waitFor(() =>
+            expect(getForm().values.password).toBe("some_password")
+        )
     })
 
-    test("validate values without any error", () => {
+    test("validate values without any error", async () => {
         act(() => getForm().setTouchedByName("username"))
         act(() => getForm().setTouchedByName("password"))
 
-        expect(getForm().errors).toEqual({})
+        await waitFor(() => expect(getForm().errors).toEqual({}))
     })
 
-    test("validate values with errors", () => {
+    test("validate values with errors", async () => {
         act(() => getForm().setValue("username", ""))
         act(() => getForm().setValue("password", ""))
 
-        expect(getForm().errors).toEqual({
-            password: ["Password is required"],
-            username: ["Username is required"],
-        })
+        await waitFor(() =>
+            expect(getForm().errors).toEqual({
+                password: ["Password is required"],
+                username: ["Username is required"],
+            })
+        )
     })
 
-    test("correct errors", () => {
+    test("correct errors", async () => {
         act(() => getForm().setValue("username", "some_user_name_2"))
         act(() => getForm().setValue("password", "some_password_2"))
 
-        expect(getForm().values.username).toBe("some_user_name_2")
-        expect(getForm().values.password).toBe("some_password_2")
+        await waitFor(() =>
+            expect(getForm().values.username).toBe("some_user_name_2")
+        )
+        await waitFor(() =>
+            expect(getForm().values.password).toBe("some_password_2")
+        )
 
-        expect(getForm().errors).toEqual({})
+        await waitFor(() => expect(getForm().errors).toEqual({}))
     })
 })
 
@@ -140,11 +146,7 @@ describe("useFormCore/external", () => {
         },
     }
 
-    let renderHookResults: RenderHookResult<
-        IUseFormSettings,
-        UseControlledForm,
-        Renderer<IUseFormSettings>
-    >
+    let renderHookResults: RenderHookResult<UseControlledForm, IUseFormSettings>
 
     const getForm = () => {
         const { result } = renderHookResults
@@ -164,9 +166,9 @@ describe("useFormCore/external", () => {
         })
     })
 
-    test("initials values", () => {
-        expect(getForm()[2].values.username).toBe("123")
-        expect(getForm()[2].values.password).toBe("321")
+    test("initials values", async () => {
+        await waitFor(() => expect(getForm()[2].values.username).toBe("123"))
+        await waitFor(() => expect(getForm()[2].values.password).toBe("321"))
     })
 
     test("set values by external state", async () => {
@@ -177,22 +179,34 @@ describe("useFormCore/external", () => {
             })
         )
 
-        expect(getForm()[2].values.username).toBe("some_user_name")
-        expect(getForm()[2].values.password).toBe("some_password")
+        await waitFor(() =>
+            expect(getForm()[2].values.username).toBe("some_user_name")
+        )
+        await waitFor(() =>
+            expect(getForm()[2].values.password).toBe("some_password")
+        )
     })
 
     test("set values by internal methods", async () => {
         act(() => getForm()[2].setValue("username", "some_user_name_2"))
         act(() => getForm()[2].setValue("password", "some_password_2"))
 
-        expect(getForm()[2].values.username).toBe("some_user_name_2")
-        expect(getForm()[2].values.password).toBe("some_password_2")
+        await waitFor(() =>
+            expect(getForm()[2].values.username).toBe("some_user_name_2")
+        )
+        await waitFor(() =>
+            expect(getForm()[2].values.password).toBe("some_password_2")
+        )
 
-        expect(getForm()[0].username).toBe("some_user_name_2")
-        expect(getForm()[0].password).toBe("some_password_2")
+        await waitFor(() =>
+            expect(getForm()[0].username).toBe("some_user_name_2")
+        )
+        await waitFor(() =>
+            expect(getForm()[0].password).toBe("some_password_2")
+        )
     })
 
-    test("validate values without any error", () => {
+    test("validate values without any error", async () => {
         act(() => getForm()[2].setTouchedByName("username"))
         act(() => getForm()[2].setTouchedByName("password"))
 
@@ -207,10 +221,12 @@ describe("useFormCore/external", () => {
             })
         )
 
-        expect(getForm()[2].errors).toEqual({
-            password: ["Password is required"],
-            username: ["Username is required"],
-        })
+        await waitFor(() =>
+            expect(getForm()[2].errors).toEqual({
+                password: ["Password is required"],
+                username: ["Username is required"],
+            })
+        )
     })
 
     test("correct errors", async () => {
@@ -221,10 +237,14 @@ describe("useFormCore/external", () => {
             })
         )
 
-        expect(getForm()[2].values.username).toBe("some_user_name_3")
-        expect(getForm()[2].values.password).toBe("some_password_3")
+        await waitFor(() =>
+            expect(getForm()[2].values.username).toBe("some_user_name_3")
+        )
+        await waitFor(() =>
+            expect(getForm()[2].values.password).toBe("some_password_3")
+        )
 
-        expect(getForm()[2].errors).toEqual({})
+        await waitFor(() => expect(getForm()[2].errors).toEqual({}))
     })
 
     test("send form error", async () => {
@@ -238,18 +258,24 @@ describe("useFormCore/external", () => {
             )
         })
 
-        expect(mockOnSend.mock.calls.length).toBe(1)
+        await waitFor(() => expect(mockOnSend.mock.calls.length).toBe(1))
 
-        //@ts-ignore
-        expect(mockOnSend.mock.calls[0][0]).toEqual({
-            username: "some_user_name_3",
-            password: "some_password_3",
-        })
+        await waitFor(() =>
+            //@ts-ignore
+            expect(mockOnSend.mock.calls[0][0]).toEqual({
+                username: "some_user_name_3",
+                password: "some_password_3",
+            })
+        )
 
-        expect(getForm()[2].values.username).toBe("some_user_name_3")
-        expect(getForm()[2].values.password).toBe("some_password_3")
+        await waitFor(() =>
+            expect(getForm()[2].values.username).toBe("some_user_name_3")
+        )
+        await waitFor(() =>
+            expect(getForm()[2].values.password).toBe("some_password_3")
+        )
 
-        expect(getForm()[2].errors).toEqual({})
+        await waitFor(() => expect(getForm()[2].errors).toEqual({}))
     })
 
     test("send form success", async () => {
@@ -259,17 +285,23 @@ describe("useFormCore/external", () => {
             await getForm()[2].send(mockOnSend)
         })
 
-        expect(mockOnSend.mock.calls.length).toBe(1)
+        await waitFor(() => expect(mockOnSend.mock.calls.length).toBe(1))
 
-        //@ts-ignore
-        expect(mockOnSend.mock.calls[0][0]).toEqual({
-            username: "some_user_name_3",
-            password: "some_password_3",
-        })
+        await waitFor(() =>
+            //@ts-ignore
+            expect(mockOnSend.mock.calls[0][0]).toEqual({
+                username: "some_user_name_3",
+                password: "some_password_3",
+            })
+        )
 
-        expect(getForm()[2].values.username).toBe("some_user_name_3")
-        expect(getForm()[2].values.password).toBe("some_password_3")
+        await waitFor(() =>
+            expect(getForm()[2].values.username).toBe("some_user_name_3")
+        )
+        await waitFor(() =>
+            expect(getForm()[2].values.password).toBe("some_password_3")
+        )
 
-        expect(getForm()[2].errors).toEqual({})
+        await waitFor(() => expect(getForm()[2].errors).toEqual({}))
     })
 })

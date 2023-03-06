@@ -3,9 +3,9 @@ import "@testing-library/jest-dom"
 import {
     act,
     renderHook,
-    type Renderer,
+    waitFor,
     type RenderHookResult,
-} from "@testing-library/react-hooks/pure"
+} from "@testing-library/react/pure"
 
 import useForm, {
     type IUseFormSettings,
@@ -36,11 +36,7 @@ describe("useFormOnError", () => {
         },
     }
 
-    let renderHookResults: RenderHookResult<
-        IUseFormSettings,
-        UseFormConfig,
-        Renderer<IUseFormSettings>
-    >
+    let renderHookResults: RenderHookResult<UseFormConfig, IUseFormSettings>
 
     const getForm = () => {
         const { result } = renderHookResults
@@ -54,47 +50,55 @@ describe("useFormOnError", () => {
         })
     })
 
-    test("initials values", () => {
-        expect(getForm().values.username).toBe("")
-        expect(getForm().values.password).toBe("")
+    test("initials values", async () => {
+        await waitFor(() => expect(getForm().values.username).toBe(""))
+        await waitFor(() => expect(getForm().values.password).toBe(""))
     })
 
-    test("set values", () => {
+    test("set values", async () => {
         act(() => getForm().setValue("username", "some_user_name"))
         act(() => getForm().setValue("password", "some_password"))
 
-        expect(getForm().values.username).toBe("some_user_name")
-        expect(getForm().values.password).toBe("some_password")
+        await waitFor(() =>
+            expect(getForm().values.username).toBe("some_user_name")
+        )
+        await waitFor(() =>
+            expect(getForm().values.password).toBe("some_password")
+        )
     })
 
-    test("validate values without any error", () => {
+    test("validate values without any error", async () => {
         act(() => getForm().setTouchedByName("username"))
         act(() => getForm().setTouchedByName("password"))
 
-        expect(mockOnError.mock.calls.length).toBe(0)
+        await waitFor(() => expect(mockOnError.mock.calls.length).toBe(0))
 
-        expect(getForm().errors).toEqual({})
+        await waitFor(() => expect(getForm().errors).toEqual({}))
     })
 
-    test("validate values with errors", () => {
+    test("validate values with errors", async () => {
         act(() => getForm().setValue("username", ""))
         act(() => getForm().setValue("password", ""))
 
-        expect(mockOnError.mock.calls.length).toBe(2)
+        await waitFor(() => expect(mockOnError.mock.calls.length).toBe(2))
 
         //@ts-ignore
-        expect(mockOnError.mock.calls[1][0]).toEqual({
-            password: ["Password is required"],
-            username: ["Username is required"],
-        })
+        await waitFor(() =>
+            expect(mockOnError.mock.calls[1][0]).toEqual({
+                password: ["Password is required"],
+                username: ["Username is required"],
+            })
+        )
 
-        expect(getForm().errors).toEqual({
-            password: ["Password is required"],
-            username: ["Username is required"],
-        })
+        await waitFor(() =>
+            expect(getForm().errors).toEqual({
+                password: ["Password is required"],
+                username: ["Username is required"],
+            })
+        )
     })
 
-    test("custom errors", () => {
+    test("custom errors", async () => {
         act(() =>
             getForm().setCustomErrorByName("username", [
                 "custom error",
@@ -104,89 +108,107 @@ describe("useFormOnError", () => {
             ])
         )
 
-        expect(mockOnError.mock.calls.length).toBe(3)
+        await waitFor(() => expect(mockOnError.mock.calls.length).toBe(3))
 
-        expect(mockOnError.mock.calls[2][0]).toEqual({
-            password: ["Password is required"],
-            username: [
-                "Username is required",
-                "custom error",
-                {
-                    security: ["0.5"],
-                },
-            ],
-        })
+        await waitFor(() =>
+            expect(mockOnError.mock.calls[2][0]).toEqual({
+                password: ["Password is required"],
+                username: [
+                    "Username is required",
+                    "custom error",
+                    {
+                        security: ["0.5"],
+                    },
+                ],
+            })
+        )
 
-        expect(getForm().errors).toEqual({
-            password: ["Password is required"],
-            username: [
-                "Username is required",
-                "custom error",
-                {
-                    security: ["0.5"],
-                },
-            ],
-        })
+        await waitFor(() =>
+            expect(getForm().errors).toEqual({
+                password: ["Password is required"],
+                username: [
+                    "Username is required",
+                    "custom error",
+                    {
+                        security: ["0.5"],
+                    },
+                ],
+            })
+        )
 
-        expect(getForm().customErrors).toEqual({
-            username: [
-                "custom error",
-                {
-                    security: ["0.5"],
-                },
-            ],
-        })
+        await waitFor(() =>
+            expect(getForm().customErrors).toEqual({
+                username: [
+                    "custom error",
+                    {
+                        security: ["0.5"],
+                    },
+                ],
+            })
+        )
 
         act(() => getForm().setValue("username", "some_user_name_2"))
-        expect(getForm().values.username).toBe("some_user_name_2")
+        await waitFor(() =>
+            expect(getForm().values.username).toBe("some_user_name_2")
+        )
 
-        expect(mockOnError.mock.calls.length).toBe(4)
+        await waitFor(() => expect(mockOnError.mock.calls.length).toBe(4))
 
-        expect(mockOnError.mock.calls[3][0]).toEqual({
-            password: ["Password is required"],
-            username: [
-                "custom error",
-                {
-                    security: ["0.5"],
-                },
-            ],
-        })
+        await waitFor(() =>
+            expect(mockOnError.mock.calls[3][0]).toEqual({
+                password: ["Password is required"],
+                username: [
+                    "custom error",
+                    {
+                        security: ["0.5"],
+                    },
+                ],
+            })
+        )
 
-        expect(getForm().errors).toEqual({
-            password: ["Password is required"],
-            username: [
-                "custom error",
-                {
-                    security: ["0.5"],
-                },
-            ],
-        })
+        await waitFor(() =>
+            expect(getForm().errors).toEqual({
+                password: ["Password is required"],
+                username: [
+                    "custom error",
+                    {
+                        security: ["0.5"],
+                    },
+                ],
+            })
+        )
 
-        expect(getForm().customErrors).toEqual({
-            username: [
-                "custom error",
-                {
-                    security: ["0.5"],
-                },
-            ],
-        })
+        await waitFor(() =>
+            expect(getForm().customErrors).toEqual({
+                username: [
+                    "custom error",
+                    {
+                        security: ["0.5"],
+                    },
+                ],
+            })
+        )
     })
 
-    test("correct errors", () => {
+    test("correct errors", async () => {
         act(() => getForm().setCustomErrorByName("username", []))
         act(() => getForm().setValue("password", "some_password_2"))
 
-        expect(getForm().values.password).toBe("some_password_2")
+        await waitFor(() =>
+            expect(getForm().values.password).toBe("some_password_2")
+        )
 
-        expect(mockOnError.mock.calls.length).toBe(6)
+        await waitFor(() => expect(mockOnError.mock.calls.length).toBe(6))
 
         //@ts-ignore
-        expect(mockOnError.mock.calls[5][0]).toEqual({})
+        await waitFor(() => expect(mockOnError.mock.calls[5][0]).toEqual({}))
 
-        expect(getForm().errors).toEqual({})
+        await waitFor(() => expect(getForm().errors).toEqual({}))
 
-        expect(getForm().customErrors).toEqual({
-            username: [],
-        })
+        await waitFor(() =>
+            expect(getForm().customErrors).toEqual({
+                username: [],
+            })
+        )
     })
 })

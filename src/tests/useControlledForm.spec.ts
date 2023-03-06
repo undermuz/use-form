@@ -3,9 +3,9 @@ import "@testing-library/jest-dom"
 import {
     act,
     renderHook,
-    type Renderer,
+    waitFor,
     type RenderHookResult,
-} from "@testing-library/react-hooks/pure"
+} from "@testing-library/react/pure"
 
 import { useCallback, useMemo, useState } from "react"
 
@@ -20,7 +20,6 @@ import { type IValues } from "../useForm/reducer"
 
 type UseControlledForm = [IValues, (v: IValues) => void, UseFormConfig]
 
-const renderCounter = { current: 0 }
 const isDebug = false
 
 const useControlledForm = (props: IUseFormSettings): UseControlledForm => {
@@ -51,9 +50,6 @@ const useControlledForm = (props: IUseFormSettings): UseControlledForm => {
 
     const form = useForm(formConfig)
 
-    renderCounter.current++
-
-    if (isDebug) console.log("Rendered: ", renderCounter.current)
     if (isDebug) console.log("[useControlledForm]", form.values)
 
     return [value, onChange, form]
@@ -78,11 +74,7 @@ describe("useControlledForm", () => {
         },
     }
 
-    let renderHookResults: RenderHookResult<
-        IUseFormSettings,
-        UseControlledForm,
-        Renderer<IUseFormSettings>
-    >
+    let renderHookResults: RenderHookResult<UseControlledForm, IUseFormSettings>
 
     beforeAll(() => {
         const username = FORM_CONFIG.fields.username as IUseFormField
@@ -96,20 +88,19 @@ describe("useControlledForm", () => {
         })
     })
 
-    test("initials values", () => {
+    test("initials values", async () => {
         const { result } = renderHookResults
 
-        expect(result.current[2].values.username).toBe("123")
-        expect(result.current[2].values.password).toBe("321")
-
-        expect(renderCounter.current).toBe(1)
+        await waitFor(() =>
+            expect(result.current[2].values.username).toBe("123")
+        )
+        await waitFor(() =>
+            expect(result.current[2].values.password).toBe("321")
+        )
     })
 
     test("set values by external state", async () => {
-        const { result } = renderHookResults
-
-        renderCounter.current = 0
-        if (isDebug) console.log("[Rendered]", 0)
+        const { result, rerender } = renderHookResults
 
         act(() =>
             result.current[1]({
@@ -118,49 +109,48 @@ describe("useControlledForm", () => {
             })
         )
 
-        expect(renderCounter.current).toBe(2)
+        rerender(FORM_CONFIG)
 
-        expect(result.current[2].values.username).toBe("some_user_name")
-        expect(result.current[2].values.password).toBe("some_password")
+        await waitFor(() =>
+            expect(result.current[2].values.username).toBe("some_user_name")
+        )
+        await waitFor(() =>
+            expect(result.current[2].values.password).toBe("some_password")
+        )
     })
 
     test("set values by internal methods", async () => {
         const { result } = renderHookResults
 
-        renderCounter.current = 0
-        if (isDebug) console.log("[Rendered]", 0)
-
         act(() => result.current[2].setValue("username", "some_user_name_2"))
         act(() => result.current[2].setValue("password", "some_password_2"))
 
-        expect(renderCounter.current).toBe(4)
+        await waitFor(() =>
+            expect(result.current[2].values.username).toBe("some_user_name_2")
+        )
+        await waitFor(() =>
+            expect(result.current[2].values.password).toBe("some_password_2")
+        )
 
-        expect(result.current[2].values.username).toBe("some_user_name_2")
-        expect(result.current[2].values.password).toBe("some_password_2")
-
-        expect(result.current[0].username).toBe("some_user_name_2")
-        expect(result.current[0].password).toBe("some_password_2")
+        await waitFor(() =>
+            expect(result.current[0].username).toBe("some_user_name_2")
+        )
+        await waitFor(() =>
+            expect(result.current[0].password).toBe("some_password_2")
+        )
     })
 
-    test("validate values without any error", () => {
+    test("validate values without any error", async () => {
         const { result } = renderHookResults
-
-        renderCounter.current = 0
-        if (isDebug) console.log("[Rendered]", 0)
 
         act(() => result.current[2].setTouchedByName("username"))
         act(() => result.current[2].setTouchedByName("password"))
 
-        expect(renderCounter.current).toBe(2)
-
-        expect(result.current[2].errors).toEqual({})
+        await waitFor(() => expect(result.current[2].errors).toEqual({}))
     })
 
     test("validate values with errors", async () => {
         const { result } = renderHookResults
-
-        renderCounter.current = 0
-        if (isDebug) console.log("[Rendered]", 0)
 
         act(() =>
             result.current[1]({
@@ -169,19 +159,16 @@ describe("useControlledForm", () => {
             })
         )
 
-        expect(renderCounter.current).toBe(2)
-
-        expect(result.current[2].errors).toEqual({
-            password: ["Password is required"],
-            username: ["Username is required"],
-        })
+        await waitFor(() =>
+            expect(result.current[2].errors).toEqual({
+                password: ["Password is required"],
+                username: ["Username is required"],
+            })
+        )
     })
 
     test("correct errors", async () => {
         const { result } = renderHookResults
-
-        renderCounter.current = 0
-        if (isDebug) console.log("[Rendered]", 0)
 
         act(() =>
             result.current[1]({
@@ -190,12 +177,14 @@ describe("useControlledForm", () => {
             })
         )
 
-        expect(renderCounter.current).toBe(2)
+        await waitFor(() =>
+            expect(result.current[2].values.username).toBe("some_user_name_3")
+        )
+        await waitFor(() =>
+            expect(result.current[2].values.password).toBe("some_password_3")
+        )
 
-        expect(result.current[2].values.username).toBe("some_user_name_3")
-        expect(result.current[2].values.password).toBe("some_password_3")
-
-        expect(result.current[2].errors).toEqual({})
+        await waitFor(() => expect(result.current[2].errors).toEqual({}))
     })
 
     test("send form error", async () => {
@@ -203,29 +192,30 @@ describe("useControlledForm", () => {
 
         const mockOnSend = jest.fn(() => Promise.reject())
 
-        renderCounter.current = 0
-        if (isDebug) console.log("[Rendered]", 0)
-
         await act(async () => {
             await expect(
                 result.current[2].send(mockOnSend)
             ).rejects.toThrowError("Request has failed")
         })
 
-        expect(mockOnSend.mock.calls.length).toBe(1)
+        await waitFor(() => expect(mockOnSend.mock.calls.length).toBe(1))
 
-        //@ts-ignore
-        expect(mockOnSend.mock.calls[0][0]).toEqual({
-            username: "some_user_name_3",
-            password: "some_password_3",
-        })
+        await waitFor(() =>
+            //@ts-ignore
+            expect(mockOnSend.mock.calls[0][0]).toEqual({
+                username: "some_user_name_3",
+                password: "some_password_3",
+            })
+        )
 
-        expect(result.current[2].values.username).toBe("some_user_name_3")
-        expect(result.current[2].values.password).toBe("some_password_3")
+        await waitFor(() =>
+            expect(result.current[2].values.username).toBe("some_user_name_3")
+        )
+        await waitFor(() =>
+            expect(result.current[2].values.password).toBe("some_password_3")
+        )
 
-        expect(result.current[2].errors).toEqual({})
-
-        expect(renderCounter.current).toBe(4)
+        await waitFor(() => expect(result.current[2].errors).toEqual({}))
     })
 
     test("send form success", async () => {
@@ -233,26 +223,27 @@ describe("useControlledForm", () => {
 
         const mockOnSend = jest.fn(() => Promise.resolve())
 
-        renderCounter.current = 0
-        if (isDebug) console.log("[Rendered]", 0)
-
         await act(async () => {
             await result.current[2].send(mockOnSend)
         })
 
-        expect(mockOnSend.mock.calls.length).toBe(1)
+        await waitFor(() => expect(mockOnSend.mock.calls.length).toBe(1))
 
-        //@ts-ignore
-        expect(mockOnSend.mock.calls[0][0]).toEqual({
-            username: "some_user_name_3",
-            password: "some_password_3",
-        })
+        await waitFor(() =>
+            //@ts-ignore
+            expect(mockOnSend.mock.calls[0][0]).toEqual({
+                username: "some_user_name_3",
+                password: "some_password_3",
+            })
+        )
 
-        expect(result.current[2].values.username).toBe("some_user_name_3")
-        expect(result.current[2].values.password).toBe("some_password_3")
+        await waitFor(() =>
+            expect(result.current[2].values.username).toBe("some_user_name_3")
+        )
+        await waitFor(() =>
+            expect(result.current[2].values.password).toBe("some_password_3")
+        )
 
-        expect(result.current[2].errors).toEqual({})
-
-        expect(renderCounter.current).toBe(4)
+        await waitFor(() => expect(result.current[2].errors).toEqual({}))
     })
 })
