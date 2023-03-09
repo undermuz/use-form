@@ -36,6 +36,15 @@ describe("useForm", () => {
 
     let renderHookResults: RenderHookResult<UseFormConfig, IUseFormSettings>
 
+    const waitForFilled = async (name: string, value: any = "") => {
+        const { result } = renderHookResults
+
+        await waitFor(() => expect(result.current.values[name]).toBe(value))
+        await waitFor(() =>
+            expect(result.current.getValues()[name]).toBe(value)
+        )
+    }
+
     beforeAll(() => {
         renderHookResults = renderHook((config) => useForm(config), {
             initialProps: FORM_CONFIG,
@@ -43,10 +52,8 @@ describe("useForm", () => {
     })
 
     test("initials values", async () => {
-        const { result } = renderHookResults
-
-        await waitFor(() => expect(result.current.values.username).toBe(""))
-        await waitFor(() => expect(result.current.values.password).toBe(""))
+        await waitForFilled("username", "")
+        await waitForFilled("password", "")
     })
 
     test("set values", async () => {
@@ -55,12 +62,8 @@ describe("useForm", () => {
         act(() => result.current.setValue("username", "some_user_name"))
         act(() => result.current.setValue("password", "some_password"))
 
-        await waitFor(() =>
-            expect(result.current.values.username).toBe("some_user_name")
-        )
-        await waitFor(() =>
-            expect(result.current.values.password).toBe("some_password")
-        )
+        await waitForFilled("username", "some_user_name")
+        await waitForFilled("password", "some_password")
     })
 
     test("validate values without any error", async () => {
@@ -92,12 +95,8 @@ describe("useForm", () => {
         act(() => result.current.setValue("username", "some_user_name_2"))
         act(() => result.current.setValue("password", "some_password_2"))
 
-        await waitFor(() =>
-            expect(result.current.values.username).toBe("some_user_name_2")
-        )
-        await waitFor(() =>
-            expect(result.current.values.password).toBe("some_password_2")
-        )
+        await waitForFilled("username", "some_user_name_2")
+        await waitForFilled("password", "some_password_2")
 
         await waitFor(() => expect(result.current.errors).toEqual({}))
     })

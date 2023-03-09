@@ -33,6 +33,7 @@ export interface IUseForm {
      */
     IsFormValid: (c: boolean) => boolean
     isFormValid: (c: boolean) => boolean
+    getErrors: () => IErrors
     store: IStore<IFormState>
     dispatch: DispatchFunction
     send: SendFunction

@@ -48,6 +48,7 @@ export interface IUseFormControl {
         checkOnlyFilled?: boolean,
         type?: string
     ) => void
+    getValues: () => IValues
     setTests: (
         newTests: IValueTest[],
         silent?: boolean,
@@ -69,6 +70,10 @@ const useFormControl = (
     dispatch: DispatchFunction
 ): IUseFormControl => {
     const setValues = useSetValues(props, store, dispatch)
+
+    const getValues = useCallback(() => {
+        return store.getState().values
+    }, [])
 
     const setTouched = useSetTouched(props, store, dispatch)
     const setTests = useSetTests(props, store, dispatch)
@@ -95,6 +100,7 @@ const useFormControl = (
     return {
         send,
         setValue,
+        getValues,
         setTouchedByName,
         setTouched,
         setValues,

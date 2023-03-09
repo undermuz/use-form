@@ -3,7 +3,7 @@ import type { FormState } from "./useFormState"
 
 import { useIsFormValid } from "./helpers"
 import { useFormControl } from "./useFormControl"
-import { useMemo } from "react"
+import { useCallback, useMemo, useRef } from "react"
 import type { IErrors } from "./reducer"
 
 const useFormCore = (
@@ -65,11 +65,19 @@ const useFormCore = (
         return allErrors
     }, [state.errors, state.customErrors])
 
+    const errorsRef = useRef(errors)
+    errorsRef.current = errors
+
+    const getErrors = useCallback(() => {
+        return errorsRef.current
+    }, [])
+
     return {
         ...state,
         ...formControl,
 
         errors,
+        getErrors,
 
         IsFormValid: validate,
         isFormValid: validate,
