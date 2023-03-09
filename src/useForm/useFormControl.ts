@@ -106,4 +106,4 @@ const useFormControl = (
     }
 }
 
-export default useFormControl
+export { useFormControl }

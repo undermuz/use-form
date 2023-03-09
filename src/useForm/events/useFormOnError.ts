@@ -26,4 +26,4 @@ const useFormOnError = (form: UseFormConfig, props: IUseFormSettings) => {
     }, [form.errors])
 }
 
-export default useFormOnError
+export { useFormOnError }

@@ -178,4 +178,4 @@ const ConnectToForm = (props: IConnectToForm) => {
     return cloneElement(children, connectedProps)
 }
 
-export default ConnectToForm
+export { ConnectToForm }

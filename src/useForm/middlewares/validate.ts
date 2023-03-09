@@ -100,4 +100,4 @@ const createValidating =
         return result
     }
 
-export default createValidating
+export { createValidating }

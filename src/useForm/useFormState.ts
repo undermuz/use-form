@@ -3,10 +3,14 @@ import { formReducer, type IFormState } from "./reducer"
 
 import { useMemo } from "react"
 
-import getInitialState from "./getInitialState"
-import createSend from "./middlewares/send"
-import createValidating from "./middlewares/validate"
-import useReducer, { type DispatchFunction, type IStore } from "../utils/useReducer"
+import { getInitialState } from "./getInitialState"
+import { createSend } from "./middlewares/send"
+import { createValidating } from "./middlewares/validate"
+import {
+    useReducer,
+    type DispatchFunction,
+    type IStore,
+} from "../utils/useReducer"
 
 export type FormState = {
     state: IFormState
@@ -35,4 +39,4 @@ const useFormState = (props: IFormConfig): FormState => {
     return { state, dispatch, store }
 }
 
-export default useFormState
+export { useFormState }

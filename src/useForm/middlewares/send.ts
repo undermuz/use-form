@@ -178,4 +178,4 @@ const createSend =
         }
     }
 
-export default createSend
+export { createSend }

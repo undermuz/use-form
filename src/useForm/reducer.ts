@@ -277,5 +277,3 @@ export const formReducer = (state: IFormState, action: IAction): IFormState => {
 
     return nextState
 }
-
-export default formReducer

@@ -9,7 +9,8 @@ import {
 
 import { useCallback, useMemo, useState } from "react"
 
-import useForm, {
+import {
+    useForm,
     type FormSettingsTypeFields,
     type IUseFormField,
     type IUseFormSettings,

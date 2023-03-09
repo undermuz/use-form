@@ -67,4 +67,4 @@ const useReducer = <T>(
     return [state, enhancedDispatch, store]
 }
 
-export default useReducer
+export { useReducer }

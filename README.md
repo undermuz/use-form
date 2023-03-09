@@ -54,9 +54,9 @@ You should wrapp your inputs and components witch use form-hooks by FormContext.
 ### Connect input-like components to the form
 
 To connect any form component (or just a component)
-you have to wrapp it by ConnectToForm and provider a name
+you have to wrapp it by ConnectToForm and provide a name
 
-Provided component have to receive `value` prop and `onChange` prop and emit `onChange` with new value
+Provided component have to receive `value` prop, `onChange` prop and call `onChange` with new value
 
 ```javascript
     <ConnectToForm name="FIELD_NAME">

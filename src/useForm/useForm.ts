@@ -8,12 +8,12 @@ import {
 } from "./reducer"
 
 import type { DispatchFunction, IStore } from "../utils/useReducer"
-import useControlledForm from "./useControlledForm"
-import useFormCore from "./useFormCore"
+import { useControlledForm } from "./useControlledForm"
+import { useFormCore } from "./useFormCore"
 import type { IUseFormControl, SendFunction } from "./useFormControl"
-import useFormState, { type FormState } from "./useFormState"
-import useFormConfigBySettings from "./useFormConfigBySettings"
-import useFormOnError from "./events/useFormOnError"
+import { useFormState, type FormState } from "./useFormState"
+import { useFormConfigBySettings } from "./useFormConfigBySettings"
+import { useFormOnError } from "./events/useFormOnError"
 
 export interface IInitialFormConfig {
     initialValues: IValues
@@ -81,4 +81,4 @@ const useForm = (formSettings: IUseFormSettings) => {
     return form
 }
 
-export default useForm
+export { useForm }

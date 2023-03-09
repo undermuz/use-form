@@ -35,4 +35,4 @@ const getInitialState = (
     }
 }
 
-export default getInitialState
+export { getInitialState }

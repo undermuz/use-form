@@ -9,7 +9,8 @@ import {
 
 import { useCallback } from "react"
 
-import useForm, {
+import {
+    useForm,
     useFormCoreParams,
     type IUseFormField,
     type IUseFormSettings,
@@ -17,7 +18,7 @@ import useForm, {
 } from "../useForm/useForm"
 
 import { FORM_ACTIONS, type IValues } from "../useForm/reducer"
-import useFormCore from "../useForm/useFormCore"
+import { useFormCore } from "../useForm/useFormCore"
 
 const isDebug = false
 

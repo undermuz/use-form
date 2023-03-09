@@ -48,4 +48,4 @@ const useFormConfigBySettings = (props: IUseFormSettings): IFormConfig => {
     }, [])
 }
 
-export default useFormConfigBySettings
+export { useFormConfigBySettings }

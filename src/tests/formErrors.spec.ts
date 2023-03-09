@@ -7,7 +7,8 @@ import {
     type RenderHookResult,
 } from "@testing-library/react/pure"
 
-import useForm, {
+import {
+    useForm,
     type IUseFormSettings,
     type UseFormConfig,
 } from "../useForm/useForm"

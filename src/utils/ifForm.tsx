@@ -41,4 +41,4 @@ const IfForm: React.FC<IIfFormProps> = (props) => {
     return <>{children}</>
 }
 
-export default IfForm
+export { IfForm }

@@ -65,4 +65,4 @@ const useControlledForm = (form: UseFormConfig, props: IUseFormSettings) => {
     }, [])
 }
 
-export default useControlledForm
+export { useControlledForm }

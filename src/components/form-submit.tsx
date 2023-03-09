@@ -1,6 +1,6 @@
 import type { ReactNode } from "react"
 
-import IfForm from "../utils/ifForm"
+import { IfForm } from "../utils/ifForm"
 
 import {
     useFormSubmit,
@@ -71,4 +71,4 @@ const FormSubmit: React.FC<IFormSubmitProps> = (props) => {
     )
 }
 
-export default FormSubmit
+export { FormSubmit }

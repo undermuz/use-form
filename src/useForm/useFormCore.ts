@@ -2,7 +2,7 @@ import type { IFormConfig, UseFormConfig } from "./useForm"
 import type { FormState } from "./useFormState"
 
 import { useIsFormValid } from "./helpers"
-import useFormControl from "./useFormControl"
+import { useFormControl } from "./useFormControl"
 import { useMemo } from "react"
 import type { IErrors } from "./reducer"
 
@@ -79,4 +79,4 @@ const useFormCore = (
     }
 }
 
-export default useFormCore
+export { useFormCore }

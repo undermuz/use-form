@@ -3,15 +3,16 @@ import { type FC, useCallback, type PropsWithChildren } from "react"
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
 import { vscDarkPlus as style } from "react-syntax-highlighter/dist/esm/styles/prism"
 
-import ConnectToForm, {
+import {
+    ConnectToForm,
     type IConnectedProps,
 } from "../../components/connect-to-form"
-import FormContext from "../../components/form-context"
-import FormSubmit, { EnumFormSubmitStatus } from "../../components/form-submit"
+import { FormContext } from "../../components/form-context"
+import { FormSubmit, EnumFormSubmitStatus } from "../../components/form-submit"
 import { type IValues } from "../../useForm/reducer"
-import useForm, { type IUseFormSettings } from "../../useForm/useForm"
+import { useForm, type IUseFormSettings } from "../../useForm/useForm"
 import { useFormErrors, useFormFields } from "../../utils/common"
-import IfForm from "../../utils/ifForm"
+import { IfForm } from "../../utils/ifForm"
 
 import {
     Button,
