@@ -45,6 +45,13 @@ describe("useForm", () => {
         )
     }
 
+    const waitForErrors = async (errors: any) => {
+        const { result } = renderHookResults
+
+        await waitFor(() => expect(result.current.errors).toEqual(errors))
+        await waitFor(() => expect(result.current.getErrors()).toEqual(errors))
+    }
+
     beforeAll(() => {
         renderHookResults = renderHook((config) => useForm(config), {
             initialProps: FORM_CONFIG,
@@ -72,7 +79,7 @@ describe("useForm", () => {
         act(() => result.current.setTouchedByName("username"))
         act(() => result.current.setTouchedByName("password"))
 
-        await waitFor(() => expect(result.current.errors).toEqual({}))
+        await waitForErrors({})
     })
 
     test("validate values with errors", async () => {
@@ -81,12 +88,10 @@ describe("useForm", () => {
         act(() => result.current.setValue("username", ""))
         act(() => result.current.setValue("password", ""))
 
-        await waitFor(() =>
-            expect(result.current.errors).toEqual({
-                password: ["Password is required"],
-                username: ["Username is required"],
-            })
-        )
+        await waitForErrors({
+            password: ["Password is required"],
+            username: ["Username is required"],
+        })
     })
 
     test("correct errors", async () => {
@@ -98,6 +103,6 @@ describe("useForm", () => {
         await waitForFilled("username", "some_user_name_2")
         await waitForFilled("password", "some_password_2")
 
-        await waitFor(() => expect(result.current.errors).toEqual({}))
+        await waitForErrors({})
     })
 })

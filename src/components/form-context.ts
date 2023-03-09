@@ -3,7 +3,6 @@
 import { createContext, useContext } from "react"
 import { getInitialState } from "../useForm/getInitialState"
 import type { UseFormConfig } from "../useForm/useForm"
-import { getFormErrors } from "../useForm/middlewares/validate"
 import { EnumFormStatus } from "../useForm/reducer"
 
 export const defaultValidate = ({ errors = {} }) => errors
@@ -16,7 +15,7 @@ const DEF_VALUES: UseFormConfig = {
     isSuccess: false,
     sendError: null,
     tests: [],
-    validate: getFormErrors,
+    validate: (_c) => true,
     touched: [],
     fields: [],
     errors: {},
@@ -24,7 +23,9 @@ const DEF_VALUES: UseFormConfig = {
     send: () => {
         return Promise.resolve()
     },
-
+    hasFormErrors(_c) {
+        return [true, {}]
+    },
     isFormValid: (_c) => {
         return true
     },
@@ -35,9 +36,15 @@ const DEF_VALUES: UseFormConfig = {
     setTouchedByName: (_name, _value, _silent) => {},
     setTouched: (_newTouched, _silent, _checkOnlyFilled) => {},
     setValues: (_newValues, _silent, _checkOnlyFilled, _type) => {},
+    getValues: () => {
+        return {}
+    },
     setTests: (_newTests, _silent, _checkOnlyFilled) => {},
     setValidate: (_newValidate, _silent, _checkOnlyFilled) => {},
     setErrors: (_newErrors) => {},
+    getErrors: () => {
+        return {}
+    },
     setCustomErrors: (_newErrors) => {},
     setCustomErrorByName: (_name, _error) => {},
 

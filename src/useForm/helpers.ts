@@ -40,6 +40,16 @@ export const isFormHasErrors = (
     return [Object.keys(newErrors).length > 0, newErrors]
 }
 
+export const useHasFormErrors = (
+    settings: IUseIsFormSettings,
+    store: IStore<IFormState>,
+    _dispatch: DispatchFunction
+) => {
+    return useCallback((checkOnlyFilled = true) => {
+        return isFormHasErrors(settings, store, checkOnlyFilled)
+    }, [])
+}
+
 export const useIsFormValid = (
     settings: IUseIsFormSettings,
     store: IStore<IFormState>,
@@ -47,6 +57,21 @@ export const useIsFormValid = (
 ) => {
     return useCallback((checkOnlyFilled = true) => {
         return !isFormHasErrors(settings, store, checkOnlyFilled)[0]
+    }, [])
+}
+
+export const useValidate = (
+    _settings: IUseIsFormSettings,
+    _store: IStore<IFormState>,
+    dispatch: DispatchFunction
+) => {
+    return useCallback((checkOnlyFilled = true) => {
+        dispatch({
+            type: FORM_ACTIONS.VALIDATE_FORM,
+            payload: {},
+            silent: false,
+            checkOnlyFilled,
+        })
     }, [])
 }
 

@@ -1,7 +1,7 @@
 import type { IFormConfig, UseFormConfig } from "./useForm"
 import type { FormState } from "./useFormState"
 
-import { useIsFormValid } from "./helpers"
+import { useHasFormErrors, useIsFormValid } from "./helpers"
 import { useFormControl } from "./useFormControl"
 import { useCallback, useMemo, useRef } from "react"
 import type { IErrors } from "./reducer"
@@ -14,7 +14,8 @@ const useFormCore = (
 
     const formControl = useFormControl(formConfig, store, dispatch)
 
-    const validate = useIsFormValid(formConfig, store, dispatch)
+    const isFormValid = useIsFormValid(formConfig, store, dispatch)
+    const hasFormErrors = useHasFormErrors(formConfig, store, dispatch)
 
     const errors = useMemo<IErrors>(() => {
         const _fieldNames = [
@@ -72,15 +73,19 @@ const useFormCore = (
         return errorsRef.current
     }, [])
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { validate: _omitValidate, ...clearState } = state
+
     return {
-        ...state,
+        ...clearState,
         ...formControl,
 
         errors,
         getErrors,
 
-        IsFormValid: validate,
-        isFormValid: validate,
+        IsFormValid: isFormValid,
+        isFormValid,
+        hasFormErrors,
 
         store,
         dispatch,

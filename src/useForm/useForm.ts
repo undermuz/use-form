@@ -33,13 +33,16 @@ export interface IUseForm {
      */
     IsFormValid: (c: boolean) => boolean
     isFormValid: (c: boolean) => boolean
+    hasFormErrors: (c: boolean) => [boolean, IErrors]
     getErrors: () => IErrors
     store: IStore<IFormState>
     dispatch: DispatchFunction
     send: SendFunction
 }
 
-export type UseFormConfig = IUseForm & IFormState & IUseFormControl
+export type UseFormConfig = IUseForm &
+    Omit<IFormState, "validate"> &
+    IUseFormControl
 
 export type UseFormFieldRuleFunction = (v: unknown) => boolean
 

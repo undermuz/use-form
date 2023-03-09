@@ -23,12 +23,14 @@ import {
     useSetTouched,
     useSetValidate,
     useSetValues,
+    useValidate,
 } from "./helpers"
 
 export type SendFunction = (api: Function) => Promise<any>
 
 export interface IUseFormControl {
     send: SendFunction
+    validate: (checkOnlyFilled?: boolean) => void
     setValue: (
         name: string,
         value: any,
@@ -83,6 +85,7 @@ const useFormControl = (
     const setCustomErrorByName = useSetCustomErrorByName(props, store, dispatch)
     const setValue = useSetFieldValue(props, store, dispatch)
     const setTouchedByName = useSetFieldTouched(props, store, dispatch)
+    const validate = useValidate(props, store, dispatch)
 
     const send = useCallback<SendFunction>((api: Function) => {
         return new Promise((onResolve, onReject) => {
@@ -99,6 +102,7 @@ const useFormControl = (
 
     return {
         send,
+        validate,
         setValue,
         getValues,
         setTouchedByName,
