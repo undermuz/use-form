@@ -50,6 +50,12 @@ describe("useForm", () => {
 
         await waitFor(() => expect(result.current.errors).toEqual(errors))
         await waitFor(() => expect(result.current.getErrors()).toEqual(errors))
+        await waitFor(() =>
+            expect(result.current.hasFormErrors(true)).toEqual([
+                !!Object.keys(errors).length,
+                errors,
+            ])
+        )
     }
 
     beforeAll(() => {
