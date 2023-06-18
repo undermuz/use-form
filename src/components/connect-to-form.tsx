@@ -11,6 +11,7 @@ import type { IError } from "../useForm/reducer"
 import { useFormContext } from "./form-context"
 
 export interface IConnectToForm {
+    id?: string
     name: string
     inputName?: string
     disabled?: boolean
@@ -33,6 +34,7 @@ export interface IInputProps {
 }
 
 export interface IConnectedProps {
+    id?: string
     inputProps: IInputProps
 
     name: string
@@ -60,6 +62,7 @@ const ConnectToForm = (props: IConnectToForm) => {
     const [isFocused, setFocus] = useState(false)
 
     const {
+        id,
         IsFilled = Boolean,
         children,
         name,
@@ -135,7 +138,7 @@ const ConnectToForm = (props: IConnectToForm) => {
     )
 
     const inputProps: IInputProps = {
-        id: `field-${name}`,
+        id: id || `field-${name}`,
         name: inputName || name,
         label: children?.props?.label || fields[name],
         disabled: isSending || disabled || false,
@@ -152,6 +155,7 @@ const ConnectToForm = (props: IConnectToForm) => {
     }
 
     const connectedProps: IConnectedProps = {
+        id: id || `field-${name}`,
         inputProps,
 
         name: inputProps.name,

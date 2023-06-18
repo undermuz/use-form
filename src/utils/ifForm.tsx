@@ -2,7 +2,6 @@ import { type ReactNode } from "react"
 
 import {
     useIsFormCanceling,
-    useIsFormHasErrors,
     useIsFormSending,
     useIsFormSuccess,
 } from "./common"
@@ -21,19 +20,25 @@ const IfForm: React.FC<IIfFormProps> = (props) => {
         isCanceling = false,
         isSending = false,
         isSuccess = false,
-        hasErrors,
     } = props
 
-    const isFormHasErrors = useIsFormHasErrors()
     const isFormSuccess = useIsFormSuccess()
     const isFormCanceling = useIsFormCanceling()
     const isFormSending = useIsFormSending()
 
     if (
-        (hasErrors && !isFormHasErrors) ||
         (isSuccess && !isFormSuccess) ||
         (isCanceling && !isFormCanceling) ||
         (isSending && !isFormSending)
+    ) {
+        return null
+    }
+
+    const isDefault = !isCanceling && !isSending && !isSuccess
+
+    if (
+        isDefault &&
+        (isFormSuccess || isFormCanceling || isFormSending)
     ) {
         return null
     }
