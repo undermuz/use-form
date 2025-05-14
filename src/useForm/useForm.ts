@@ -40,9 +40,8 @@ export interface IUseForm {
     send: SendFunction
 }
 
-export type UseFormConfig = IUseForm &
-    Omit<IFormState, "validate"> &
-    IUseFormControl
+export type UseFormConfig<T extends Record<string, unknown> = IValues> =
+    IUseForm & Omit<IFormState<T>, "validate"> & IUseFormControl
 
 export type UseFormFieldRuleFunction = (v: unknown) => boolean
 

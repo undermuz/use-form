@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable no-unused-vars */
-import { createContext, useContext } from "react"
+import { type Context, createContext, useContext } from "react"
 import { getInitialState } from "../useForm/getInitialState"
 import type { UseFormConfig } from "../useForm/useForm"
 import { EnumFormStatus } from "../useForm/reducer"
@@ -61,8 +61,12 @@ const FormContext = createContext<UseFormConfig>(DEF_VALUES)
 
 FormContext.displayName = "FormContext"
 
-export const useFormContext = () => {
-    const ctx = useContext(FormContext)
+export const useFormContext = <
+    T extends Record<string, unknown> = Record<string, unknown>
+>() => {
+    const ctx = useContext<UseFormConfig<T>>(
+        FormContext as Context<UseFormConfig<T>>
+    )
 
     if (!ctx) {
         throw new Error("You must wrap your component in form provider")

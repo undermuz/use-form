@@ -57,9 +57,7 @@ export interface IFields {
 export type ITouched = Array<string>
 
 export type IValues<
-    T extends object = {
-        [s: string]: unknown
-    }
+    T extends Record<string, unknown> = Record<string, unknown>
 > = T
 
 export type IError = Array<string | IErrors>
