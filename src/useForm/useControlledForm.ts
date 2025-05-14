@@ -13,55 +13,72 @@ const useControlledForm = (form: UseFormConfig, props: IUseFormSettings) => {
     const mountFlag = useRef(false)
 
     useEffect(() => {
-        if (
-            value &&
-            value !== valueRef.current &&
-            !isEqual(value, valueRef.current)
-        ) {
-            if (options?.debug)
-                console.log("[useForm][Update values from external]", {
-                    external: value,
-                    current: valueRef.current,
-                })
-
-            valueRef.current = value
-
-            form.setValues(value)
+        if (!value) {
+            return
         }
+
+        if (value === valueRef.current) {
+            return
+        }
+
+        if (isEqual(value, valueRef.current)) {
+            return
+        }
+
+        if (options?.debug)
+            console.log("[useForm][Update values from external]", {
+                external: value,
+                current: valueRef.current,
+            })
+
+        valueRef.current = value
+
+        form.setValues(value)
     }, [value])
 
     useEffect(() => {
-        if (mountFlag.current) {
-            if (
-                onChangeRef.current &&
-                valueRef.current !== form.values &&
-                !isEqual(valueRef.current, form.values)
-            ) {
-                if (options?.debug)
-                    console.log("[useForm][Emit values to external]", {
-                        current: form.values,
-                        external: valueRef.current,
-                    })
-
-                valueRef.current = form.values
-
-                onChangeRef.current(form.values)
-            }
-        } else {
+        if (!mountFlag.current) {
             mountFlag.current = true
+
+            return
+        }
+
+        if (!onChangeRef.current) {
+            return
+        }
+
+        if (
+            valueRef.current !== form.values &&
+            !isEqual(valueRef.current, form.values)
+        ) {
+            if (options?.debug)
+                console.log("[useForm][Emit values to external]", {
+                    current: form.values,
+                    external: valueRef.current,
+                })
+
+            valueRef.current = form.values
+
+            onChangeRef.current(form.values)
         }
     }, [form.values])
 
     useEffect(() => {
-        if (value && value !== form.store.getState().values) {
-            if (options?.debug)
-                console.log("[useForm][Set initials values]", {
-                    external: value,
-                    current: form.store.getState().values,
-                })
-
-            form.setValues(value)
+        if (!value) {
+            return
         }
+
+        if (value === form.store.getState().values) {
+            return
+        }
+
+        if (options?.debug)
+            console.log("[useForm][Set initials values]", {
+                external: value,
+                current: form.store.getState().values,
+            })
+
+        form.setValues(value)
     }, [])
 }
 

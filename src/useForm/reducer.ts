@@ -56,9 +56,11 @@ export interface IFields {
 
 export type ITouched = Array<string>
 
-export interface IValues {
-    [s: string]: any
-}
+export type IValues<
+    T extends object = {
+        [s: string]: unknown
+    }
+> = T
 
 export type IError = Array<string | IErrors>
 
@@ -70,13 +72,13 @@ export enum EnumFormStatus {
     Initial = "initial",
 }
 
-export interface IFormState {
+export interface IFormState<T extends IValues = IValues> {
     status: EnumFormStatus
     isSending: boolean
     isCanceling: boolean
     isSuccess: boolean
     sendError: any
-    values: IValues
+    values: T
     tests: IValueTest[]
     validate: ValidateFunction
     touched: ITouched

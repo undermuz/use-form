@@ -2,6 +2,8 @@ import type { DispatchFunction, IAction, IStore } from "../../utils/useReducer"
 import type { IUseIsFormSettings } from "../helpers"
 import { FORM_ACTIONS, type IFormState, type IErrors } from "../reducer"
 
+/* TODO: USE ARKTYPE */
+
 export const getFormErrors = (state: IFormState): IErrors => {
     const { tests, touched, values } = state
 
