@@ -259,10 +259,13 @@ export const sendErrorReducer = (state: any, action: IAction) => {
     }
 }
 
-export const formReducer = (state: IFormState, action: IAction): IFormState => {
+export const formReducer = <T extends IValues = IValues>(
+    state: IFormState<T>,
+    action: IAction
+): IFormState<T> => {
     const nextState = {
         ...state,
-        values: valuesReducer(state.values, action),
+        values: valuesReducer(state.values, action) as T,
         fields: fieldsReducer(state.fields, action),
         tests: testsReducer(state.tests, action),
         touched: touchedReducer(state.touched, action),

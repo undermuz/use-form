@@ -1,5 +1,5 @@
 import type { IFormConfig } from "./useForm"
-import { formReducer, type IFormState } from "./reducer"
+import { formReducer, type IValues, type IFormState } from "./reducer"
 
 import { useMemo } from "react"
 
@@ -12,14 +12,19 @@ import {
     type IStore,
 } from "../utils/useReducer"
 
-export type FormState = {
-    state: IFormState
+export type FormState<T extends IValues = IValues> = {
+    state: IFormState<T>
     dispatch: DispatchFunction
-    store: IStore<IFormState>
+    store: IStore<IFormState<T>>
 }
 
-const useFormState = (props: IFormConfig): FormState => {
-    const initialState = useMemo(() => getInitialState(props), [])
+const useFormState = <T extends IValues = IValues>(
+    props: IFormConfig
+): FormState<T> => {
+    const initialState = useMemo(
+        () => getInitialState(props) as IFormState<T>,
+        []
+    )
 
     const middlewares = useMemo(
         () => [
@@ -30,7 +35,7 @@ const useFormState = (props: IFormConfig): FormState => {
         []
     )
 
-    const [state, dispatch, store] = useReducer<IFormState>(
+    const [state, dispatch, store] = useReducer<IFormState<T>>(
         formReducer,
         initialState,
         middlewares

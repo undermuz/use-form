@@ -27,7 +27,7 @@ export interface IFormConfig extends Partial<IInitialFormConfig> {
     debug?: boolean
 }
 
-export interface IUseForm {
+export interface IUseForm<T extends IValues = IValues> {
     /**
      * @deprecated
      */
@@ -35,13 +35,13 @@ export interface IUseForm {
     isFormValid: (c: boolean) => boolean
     hasFormErrors: (c: boolean) => [boolean, IErrors]
     getErrors: () => IErrors
-    store: IStore<IFormState>
+    store: IStore<IFormState<T>>
     dispatch: DispatchFunction
     send: SendFunction
 }
 
 export type UseFormConfig<T extends Record<string, unknown> = IValues> =
-    IUseForm & Omit<IFormState<T>, "validate"> & IUseFormControl
+    IUseForm<T> & Omit<IFormState<T>, "validate"> & IUseFormControl
 
 export type UseFormFieldRuleFunction = (v: unknown) => boolean
 
