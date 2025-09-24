@@ -10,7 +10,7 @@ const useFormCore = (
     formConfig: IFormConfig,
     formState: FormState
 ): UseFormConfig => {
-    const { state, dispatch, store } = formState
+    const { state, dispatch, store, reset } = formState
 
     const formControl = useFormControl(formConfig, store, dispatch)
 
@@ -89,6 +89,7 @@ const useFormCore = (
 
         store,
         dispatch,
+        reset,
     }
 }
 

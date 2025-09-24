@@ -3,6 +3,7 @@ import { useState, useCallback, useRef, useMemo } from "react"
 function compose(...fns: Function[]) {
     if (fns.length === 0) return (arg: any) => arg
     if (fns.length === 1) return fns[0]
+
     return fns.reduce(
         (a, b) =>
             (...args: any[]) =>
@@ -31,23 +32,23 @@ const useReducer = <T>(
     reducer: (s: T, a: IAction) => T,
     initialState: T,
     middlewares: any[] = []
-): [T, DispatchFunction, IStore<T>] => {
+): [T, DispatchFunction, { store: IStore<T>; reset: () => void }] => {
     const [state, setState] = useState<T>(initialState)
 
     const draftState = useRef(initialState)
-
-    const dispatch = useCallback((action: IAction) => {
-        draftState.current = reducer(draftState.current, action)
-
-        setState(draftState.current)
-
-        return action
-    }, [])
 
     const enhancedDispatch = useMemo<DispatchFunction>(() => {
         const store: IStore<T> = {
             getState: () => draftState.current,
             dispatch: (...args) => _enhancedDispatch(...args),
+        }
+
+        const dispatch = (action: IAction) => {
+            draftState.current = reducer(draftState.current, action)
+
+            setState(draftState.current)
+
+            return action
         }
 
         const chain = middlewares.map((middleware) => middleware(store))
@@ -64,7 +65,13 @@ const useReducer = <T>(
         }
     }, [])
 
-    return [state, enhancedDispatch, store]
+    const reset = useCallback(() => {
+        draftState.current = initialState
+
+        setState(initialState)
+    }, [])
+
+    return [state, enhancedDispatch, { store, reset }]
 }
 
 export { useReducer }

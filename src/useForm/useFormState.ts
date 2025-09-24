@@ -11,11 +11,13 @@ import {
     type DispatchFunction,
     type IStore,
 } from "../utils/useReducer"
+// import { createReset } from "./middlewares/reset"
 
 export type FormState<T extends IValues = IValues> = {
     state: IFormState<T>
     dispatch: DispatchFunction
     store: IStore<IFormState<T>>
+    reset: () => void
 }
 
 const useFormState = <T extends IValues = IValues>(
@@ -30,18 +32,19 @@ const useFormState = <T extends IValues = IValues>(
         () => [
             ...(props?.middlewares || []),
             createValidating(props),
+            // createReset(props),
             createSend(props),
         ],
         []
     )
 
-    const [state, dispatch, store] = useReducer<IFormState<T>>(
+    const [state, dispatch, { store, reset }] = useReducer<IFormState<T>>(
         formReducer,
         initialState,
         middlewares
     )
 
-    return { state, dispatch, store }
+    return { state, dispatch, store, reset }
 }
 
 export { useFormState }

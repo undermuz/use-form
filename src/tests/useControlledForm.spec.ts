@@ -147,6 +147,8 @@ describe("useControlledForm", () => {
         act(() => result.current[2].setTouchedByName("username"))
         act(() => result.current[2].setTouchedByName("password"))
 
+        expect(result.current[2].touched).toEqual(["username", "password"])
+
         await waitFor(() => expect(result.current[2].errors).toEqual({}))
     })
 
@@ -246,5 +248,20 @@ describe("useControlledForm", () => {
         )
 
         await waitFor(() => expect(result.current[2].errors).toEqual({}))
+    })
+
+    test("reset values", async () => {
+        const { result } = renderHookResults
+
+        act(() => result.current[2].reset())
+
+        expect(result.current[2].touched).toEqual([])
+
+        await waitFor(() =>
+            expect(result.current[2].values.username).toBe("123")
+        )
+        await waitFor(() =>
+            expect(result.current[2].values.password).toBe("321")
+        )
     })
 })

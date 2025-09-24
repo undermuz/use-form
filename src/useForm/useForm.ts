@@ -38,6 +38,7 @@ export interface IUseForm<T extends IValues = IValues> {
     store: IStore<IFormState<T>>
     dispatch: DispatchFunction
     send: SendFunction
+    reset: () => void
 }
 
 export type UseFormConfig<T extends Record<string, unknown> = IValues> =
