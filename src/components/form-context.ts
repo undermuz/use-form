@@ -55,6 +55,7 @@ const DEF_VALUES: UseFormConfig = {
         dispatch: (..._args) => {},
     },
     dispatch: (..._args) => {},
+    reset: () => {},
 }
 
 const FormContext = createContext<UseFormConfig>(DEF_VALUES)
