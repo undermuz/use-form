@@ -18,7 +18,7 @@ export const getFormErrors = (state: IFormState): IErrors => {
             }
 
             for (const valueTest of testList) {
-                if (valueTest(values[name])) {
+                if (valueTest(values[name], values)) {
                     continue
                 }
 
