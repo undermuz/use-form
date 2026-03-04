@@ -49,8 +49,9 @@ export {
     useIsFormHasErrors,
     useFormFields,
     useFormErrors,
-    useFormSubmit,
 } from "./utils/common"
+
+export { useFormSubmit } from "./utils/useFormSubmit"
 
 export { IfForm, type IIfFormProps } from "./utils/ifForm"
 

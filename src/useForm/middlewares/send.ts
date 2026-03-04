@@ -157,6 +157,8 @@ const createSend =
     (store: IStore<IFormState>) =>
     (next: DispatchFunction) =>
     async (action: IAction) => {
+        const { debug = false } = settings
+
         const result = next(action)
 
         if (action.type !== FORM_ACTIONS.SEND_FORM) {
@@ -166,12 +168,18 @@ const createSend =
         const { api, onResolve = noop, onReject = noop } = action.payload
 
         try {
+            if (debug) console.log(`[useForm][send][Start sending]`)
+
             const resp = await send(settings, store, api)
+
+            if (debug) console.log(`[useForm][send][Success]`)
 
             onResolve(resp)
 
             // return resp
         } catch (e) {
+            if (debug) console.error(`[useForm][send][Error]`, e)
+
             onReject(e)
 
             // throw e

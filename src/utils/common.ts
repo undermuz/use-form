@@ -1,4 +1,4 @@
-import { type MutableRefObject, useCallback, useEffect, useRef } from "react"
+import { type MutableRefObject, useEffect, useRef } from "react"
 import { useFormContext } from "../components/form-context"
 
 interface ExoticComponentWithDisplayName<P = unknown>
@@ -51,20 +51,6 @@ export const useFormErrors = () => {
     const params = useFormContext()
 
     return params.errors
-}
-
-export const useFormSubmit = (
-    onSend: Function,
-    onSucceed: (value: any) => any,
-    onError?: (reason: any) => any
-) => {
-    const { send } = useFormContext()
-
-    const handleSave = useCallback(() => {
-        send(onSend).then<any, any>(onSucceed, onError)
-    }, [send, onSend, onSucceed, onError])
-
-    return handleSave
 }
 
 export const useRefBy = <T = any>(by: T): MutableRefObject<T> => {

@@ -15,6 +15,7 @@ const DEF_VALUES: UseFormConfig = {
     isSuccess: false,
     sendError: null,
     tests: [],
+    config: {},
     validate: (_c) => true,
     touched: [],
     fields: [],

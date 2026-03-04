@@ -42,7 +42,9 @@ export interface IUseForm<T extends IValues = IValues> {
 }
 
 export type UseFormConfig<T extends Record<string, unknown> = IValues> =
-    IUseForm<T> & Omit<IFormState<T>, "validate"> & IUseFormControl
+    IUseForm<T> &
+        Omit<IFormState<T>, "validate"> &
+        IUseFormControl & { config: IFormConfig }
 
 export type UseFormFieldRuleFunction = (v: unknown) => boolean
 

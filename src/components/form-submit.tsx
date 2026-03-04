@@ -3,11 +3,12 @@ import type { ReactNode } from "react"
 import { IfForm } from "../utils/ifForm"
 
 import {
-    useFormSubmit,
     useIsFormHasErrors,
     useIsFormSending,
     type WebTarget,
 } from "../utils/common"
+
+import { useFormSubmit } from "../utils/useFormSubmit"
 
 export enum EnumFormSubmitStatus {
     Default = "default",

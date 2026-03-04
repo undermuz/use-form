@@ -79,6 +79,7 @@ const useFormCore = (
     return {
         ...clearState,
         ...formControl,
+        config: formConfig,
 
         errors,
         getErrors,
