@@ -7,7 +7,7 @@ import { EnumFormStatus } from "../useForm/reducer"
 
 export const defaultValidate = ({ errors = {} }) => errors
 
-const DEF_VALUES: UseFormConfig = {
+export const DEF_VALUES: UseFormConfig = {
     status: EnumFormStatus.Initial,
     values: {},
     isSending: false,
@@ -59,7 +59,7 @@ const DEF_VALUES: UseFormConfig = {
     reset: () => {},
 }
 
-const FormContext = createContext<UseFormConfig>(DEF_VALUES)
+const FormContext = createContext<UseFormConfig | null>(null)
 
 FormContext.displayName = "FormContext"
 
