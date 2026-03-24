@@ -41,7 +41,10 @@ const useFormState = <T extends IValues = IValues>(
     const [state, dispatch, { store, reset }] = useReducer<IFormState<T>>(
         formReducer,
         initialState,
-        middlewares
+        middlewares,
+        {
+            debug: true,
+        }
     )
 
     return { state, dispatch, store, reset }

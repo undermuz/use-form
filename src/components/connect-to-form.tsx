@@ -20,6 +20,8 @@ export interface IConnectToForm {
     IsFilled?: (v: any) => boolean
     onRefInput?: Function
     onRef?: Function
+    hasError?: boolean
+    isSuccess?: boolean
 }
 
 export interface IInputProps {
@@ -62,18 +64,25 @@ const ConnectToForm = (props: IConnectToForm) => {
     const [isFocused, setFocus] = useState(false)
 
     const {
-        id,
         IsFilled = Boolean,
         children,
         name,
-        inputName,
         disabled,
         type = "connect-to-form",
         onRefInput: _onRefInput,
         onRef: _onRef,
+        id: forceId,
+        inputName: forceInputName,
+        hasError: forceHasError,
+        isSuccess: forceIsSuccess,
     } = props
 
     const params = useFormContext()
+
+    const id =
+        typeof forceId !== "undefined" && forceId !== null
+            ? forceId
+            : `field-${name}`
 
     const {
         isSending = false,
@@ -88,13 +97,22 @@ const ConnectToForm = (props: IConnectToForm) => {
 
     const value = values[name]
     const errors = allErrors[name]
+    const label = children?.props?.label || fields[name]
+    const inputName = forceInputName || name
 
     const isTouched = touched.indexOf(name) > -1
 
-    const hasError = Boolean(errors) && errors?.length > 0 && isTouched
+    const hasError =
+        typeof forceHasError === "boolean"
+            ? forceHasError
+            : Boolean(errors) && errors?.length > 0 && isTouched
 
     const isFilled = IsFilled(value)
-    const isSucceed = !hasError && isTouched && IsFilled(value)
+
+    const isSucceed =
+        typeof forceIsSuccess === "boolean"
+            ? forceIsSuccess
+            : !hasError && isTouched && IsFilled(value)
 
     const onError = useCallback(
         (error: IError) => {
@@ -137,15 +155,38 @@ const ConnectToForm = (props: IConnectToForm) => {
         [setValue, name, type]
     )
 
+    const onNativeChange = useCallback(
+        (e: any) => onChange?.(e?.target?.value),
+        [onChange]
+    )
+
+    const states = {
+        isFocused,
+        isTouched,
+        isFilled,
+        isSucceed,
+        isDisabled: isSending || disabled || false,
+        hasError,
+    }
+
     const inputProps: IInputProps = {
-        id: id || `field-${name}`,
-        name: inputName || name,
-        label: children?.props?.label || fields[name],
-        disabled: isSending || disabled || false,
+        id,
+        name: inputName,
+        label,
+        disabled: states.isDisabled,
         value,
-        onChange: (e: any) => onChange?.(e?.target?.value),
+        onChange: onNativeChange,
         onFocus,
         onBlur,
+    }
+
+    const callbacks = {
+        onChange,
+        onFocus,
+        onBlur,
+        onRefInput,
+        onRef,
+        onError,
     }
 
     if (!children) {
@@ -155,7 +196,7 @@ const ConnectToForm = (props: IConnectToForm) => {
     }
 
     const connectedProps: IConnectedProps = {
-        id: id || `field-${name}`,
+        id,
         inputProps,
 
         name: inputProps.name,
@@ -164,19 +205,9 @@ const ConnectToForm = (props: IConnectToForm) => {
         errors: hasError ? errors : null,
         disabled: inputProps.disabled,
 
-        isFocused,
-        isTouched,
-        isFilled,
-        isSucceed,
-        isDisabled: inputProps.disabled,
-        hasError,
+        ...states,
 
-        onChange,
-        onFocus,
-        onBlur,
-        onRefInput,
-        onRef,
-        onError,
+        ...callbacks,
     }
 
     return cloneElement(children, connectedProps)

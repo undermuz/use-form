@@ -31,11 +31,23 @@ export interface IStore<T> {
 const useReducer = <T>(
     reducer: (s: T, a: IAction) => T,
     initialState: T,
-    middlewares: any[] = []
+    middlewares: any[] = [],
+    options?: { debug?: boolean }
 ): [T, DispatchFunction, { store: IStore<T>; reset: () => void }] => {
-    const [state, setState] = useState<T>(initialState)
+    const initialStateRef = useRef<T | null>(null)
+
+    if (initialStateRef.current === null) {
+        initialStateRef.current = { ...initialState }
+
+        if (options?.debug)
+            console.log("[useReducer][initialState]", initialStateRef.current)
+    }
 
     const draftState = useRef(initialState)
+
+    const [state, setState] = useState<T>(() => {
+        return draftState.current
+    })
 
     const enhancedDispatch = useMemo<DispatchFunction>(() => {
         const store: IStore<T> = {
@@ -66,9 +78,12 @@ const useReducer = <T>(
     }, [])
 
     const reset = useCallback(() => {
-        draftState.current = initialState
+        draftState.current = initialStateRef.current as T
 
-        setState(initialState)
+        if (options?.debug)
+            console.log("[useReducer][Reset]", initialStateRef.current)
+
+        setState(draftState.current)
     }, [])
 
     return [state, enhancedDispatch, { store, reset }]

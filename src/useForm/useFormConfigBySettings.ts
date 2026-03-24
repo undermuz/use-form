@@ -34,7 +34,7 @@ const useFormConfigBySettings = (props: IUseFormSettings): IFormConfig => {
 
             _config.fields[fieldName] = field.label || fieldName
 
-            if (!props.value)
+            if (!props.value || props.value[fieldName] === undefined)
                 _config.initialValues[fieldName] = field.initialValue
 
             if (field.rules?.length) {
