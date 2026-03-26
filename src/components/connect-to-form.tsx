@@ -7,7 +7,9 @@ import {
     type ChangeEvent,
     type FocusEvent,
 } from "react"
+
 import type { IError } from "../useForm/reducer"
+
 import { useFormContext } from "./form-context"
 
 export interface IConnectToForm {
@@ -21,6 +23,7 @@ export interface IConnectToForm {
     onRefInput?: Function
     onRef?: Function
     hasError?: boolean
+    errors?: IError
     isSuccess?: boolean
 }
 
@@ -75,6 +78,7 @@ const ConnectToForm = (props: IConnectToForm) => {
         inputName: forceInputName,
         hasError: forceHasError,
         isSuccess: forceIsSuccess,
+        errors: forceErrors,
     } = props
 
     const params = useFormContext()
@@ -96,7 +100,10 @@ const ConnectToForm = (props: IConnectToForm) => {
     } = params
 
     const value = values[name]
-    const errors = allErrors[name]
+
+    const errors =
+        typeof forceErrors !== "undefined" ? forceErrors : allErrors[name]
+
     const label = children?.props?.label || fields[name]
     const inputName = forceInputName || name
 
@@ -107,12 +114,12 @@ const ConnectToForm = (props: IConnectToForm) => {
             ? forceHasError
             : Boolean(errors) && errors?.length > 0 && isTouched
 
-    const isFilled = IsFilled(value)
+    const isFilled = useMemo(() => IsFilled(value), [IsFilled, value])
 
     const isSucceed =
         typeof forceIsSuccess === "boolean"
             ? forceIsSuccess
-            : !hasError && isTouched && IsFilled(value)
+            : !hasError && isTouched && isFilled
 
     const onError = useCallback(
         (error: IError) => {
@@ -122,12 +129,13 @@ const ConnectToForm = (props: IConnectToForm) => {
     )
 
     const onRefInput = useMemo(() => {
-        if (_onRefInput) {
-            return (node: HTMLElement) => {
-                _onRefInput(name, node)
-            }
+        if (!_onRefInput) {
+            return undefined
         }
-        return undefined
+
+        return (node: HTMLElement) => {
+            _onRefInput(name, node)
+        }
     }, [name, _onRefInput])
 
     const onRef = useMemo(() => {

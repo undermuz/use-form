@@ -15,6 +15,7 @@ import type { DispatchFunction, IStore } from "../utils/useReducer"
 
 export interface IUseIsFormSettings {
     [k: string]: any
+    afterSendDelay?: number
     debug?: boolean
 }
 

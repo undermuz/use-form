@@ -271,7 +271,9 @@ export const formReducer = <T extends IValues = IValues>(
         touched: touchedReducer(state.touched, action),
         errors: errorsReducer(state.errors, action),
         customErrors: customErrorsReducer(state.customErrors, action),
+
         validate: validateReducer(state.validate, action),
+
         isSending: isSendingReducer(state.isSending, action),
         isCanceling: isCancelingReducer(state.isCanceling, action),
         isSuccess: isSuccessReducer(state.isSuccess, action),
