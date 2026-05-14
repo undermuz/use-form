@@ -59,4 +59,6 @@ export { FormSubmit, EnumFormSubmitStatus } from "./components/form-submit"
 
 export { useForm, useFormState, useFormCore, useFormCoreParams }
 
+export { FormValidateError, FormSendError } from "./useForm/errors"
+
 export default useForm
