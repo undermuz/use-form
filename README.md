@@ -1,552 +1,129 @@
 # @undermuz/use-form
 
-React library for build forms
+Type-safe React forms: values, field names, validators, and submit — inferred from your field config.
+
+**Current release:** `2.0.0-alpha` (breaking type improvements vs 1.x).
+
+[Demo & docs site](https://undermuz.github.io/use-form/) · [npm](https://www.npmjs.com/package/@undermuz/use-form)
 
 ## Install
 
-`npm i @undermuz/use-form`
-
-[NPM: @undermuz/use-form](https://www.npmjs.com/package/@undermuz/use-form)
-
-## Update
-
-`npm update @undermuz/use-form`
-
-## Basic usage
-
-[Home page](https://undermuz.github.io/use-form/)
-
-### Setup form
-
-For example, set up a login form with username and password fields and rules.
-
-Rules: for each field, `rules` is an array of `[validators, errorText]`.  
-Each validator is `(value, values) => boolean` — the field passes while the function returns `true`.  
-One-arg functions and built-in `Boolean` still work. Prefer helpers like `required` / `minLength` when you can.
-
-```ts
-import { useForm, required } from "@undermuz/use-form"
-
-const form = useForm({
-    fields: {
-        username: {
-            label: "Login",
-            initialValue: "",
-            rules: [[[required], "Username is required"]],
-        },
-        password: {
-            label: "Password",
-            initialValue: "",
-            rules: [[[required], "Password is required"]],
-        },
-    },
-})
-
-// form.values.username // string
-// form.setValue("username", "alice")
+```bash
+npm i @undermuz/use-form
 ```
 
-Pass the config object into `useForm` directly (or use `satisfies`) so TypeScript can infer value types from `initialValue`. Avoid `const config: IUseFormSettings = { ... }` if you care about inference — that widens field types.
+Peer deps: `react` / `react-dom` ≥ 17.
 
-You should wrap your inputs and components that use form hooks with `FormContext.Provider`:
-
-```tsx
-    <FormContext.Provider value={form}>
-    ...
-    </FormContext.Provider>
-```
-
-### Connect input-like components to the form
-
-To connect any form component (or just a component)
-you have to wrap it by `ConnectToForm` and provide a `name`.
-
-The child should accept a `value` prop and an `onChange` prop, and call `onChange` with the new value.
+## Quick start
 
 ```tsx
-    {/* Element child — props injected via cloneElement (existing API) */}
-    <ConnectToForm name="username">
-        <FormInput placeholder="Enter your login" />
-    </ConnectToForm>
+import { useCallback } from "react"
+import {
+    useForm,
+    FormContext,
+    ConnectToForm,
+    FormSubmit,
+    IfForm,
+    required,
+    EnumFormSubmitStatus,
+    getFieldErrorMessages,
+    useFormErrors,
+} from "@undermuz/use-form"
 
-    {/* Typed field name: */}
-    <ConnectToForm<LoginForm> name="username">
-        <FormInput />
-    </ConnectToForm>
-
-    {/* Render prop — fully typed value / onChange for that field */}
-    <ConnectToForm<LoginForm> name="username">
-        {(props) => (
-            <input
-                value={props.value ?? ""}
-                onChange={(e) => props.onChange(e.target.value)}
-                onBlur={props.onBlur}
-            />
-        )}
-    </ConnectToForm>
-```
-
-`ConnectToForm` provides the current field value and waits for a new value through `onChange`.  
-Prefer the **render-prop** form when you want TypeScript to know `value` / `onChange` for that field; the element-child form stays supported for existing inputs.
-
-#### Browser's input
-
-```tsx
-    type InputProps = Partial<IConnectedProps> & {
-        type?: string
-        placeholder?: string
-    }
-
-    //Short-version
-    const FormInputV1: React.FC<InputProps> = ({
-        inputProps = {}, //Provides by ConnectToForm
-        ...rest
-    }) => {
-        return (
-            <label style={styles}>
-                {inputProps.label}:
-                <input {..._.pick(rest, ["type", "placeholder"])} {...inputProps} />
-            </label>
-        )
-    }
-
-    //Full-version
-    const FormInputV2: React.FC<InputProps> = (props) => {
-        const {
-            type = "text",
-            placeholder = "",
-            label, //Provides by ConnectToForm
-            name, //Provides by ConnectToForm
-            value, //Provides by ConnectToForm
-            onChange, //Provides by ConnectToForm
-            onBlur, //Provides by ConnectToForm
-        } = props
-
-        return (
-            <div style={styles}>
-                <label htmlFor={name}>{label}:</label>
-                <input
-                    type={type}
-                    id={name}
-                    name={name}
-                    value={value}
-                    placeholder={placeholder}
-                    onChange={(e) => onChange?.(e.target.value)}
-                    onBlur={() => onBlur?.()}
-                />
-            </div>
-        )
-    }
-
-    ...
-    
-    <FormContext.Provider value={form}>
-        <ConnectToForm name="username">
-            <FormInputV1 placeholder="Enter your login" />
-        </ConnectToForm>
-
-        <ConnectToForm name="password">
-            <FormInputV2
-                type="password"
-                placeholder="Enter your password"
-            />
-        </ConnectToForm>
-    </FormContext.Provider>
-```
-
-#### Ui framework's input
-
-```tsx
-    type InputProps = Partial<IConnectedProps> & {
-        type?: string
-        placeholder?: string
-        description?: string
-    }
-
-    const FormField: FC<PropsWithChildren<InputProps>> = (props) => {
-        const {
-            label,
-            description = null,
-            errors, //Provides by ConnectToForm
-            children,
-            hasError = false, //Provides by ConnectToForm
-        } = props
-
-        return (
-            <FormControl isInvalid={hasError}>
-                <FormLabel>{label}</FormLabel>
-
-                {children}
-
-                {description !== null && !hasError && (
-                    <FormHelperText>{description}</FormHelperText>
-                )}
-
-                {errors?.map((errorText, index) => {
-                    if (typeof errorText !== "string") {
-                        return null
-                    }
-
-                    return (
-                        <FormErrorMessage key={index}>{errorText}</FormErrorMessage>
-                    )
-                })}
-            </FormControl>
-        )
-    }
-
-    const FormInput: React.FC<InputProps> = (props) => {
-        const {
-            type = "text",
-            placeholder = "",
-            value, //Provides by ConnectToForm
-            onChange, //Provides by ConnectToForm
-            onBlur, //Provides by ConnectToForm
-        } = props
-
-        return (
-            <FormField {...props}>
-                <Input
-                    type={type}
-                    placeholder={placeholder}
-                    onChange={(e) => onChange?.(e.target.value)}
-                    onBlur={() => onBlur?.()}
-                    value={value}
-                />
-            </FormField>
-        )
-    }
-
-    const ErrorBlock = () => {
-        const errors = useFormErrors()
-        const fields = useFormFields()
-
-        return (
-            <>
-                {Object.keys(errors).map((name) => (
-                    <>
-                        <p key={name}>{fields?.[name] || name}:</p>
-                        <ul>
-                        {errors[name]?.map((error, i) => (
-                            <li key={i}>{error as string}</li>
-                        ))}
-                        </ul>
-                    </>
-                ))}
-            </>
-        )
-    }
-
-    ...
-
-    <VStack alignItems={"flex-start"}>
-        <ConnectToForm name="username">
-            <FormInput placeholder="Enter your login" />
-        </ConnectToForm>
-
-        <ConnectToForm name="password">
-            <FormInput
-                type="password"
-                placeholder="Enter your password"
-            />
-        </ConnectToForm>
-
-        <FormSubmit
-            as={Button}
-            onSend={onSend}
-            onSucceed={onSucceed}
-        >
-            {(status: EnumFormSubmitStatus) => {
-                if (status === EnumFormSubmitStatus.Sending) {
-                    return "Sending..."
-                }
-
-                return "Send"
-            }}
-        </FormSubmit>
-
-        <IfForm hasErrors>
-            <ErrorBlock />
-        </IfForm>
-    </VStack>
-```
-
-#### Third-party components
-
-```tsx
-    const formConfig: IUseFormSettings = {
+function LoginForm() {
+    const form = useForm({
         fields: {
-            date: {
-                label: "Date picker",
-                rules: [[[Boolean], "Date is required"]],
-                initialValue: new Date(),
+            username: {
+                label: "Login",
+                initialValue: "",
+                rules: [[[required], "Username is required"]],
             },
-            rangeDates: {
-                label: "Date picker: Range",
-                rules: [[[Boolean], "Username is required"]],
-                initialValue: [new Date(), new Date()],
+            password: {
+                label: "Password",
+                initialValue: "",
+                rules: [[[required], "Password is required"]],
             },
         },
-    }
+    })
 
-    const form = useForm(formConfig)
-    
-    ...
-
-    type InputProps = Partial<IConnectedProps> & {
-        type?: string
-        placeholder?: string
-        description?: string
-    }
-
-    const FormField: FC<PropsWithChildren<InputProps>> = (props) => {
-        const {
-            label,
-            description = null,
-            errors, //Provides by ConnectToForm
-            children,
-            hasError = false, //Provides by ConnectToForm
-        } = props
-
-        return (
-            <FormControl isInvalid={hasError}>
-                <FormLabel>{label}</FormLabel>
-
-                {children}
-
-                {description !== null && !hasError && (
-                    <FormHelperText>{description}</FormHelperText>
-                )}
-
-                {errors?.map((errorText, index) => {
-                    if (typeof errorText !== "string") {
-                        return null
-                    }
-
-                    return (
-                        <FormErrorMessage key={index}>{errorText}</FormErrorMessage>
-                    )
-                })}
-            </FormControl>
-        )
-    }
-
-    const FormDatePicker: React.FC<InputProps & { isRange?: boolean }> = (
-        props
-    ) => {
-        const {
-            isRange = false,
-            name, //Provides by ConnectToForm
-            value, //Provides by ConnectToForm
-            onChange, //Provides by ConnectToForm
-        } = props
-
-        return (
-            <FormField {...props}>
-                {!isRange && (
-                    <SingleDatepicker
-                        name={name}
-                        date={value}
-                        onDateChange={(date) => onChange?.(date)}
-                    />
-                )}
-
-                {isRange && (
-                    <RangeDatepicker
-                        name={name}
-                        selectedDates={value}
-                        onDateChange={(date) => onChange?.(date)}
-                    />
-                )}
-            </FormField>
-        )
-    }
-
-    ...
-
-    <ConnectToForm name="date">
-        <FormDatePicker />
-    </ConnectToForm>
-
-    <ConnectToForm name="rangeDates">
-        <FormDatePicker isRange />
-    </ConnectToForm>
-```
-
-### Input's states
-
-```javascript
-    const Input: React.FC<IConnectedProps> = ({
-        inputProps = {}, //Provides by ConnectToForm
-        label, //Provides by ConnectToForm
-        errors, //Provides by ConnectToForm
-        isSucceed, //Provides by ConnectToForm
-        hasError, //Provides by ConnectToForm
-        isFocused, //Provides by ConnectToForm
-        isTouched, //Provides by ConnectToForm
-        isFilled, //Provides by ConnectToForm
-        isDisabled //Provides by ConnectToForm
-        ...rest // You've provided
-    }) => {
-        return (
-            <label>
-                {label}
-
-                <input
-                    {..._.pick(rest, ["type", "placeholder", "etc"])}
-                    {...inputProps}
-                    className={isSucceed ? "succeed" : hasError ? "has-error" : "default"}
-                />
-
-                {/*  Other states */}
-                {isFocused && "Tip: type something funny"}
-                {isTouched && "You've already touched this field"}
-                {isFilled && "You've already filled this field"}
-                {isDisabled && "This field is disabled"}
-
-                {/* Field errors */}
-                {hasError && <>
-                    <span>Errors:</span>
-                    <ul>
-                        {errors.map((error: string, i: number) => (
-                            <li key={i}>{error}</li>
-                        ))}
-                    </ul>
-                </>}
-            </label>
-        )
-    }
-```
-
-### Form's states
-
-```javascript
-    <IfForm>
-        <p>Show when form is default</p>
-    </IfForm>
-
-    <IfForm isSuccess>
-        <p>Form has been sent success</p>
-    </IfForm>
-
-    <IfForm isCanceling>
-        <p>Form has sent unsuccess</p>
-    </IfForm>
-
-    <IfForm isSending>
-        <p>Form is sending now</p>
-    </IfForm>
-
-    <IfForm hasErrors>
-        <p>Form has errors</p>
-    </IfForm>
-```
-
-You can get form's values and errors directly through `form` variable:
-
-```javascript
-    const form = useForm(/*Form config*/)
-
-    const { values, errors } = form
-
-    useEffect(() => {
-        console.log("[Form][Values]", values)
-    }, [values])
-
-    useEffect(() => {
-        console.log("[Form][Errors]", errors)
-    }, [errors])
-```
-
-Or by context inside FormContext.Provider:
-
-```javascript
-    const { values, errors } = useFormContext()
-
-    useEffect(() => {
-        console.log("[Form][Values]", values)
-    }, [values])
-
-    useEffect(() => {
-        console.log("[Form][Errors]", errors)
-    }, [errors])
-```
-
-### Submit
-
-`onSend` receives typed form values. On success, callbacks get `{ response, values }` from `form.send`.
-
-Create callbacks
-
-```ts
-    const form = useForm(/*Form config*/)
-
-    ...
+    // form.values.username // string
 
     const onSend = useCallback(async (values: typeof form.values) => {
-        console.log("Login data", values)
-
-        return sendValuesToTheServer(values)
+        return api.login(values)
     }, [])
 
-    const onSucceed = useCallback(
-        ({ response, values }: { response: unknown; values: typeof form.values }) => {
-            console.log("Login completed", response, values)
-        },
-        []
+    return (
+        <FormContext.Provider value={form}>
+            <ConnectToForm name="username">
+                {(props) => (
+                    <label>
+                        {props.label}
+                        <input
+                            value={props.value}
+                            onChange={(e) => props.onChange(e.target.value)}
+                            onBlur={props.onBlur}
+                        />
+                    </label>
+                )}
+            </ConnectToForm>
+
+            <ConnectToForm name="password">
+                {(props) => (
+                    <label>
+                        {props.label}
+                        <input
+                            type="password"
+                            value={props.value}
+                            onChange={(e) => props.onChange(e.target.value)}
+                            onBlur={props.onBlur}
+                        />
+                    </label>
+                )}
+            </ConnectToForm>
+
+            <FormSubmit
+                onSend={onSend}
+                onSucceed={({ response, values }) => {
+                    console.log("ok", response, values)
+                }}
+            >
+                {(status) =>
+                    status === EnumFormSubmitStatus.Sending ? "Sending…" : "Send"
+                }
+            </FormSubmit>
+
+            <IfForm hasErrors>
+                <Errors />
+            </IfForm>
+        </FormContext.Provider>
     )
+}
 
-    const onError = useCallback((reason: unknown) => {
-        console.log("Login failed", reason)
-    }, [])
-
-    const submit = useFormSubmit(onSend, onSucceed, onError)
+function Errors() {
+    const errors = useFormErrors()
+    return (
+        <ul>
+            {Object.entries(errors).flatMap(([name, fieldErrors]) =>
+                getFieldErrorMessages(fieldErrors).map((msg) => (
+                    <li key={`${name}-${msg}`}>
+                        {name}: {msg}
+                    </li>
+                ))
+            )}
+        </ul>
+    )
+}
 ```
 
-Get submit callback by hook
+Wrap anything that uses form hooks / `ConnectToForm` / `FormSubmit` in `FormContext.Provider`.
 
-```javascript
-
-    const submit = useFormSubmit(onSend, onSucceed, onError)
-
-    ...
-
-    <Button disabled={form.isSending || form.isCanceling || form.hasErrors} onClick={submit}>
-        Submit
-    </Button>
-
-```
-
-OR Get submit by component
-
-```javascript
-    //Component version
-
-    <FormSubmit onSend={onSend} onSucceed={onSucceed} onError={onError}>
-        {(status: EnumFormSubmitStatus) => {
-            if (status === EnumFormSubmitStatus.Sending) {
-                return "Sending..."
-            }
-
-            if (status === EnumFormSubmitStatus.Canceling) {
-                return "Failed"
-            }
-
-            if (status === EnumFormSubmitStatus.Succeed) {
-                return "Succeed"
-            }
-
-            return "Submit"
-        }}
-    </FormSubmit>
-
-```
+---
 
 ## TypeScript
 
-`useForm` infers the values type from `fields` / `initialValue`, and threads it through `values`, `setValue`, `setValues`, errors, and touched APIs.
-
 ### Infer values from `fields`
+
+Pass the config **inline** (or use `satisfies`) so `initialValue` types are kept:
 
 ```ts
 const form = useForm({
@@ -557,15 +134,16 @@ const form = useForm({
 })
 
 form.values.username // string
-form.values.age // number
 form.setValue("age", 21) // ok
-// form.setValue("age", "21") // TS error
-// form.setValue("missing", "x") // TS error
+// form.setValue("age", "21") // error
+// form.setValue("missing", "x") // error
 ```
+
+Avoid `const config: IUseFormSettings = { … }` if you need inference — that widens field types.
 
 ### Explicit values type
 
-Use a generic when `initialValue` is narrower than the real domain (e.g. `null`, but the field is `string | null`):
+When `initialValue` is narrower than the real domain:
 
 ```ts
 type LoginForm = {
@@ -584,102 +162,59 @@ form.setValue("username", "alice") // ok
 form.setValue("username", null) // ok
 ```
 
-Or widen a single field: `initialValue: null as string | null`.
+Or per field: `initialValue: null as string | null`.
 
 ### Field names
 
-With an inferred or explicit values type, these APIs only accept known field names:
+Typed against your values shape:
 
 - `setValue` / `setTouchedByName` / `setCustomErrorByName`
 - `setTouched` / `setErrors` / `setCustomErrors`
-- `ConnectToForm<YourValues> name="..."`
-
-Without a type argument, `ConnectToForm` still accepts any `string` name (React context does not flow generics). Prefer `ConnectToForm<LoginForm>` next to `useForm<LoginForm>`.
-
-For typed `value` / `onChange`, use the render-prop child:
-
-```tsx
-<ConnectToForm<LoginForm> name="age">
-    {(props) => {
-        // props.value: number
-        // props.onChange: (value: number) => void
-        return <input ... />
-    }}
-</ConnectToForm>
-```
-
-Or type your input as `Partial<IConnectedProps<LoginForm, "username">>`.
+- `ConnectToForm<LoginForm> name="…"`
+- `getFieldError(errors, name)`
 
 ### Validators
 
-Runtime always calls `(value, values) => boolean`. Types match that contract.
+Runtime calls `(value, values) => boolean`. One-arg functions and `Boolean` still work.
 
 ```ts
 import { useForm, required, minLength } from "@undermuz/use-form"
 
-type LoginForm = {
-    username: string
-    age: number
-}
+rules: [[[required, minLength(3)], "Username is invalid"]]
 
-const form = useForm<LoginForm>({
-    fields: {
-        username: {
-            label: "Login",
-            initialValue: "",
-            rules: [[[required, minLength(3)], "Username is invalid"]],
-        },
-        age: {
-            label: "Age",
-            initialValue: 0,
-            rules: [[
-                [
-                    (value, values) =>
-                        typeof value === "number" && Boolean(values.username),
-                ],
-                "Age is invalid",
-            ]],
-        },
-    },
-})
+// Cross-field:
+rules: [[
+    [(value, values) => typeof value === "number" && Boolean(values.username)],
+    "Invalid age",
+]]
 ```
 
-Built-ins: `required`, `minLength(n)`, `pattern(regexp)`.  
-`Boolean` remains valid for simple “truthy” checks.
+Built-ins: `required`, `minLength(n)`, `pattern(regexp)`.
 
-### Send / FormSubmit
+### Send / submit
 
 ```ts
-const result = await form.send(async (values) => {
-    return { token: "…" } // values typed from the form
-})
-
-result.values // form values
-result.response.token // string
+const { response, values } = await form.send(async (v) => api.login(v))
 
 <FormSubmit
     onSend={async (values) => api.login(values)}
-    onSucceed={({ response, values }) => {
-        /* response + values typed */
-    }}
-    onError={(err) => {
-        /* FormValidateError | FormSendError | unknown */
-    }}
+    onSucceed={({ response, values }) => { /* typed */ }}
+    onError={(err) => { /* FormValidateError | FormSendError | unknown */ }}
 />
 ```
 
-Types: `FormSendApi`, `FormSendResult`, `FormSubmitError`, `IFormSubmitProps`.
+Or `useFormSubmit(onSend, onSucceed, onError)` for a click handler.
 
-### Form options
+### Options
 
 ```ts
-const form = useForm({
-    fields: { /* ... */ },
+useForm({
+    fields: { /* … */ },
     options: {
         debug: true,
         afterSendDelay: 300,
         mapServerFields: { user_name: "username" },
-        middlewares: [myMiddleware], // FormMiddleware[]
+        middlewares: [myMiddleware],
     },
 })
 ```
@@ -687,13 +222,11 @@ const form = useForm({
 | Option | Purpose |
 |--------|---------|
 | `debug` | Extra console logs |
-| `afterSendDelay` | How long success/cancel flags stay true after send |
-| `mapServerFields` | Map API field names → local names when applying `__meta__.formInfo.fieldsErrors` |
-| `middlewares` | Extra store middlewares (`FormMiddleware` / `StoreMiddleware`) |
+| `afterSendDelay` | How long success/cancel flags stay true |
+| `mapServerFields` | Map API field names → local names for `__meta__.formInfo.fieldsErrors` |
+| `middlewares` | Extra `FormMiddleware` / `StoreMiddleware` |
 
 ### Errors helpers
-
-`IError` can nest maps; UI usually wants plain strings:
 
 ```ts
 import { getFieldError, getFieldErrorMessages } from "@undermuz/use-form"
@@ -701,269 +234,141 @@ import { getFieldError, getFieldErrorMessages } from "@undermuz/use-form"
 getFieldError(form.errors, "username") // string[]
 getFieldErrorMessages(form.errors.username)
 
-form.sendError // unknown | null — last send failure payload
+form.sendError // unknown | null
 ```
 
 ### Tips
 
 | Do | Avoid |
 |----|--------|
-| Pass config inline into `useForm({ fields })` | `const config: IUseFormSettings = { ... }` if you need inference |
-| Set `initialValue` for typed values | Omitting `initialValue` → field value typed as `unknown` |
-| `useForm<MyValues>(...)` for unions / nullables | Relying only on `null` literal inference |
-| `ConnectToForm<MyValues> name="..."` | Untyped `ConnectToForm` when you want name checks |
+| Inline `useForm({ fields })` or `satisfies` | `const c: IUseFormSettings = …` when you need inference |
+| Set `initialValue` for typed values | Omitting it → `unknown` |
+| `useForm<MyValues>(…)` for nullables/unions | Relying on `null` alone |
+| Render-prop `ConnectToForm` for typed `value` | Untyped element children when you need field types |
+
+---
+
+## ConnectToForm
+
+### Render prop (recommended for TS)
+
+```tsx
+<ConnectToForm<LoginForm> name="username">
+    {(props) => (
+        <input
+            value={props.value ?? ""}
+            onChange={(e) => props.onChange(e.target.value)}
+            onBlur={props.onBlur}
+        />
+    )}
+</ConnectToForm>
+```
+
+`props` includes: `value`, `onChange`, `onBlur`, `label`, `errors`, `hasError`, `isTouched`, `isFilled`, `isSucceed`, `inputProps`, …
+
+### Element child (cloneElement)
+
+Still supported — injects the same props into a single React element:
+
+```tsx
+<ConnectToForm name="username">
+    <MyInput placeholder="Login" />
+</ConnectToForm>
+```
+
+Type the child as `Partial<IConnectedProps<LoginForm, "username">>` when you want strict props.
+
+### With a UI kit
+
+Same pattern: wrap your design-system input and forward `value` / `onChange` / `onBlur` / `hasError` / `errors`.
+
+---
 
 ## Controlled form
 
-You can control form values from outside by providing `value` and `onChange` to `useForm`'s config.
-
 ```ts
-import { useState } from "react"
-import { useForm, required } from "@undermuz/use-form"
+const [value, onChange] = useState({ username: "", password: "" })
 
-type LoginForm = {
-    username: string
-    password: string
-}
-
-const [value, onChange] = useState<LoginForm>({
-    username: "",
-    password: "",
-})
-
-const form = useForm<LoginForm>({
+const form = useForm({
     fields: {
-        username: {
-            label: "Login",
-            initialValue: "",
-            rules: [[[required], "Username is required"]],
-        },
-        password: {
-            label: "Password",
-            initialValue: "",
-            rules: [[[required], "Password is required"]],
-        },
+        username: { label: "Login", initialValue: "", rules: [[[required], "Required"]] },
+        password: { label: "Password", initialValue: "", rules: [[[required], "Required"]] },
     },
     value,
     onChange,
 })
 ```
 
-You can get *more* control
+---
 
-```javascript
-/*
-    FORM_ACTIONS = {
-        SET_VALUES
-        SET_VALUE
-        SET_TESTS
-        SET_TOUCHED_FIELD
-        SET_TOUCHED
-        SET_ERRORS
-        SET_FIELDS
-        SET_VALIDATE
-        SET_IS_SENDING
-        SET_IS_CANCELING
-        SET_IS_SUCCESS
-        SET_SEND_ERROR
-        VALIDATE_FORM
-        SEND_FORM
-    }
-*/
+## Form UI helpers
 
+```tsx
+<IfForm>…</IfForm>
+<IfForm isSending>…</IfForm>
+<IfForm isSuccess>…</IfForm>
+<IfForm isCanceling>…</IfForm>
+<IfForm hasErrors>…</IfForm>
+
+useIsFormSending()
+useIsFormSuccess()
+useIsFormCanceling()
+useIsFormHasErrors()
+useFormErrors()
+useFormFields()
+useFormContext<MyValues>()
+```
+
+---
+
+## Advanced
+
+Custom store middleware / low-level core:
+
+```ts
 const [formConfig, formState] = useFormCoreParams({
-    fields: {
-        username: {
-            label: "Login",
-            rules: [[[Boolean], "Username is required"]],
-        },
-        password: {
-            label: "Password",
-            rules: [[[Boolean], "Password is required"]],
-        },
-    },
+    fields: { /* … */ },
     options: {
-        middlewares: [
-            /* --> */createYourCustomMiddleware()/* <-- */
-        ]
-    }
+        middlewares: [createYourCustomMiddleware()],
+    },
 })
 
 const form = useFormCore(formConfig, formState)
 
-const setValue = useCallback((values: any) => {
-    if (isDebug) console.log("[useCustomForm][setValue]", values)
-
-    formState.dispatch({
-        type: FORM_ACTIONS.SET_VALUES,
-        payload: {
-            values,
-            /* --> */yourCustomPayload: "some-additional-info"/* <-- */
-        },
-    })
-}, [])
+formState.dispatch({
+    type: FORM_ACTIONS.SET_VALUES,
+    payload: { values: { username: "a" } },
+})
 ```
 
-You can get even *more* control
+See `FORM_ACTIONS` and `FormMiddleware` in the package types for the full action surface.
 
-```javascript
-    const useCustomFormState = (props: IFormConfig): FormState => {
-        const initialState = useMemo(() => getInitialState(props), [])
+---
 
-        const middlewares = useMemo(
-            () => [
-                ...(props?.middlewares || []),
+## Migration from 1.x
 
-                /* --> */YOUR_CUSTOM_MIDDLEWARE(props)/* <-- */,
+- Prefer `initialValue` + inferred/`useForm<T>` types instead of untyped `IValues`
+- Validators are `(value, values) => boolean` (one-arg still OK)
+- Use `required` / `minLength` / `pattern` instead of only `Boolean`
+- `options` is a closed shape (`debug`, `afterSendDelay`, `mapServerFields`, `middlewares`)
+- `ConnectToForm` render-prop for typed field values
+- `getFieldError` for UI error lists
+- `form.send` / `FormSubmit` resolve to `{ response, values }`
 
-                /*  You can remove default middlewares: */
-                //createValidating(props),
-                //createSend(props),
-            ],
-            []
-        )
+---
 
-        const [state, dispatch, store] = useReducer<IFormState>(
-            formReducer,
-            initialState,
-            middlewares
-        )
+## Workspace
 
-        return { state, dispatch, store }
-    }
+This repo is an npm workspaces + Nx monorepo:
 
-    const useCustomFormParams = (
-        formSettings: IUseFormSettings
-    ): [IFormConfig, FormState] => {
-        const formConfig = useFormConfigBySettings(formSettings)
-        const formState = useCustomFormState(formConfig)
+| Path | Package |
+|------|---------|
+| `packages/use-form` | `@undermuz/use-form` library |
+| `www/home` | Marketing / demo site |
 
-        return [formConfig, formState]
-    }
-
-    ...
-        const [formConfig, formState] = useCustomFormParams({
-            fields: {
-                username: {
-                    label: "Login",
-                    rules: [[[Boolean], "Username is required"]],
-                },
-                password: {
-                    label: "Password",
-                    rules: [[[Boolean], "Password is required"]],
-                },
-            }
-        })
-
-        const form = useFormCore(formConfig, formState)
-    ...
-```
-
-## Examples
-
-```tsx
-import { useCallback } from "react"
-import {
-    useForm,
-    FormContext,
-    ConnectToForm,
-    FormSubmit,
-    IfForm,
-    useFormErrors,
-    useFormFields,
-    required,
-    EnumFormSubmitStatus,
-    type IConnectedProps,
-} from "@undermuz/use-form"
-
-const Input: React.FC<IConnectedProps & { type?: string; placeholder?: string }> = ({
-    type = "text",
-    placeholder = "",
-    onChange,
-    label,
-    value,
-}) => {
-    return (
-        <>
-            <label>{label}</label>
-            <input
-                type={type}
-                placeholder={placeholder}
-                onChange={(e) => onChange?.(e.target.value)}
-                value={value}
-            />
-        </>
-    )
-}
-
-const ErrorBlock = () => {
-    const errors = useFormErrors()
-    const fields = useFormFields()
-
-    return (
-        <>
-            {Object.keys(errors).map((name) => (
-                <div key={name}>
-                    <p>{fields?.[name] || name}:</p>
-                    <ul>
-                        {errors[name]?.map((error, i) => (
-                            <li key={i}>{error as string}</li>
-                        ))}
-                    </ul>
-                </div>
-            ))}
-        </>
-    )
-}
-
-const LoginForm = () => {
-    const form = useForm({
-        fields: {
-            username: {
-                label: "Login",
-                initialValue: "",
-                rules: [[[required], "Username is required"]],
-            },
-            password: {
-                label: "Password",
-                initialValue: "",
-                rules: [[[required], "Password is required"]],
-            },
-        },
-    })
-
-    const onSend = useCallback((values: typeof form.values) => {
-        console.log("Login data", values)
-    }, [])
-
-    const onSucceed = useCallback(() => {
-        console.log("Login completed")
-    }, [])
-
-    return (
-        <FormContext.Provider value={form}>
-            <ConnectToForm name="username">
-                <Input placeholder="Enter your login" />
-            </ConnectToForm>
-
-            <ConnectToForm name="password">
-                <Input type="password" placeholder="Enter your password" />
-            </ConnectToForm>
-
-            <FormSubmit onSend={onSend} onSucceed={onSucceed}>
-                {(status: EnumFormSubmitStatus) => {
-                    if (status === EnumFormSubmitStatus.Sending) {
-                        return "Sending..."
-                    }
-
-                    return "Send"
-                }}
-            </FormSubmit>
-
-            <IfForm hasErrors>
-                <ErrorBlock />
-            </IfForm>
-        </FormContext.Provider>
-    )
-}
+```bash
+npm run lint
+npm run test
+npm run build
+npm run dev:home
 ```
