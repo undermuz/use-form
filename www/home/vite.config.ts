@@ -20,6 +20,7 @@ export default defineConfig({
     },
     server: {
         host: true,
+        port: 5180,
     },
     preview: {
         host: true,

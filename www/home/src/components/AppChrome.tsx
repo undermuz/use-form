@@ -1,7 +1,11 @@
 import type { FC, ReactNode } from "react"
 
+import {
+    getJsonFormHref,
+    getPageBuilderHref,
+} from "../lib/siteUrls"
+
 const GITHUB = "https://github.com/undermuz/use-form"
-const NPM = "https://www.npmjs.com/package/@undermuz/use-form"
 
 type AppChromeProps = {
     showEditorControls?: boolean
@@ -81,13 +85,11 @@ const AppChrome: FC<AppChromeProps> = ({
                     >
                         GitHub
                     </a>
-                    <a
-                        className={linkClass}
-                        href={NPM}
-                        target="_blank"
-                        rel="noreferrer"
-                    >
-                        npm
+                    <a className={linkClass} href={getJsonFormHref()}>
+                        react-json-form
+                    </a>
+                    <a className={linkClass} href={getPageBuilderHref()}>
+                        page-builder
                     </a>
                     <a className={linkClass} href="#install">
                         Install
