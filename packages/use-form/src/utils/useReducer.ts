@@ -1,30 +1,28 @@
 import { useState, useCallback, useRef, useMemo } from "react"
 
-type AnyFn = (...args: any[]) => any
-
-function compose(...fns: AnyFn[]) {
-    if (fns.length === 0) return (arg: any) => arg
-    if (fns.length === 1) return fns[0]
-
-    return fns.reduce(
-        (a, b) =>
-            (...args: any[]) =>
-                a(b(...args))
-    )
-}
-
-export interface IActionPayload {
-    [k: string]: any
-}
+export type IActionPayload = Record<string, unknown>
 
 export interface IAction {
     type: string | number
-    payload?: any
+    payload?: unknown
     silent?: boolean
     checkOnlyFilled?: boolean
 }
 
 export type DispatchFunction = (action: IAction) => void
+
+type DispatchLike = (action: IAction) => unknown
+
+type MiddlewareEnhancer = (next: DispatchLike) => DispatchLike
+
+function compose(...fns: MiddlewareEnhancer[]): MiddlewareEnhancer {
+    if (fns.length === 0) return (arg) => arg
+    if (fns.length === 1) return fns[0]!
+
+    return fns.reduce(
+        (a, b) => (next) => a(b(next))
+    )
+}
 
 export interface IStore<T> {
     getState: () => T
@@ -63,7 +61,7 @@ const useReducer = <T>(
             dispatch: (...args) => _enhancedDispatch(...args),
         }
 
-        const dispatch = (action: IAction) => {
+        const dispatch: DispatchLike = (action: IAction) => {
             draftState.current = reducer(draftState.current, action)
 
             setState(draftState.current)

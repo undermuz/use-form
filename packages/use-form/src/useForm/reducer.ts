@@ -1,11 +1,7 @@
 import type { IAction } from "../utils/useReducer"
 import { getFormErrors } from "./middlewares/validate"
 
-const IsFunction = (value: any): boolean =>
-    Boolean(value) &&
-    ["[object Function]", "[object AsyncFunction]"].includes(
-        {}.toString.call(value)
-    )
+const payloadOf = <T>(action: IAction): T => action.payload as T
 
 const SET_VALUES = "set_values"
 const SET_VALUE = "set_value"
@@ -103,26 +99,35 @@ export interface IFormState<T extends IValues = IValues> {
 
 export const valuesReducer = (state: IValues, action: IAction): IValues => {
     switch (action.type) {
-        case FORM_ACTIONS.SET_VALUES:
-            if (IsFunction(action.payload.values)) {
-                return action.payload.values(state)
+        case FORM_ACTIONS.SET_VALUES: {
+            const { values } = payloadOf<{
+                values: IValues | ((prev: IValues) => IValues)
+            }>(action)
+
+            if (typeof values === "function") {
+                return values(state)
             }
 
-            return action.payload.values
-        case FORM_ACTIONS.SET_VALUE:
-            if (IsFunction(action.payload.value)) {
+            return values
+        }
+        case FORM_ACTIONS.SET_VALUE: {
+            const { name, value } = payloadOf<{
+                name: string
+                value: unknown
+            }>(action)
+
+            if (typeof value === "function") {
                 return {
                     ...state,
-                    [action.payload.name]: action.payload.value(
-                        state[action.payload.name]
-                    ),
+                    [name]: (value as (prev: unknown) => unknown)(state[name]),
                 }
             }
 
             return {
                 ...state,
-                [action.payload.name]: action.payload.value,
+                [name]: value,
             }
+        }
         default:
             return state
     }
@@ -133,12 +138,17 @@ export const testsReducer = (
     action: IAction
 ): IValueTest[] => {
     switch (action.type) {
-        case FORM_ACTIONS.SET_TESTS:
-            if (IsFunction(action.payload.tests)) {
-                return action.payload.tests(state)
+        case FORM_ACTIONS.SET_TESTS: {
+            const { tests } = payloadOf<{
+                tests: IValueTest[] | ((prev: IValueTest[]) => IValueTest[])
+            }>(action)
+
+            if (typeof tests === "function") {
+                return tests(state)
             }
 
-            return action.payload.tests
+            return tests
+        }
         default:
             return state
     }
@@ -146,14 +156,22 @@ export const testsReducer = (
 
 export const touchedReducer = (state: ITouched, action: IAction): ITouched => {
     switch (action.type) {
-        case FORM_ACTIONS.SET_TOUCHED:
-            if (IsFunction(action.payload.touched)) {
-                return action.payload.touched(state)
+        case FORM_ACTIONS.SET_TOUCHED: {
+            const { touched } = payloadOf<{
+                touched: ITouched | ((prev: ITouched) => ITouched)
+            }>(action)
+
+            if (typeof touched === "function") {
+                return touched(state)
             }
 
-            return action.payload.touched
+            return touched
+        }
         case FORM_ACTIONS.SET_TOUCHED_FIELD: {
-            const { name, value = true } = action.payload
+            const { name, value = true } = payloadOf<{
+                name: string
+                value?: boolean
+            }>(action)
 
             let newTouched = state
 
@@ -172,12 +190,17 @@ export const touchedReducer = (state: ITouched, action: IAction): ITouched => {
 
 export const errorsReducer = (state: IErrors, action: IAction): IErrors => {
     switch (action.type) {
-        case FORM_ACTIONS.SET_ERRORS:
-            if (IsFunction(action.payload.errors)) {
-                return action.payload.errors(state)
+        case FORM_ACTIONS.SET_ERRORS: {
+            const { errors } = payloadOf<{
+                errors: IErrors | ((prev: IErrors) => IErrors)
+            }>(action)
+
+            if (typeof errors === "function") {
+                return errors(state)
             }
 
-            return action.payload.errors
+            return errors
+        }
         default:
             return state
     }
@@ -188,17 +211,22 @@ export const customErrorsReducer = (
     action: IAction
 ): IErrors => {
     switch (action.type) {
-        case FORM_ACTIONS.SET_CUSTOM_ERRORS:
-            if (IsFunction(action.payload.errors)) {
-                return action.payload.errors(state)
+        case FORM_ACTIONS.SET_CUSTOM_ERRORS: {
+            const { errors } = payloadOf<{
+                errors: IErrors | ((prev: IErrors) => IErrors)
+            }>(action)
+
+            if (typeof errors === "function") {
+                return errors(state)
             }
 
-            return action.payload.errors
+            return errors
+        }
         case FORM_ACTIONS.SET_CUSTOM_ERROR_FIELD: {
-            const { name, value } = action.payload as {
+            const { name, value } = payloadOf<{
                 name: string
                 value: IError
-            }
+            }>(action)
 
             return { ...state, [name]: value }
         }
@@ -209,12 +237,17 @@ export const customErrorsReducer = (
 
 export const fieldsReducer = (state: IFields, action: IAction): IFields => {
     switch (action.type) {
-        case FORM_ACTIONS.SET_FIELDS:
-            if (IsFunction(action.payload.fields)) {
-                return action.payload.fields(state)
+        case FORM_ACTIONS.SET_FIELDS: {
+            const { fields } = payloadOf<{
+                fields: IFields | ((prev: IFields) => IFields)
+            }>(action)
+
+            if (typeof fields === "function") {
+                return fields(state)
             }
 
-            return action.payload.fields
+            return fields
+        }
         default:
             return state
     }
@@ -225,12 +258,23 @@ export const validateReducer = (
     action: IAction
 ): ValidateFunction => {
     switch (action.type) {
-        case FORM_ACTIONS.SET_VALIDATE:
-            if (!action.payload.validate) {
+        case FORM_ACTIONS.SET_VALIDATE: {
+            const payload = action.payload
+
+            if (typeof payload === "function") {
+                return payload as ValidateFunction
+            }
+
+            const { validate } = payloadOf<{
+                validate?: ValidateFunction | null
+            }>(action)
+
+            if (!validate) {
                 return getFormErrors
             }
 
-            return action.payload.validate
+            return validate
+        }
         default:
             return state
     }

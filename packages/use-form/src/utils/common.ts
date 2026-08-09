@@ -14,7 +14,7 @@ interface ExoticComponentWithDisplayName<P = unknown>
     displayName?: string
 }
 
-type AnyComponent<P = any> =
+type AnyComponent<P = unknown> =
     | ExoticComponentWithDisplayName<P>
     | ComponentType<P>
 
@@ -60,7 +60,7 @@ export const useFormErrors = () => {
     return params.errors
 }
 
-export const useRefBy = <T = any>(by: T): MutableRefObject<T> => {
+export const useRefBy = <T = unknown>(by: T): MutableRefObject<T> => {
     const refBy = useRef<T>(by)
 
     useEffect(() => {

@@ -56,17 +56,17 @@ export interface IInputProps {
     name: string
     label: string
     disabled: boolean
-    value: any
+    value: unknown
     onChange: (event: ChangeEvent<HTMLInputElement>) => void
     onFocus: (event: FocusEvent<HTMLInputElement>) => void
     onBlur: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-/** Field value type for connected props; stays `any` for the open default form. */
+/** Field value type for connected props; `unknown` for the open default form. */
 export type ConnectedValue<
     T extends IValues = IValues,
     K extends FieldName<T> = FieldName<T>
-> = unknown extends T[K] ? any : T[K]
+> = unknown extends T[K] ? unknown : T[K]
 
 export interface IConnectedProps<
     T extends IValues = IValues,

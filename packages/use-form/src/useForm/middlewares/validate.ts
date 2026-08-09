@@ -39,7 +39,10 @@ export const getFormErrors = (state: IFormState): IErrors => {
 }
 
 const getValidateFunction = (action: IAction, store: IStore<IFormState>) => {
-    const { validate: customValidate = null } = action.payload
+    const payload = (action.payload ?? {}) as {
+        validate?: IFormState["validate"] | null
+    }
+    const { validate: customValidate = null } = payload
 
     const state = store.getState()
 

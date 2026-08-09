@@ -179,7 +179,11 @@ const createSend =
             return result
         }
 
-        const { api, onResolve = noop, onReject = noop } = action.payload
+        const { api, onResolve = noop, onReject = noop } = action.payload as {
+            api: FormSendApi
+            onResolve?: (resp: FormSendResult) => void
+            onReject?: (error: unknown) => void
+        }
 
         try {
             if (debug) console.log(`[useForm][send][Start sending]`)
