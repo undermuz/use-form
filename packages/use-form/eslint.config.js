@@ -1,3 +1,4 @@
+import { fixupPluginRules } from "@eslint/compat"
 import js from "@eslint/js"
 import prettier from "eslint-config-prettier"
 import react from "eslint-plugin-react"
@@ -12,7 +13,8 @@ export default tseslint.config(
     {
         files: ["**/*.{ts,tsx}"],
         plugins: {
-            react,
+            // eslint-plugin-react is not ESLint 10-ready yet
+            react: fixupPluginRules(react),
         },
         languageOptions: {
             parserOptions: {
@@ -22,7 +24,8 @@ export default tseslint.config(
         },
         settings: {
             react: {
-                version: "detect",
+                // Avoid version auto-detect (uses removed getFilename in ESLint 10)
+                version: "19",
             },
         },
         rules: {

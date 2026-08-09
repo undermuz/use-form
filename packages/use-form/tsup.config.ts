@@ -8,7 +8,12 @@ export default defineConfig({
     sourcemap: false,
     clean: true,
     target: "es2020",
-    dts: true,
+    // tsup injects deprecated baseUrl for DTS; silence until upstream fix (egoist/tsup#1388)
+    dts: {
+        compilerOptions: {
+            ignoreDeprecations: "6.0",
+        },
+    },
     skipNodeModulesBundle: true,
     format: ["cjs", "esm"],
     minify: env === "production",
