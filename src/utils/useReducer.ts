@@ -1,6 +1,8 @@
 import { useState, useCallback, useRef, useMemo } from "react"
 
-function compose(...fns: Function[]) {
+type AnyFn = (...args: any[]) => any
+
+function compose(...fns: AnyFn[]) {
     if (fns.length === 0) return (arg: any) => arg
     if (fns.length === 1) return fns[0]
 
@@ -16,9 +18,10 @@ export interface IActionPayload {
 }
 
 export interface IAction {
-    [k: string]: any
     type: string | number
-    payload: IActionPayload | any
+    payload?: any
+    silent?: boolean
+    checkOnlyFilled?: boolean
 }
 
 export type DispatchFunction = (action: IAction) => void
@@ -28,10 +31,15 @@ export interface IStore<T> {
     dispatch: DispatchFunction
 }
 
+/** Redux-style store middleware used by `useReducer`. */
+export type StoreMiddleware<T> = (
+    store: IStore<T>
+) => (next: DispatchFunction) => (action: IAction) => unknown
+
 const useReducer = <T>(
     reducer: (s: T, a: IAction) => T,
     initialState: T,
-    middlewares: any[] = [],
+    middlewares: StoreMiddleware<T>[] = [],
     options?: { debug?: boolean }
 ): [T, DispatchFunction, { store: IStore<T>; reset: () => void }] => {
     const initialStateRef = useRef<T | null>(null)

@@ -1,9 +1,19 @@
 import { useEffect, useRef } from "react"
 import { isEqual } from "underscore"
 import { useRefBy } from "../../utils/common"
-import type { IUseFormSettings, UseFormConfig } from "../useForm"
+import type {
+    FormSettingsTypeFields,
+    InferValuesFromFields,
+    IUseFormSettings,
+    UseFormConfig,
+} from "../useForm"
 
-const useFormOnError = (form: UseFormConfig, props: IUseFormSettings) => {
+const useFormOnError = <
+    F extends FormSettingsTypeFields = FormSettingsTypeFields
+>(
+    form: UseFormConfig<InferValuesFromFields<F>>,
+    props: IUseFormSettings<F>
+) => {
     const { onError, options } = props
 
     const onErrorRef = useRefBy(onError)

@@ -43,27 +43,43 @@ export const FORM_ACTIONS = {
     SEND_FORM,
 }
 
-export type IValueTest = [Array<string>, Array<Function>, string?]
-
 export type ValidateFunction = (
     formState: IFormState,
     debug?: boolean
 ) => IErrors
 
-export interface IFields {
-    [s: string]: any
-}
-
-export type ITouched = Array<string>
+/** Runtime field labels map (name → label). */
+export type IFields = Record<string, string>
 
 export type IValues<
     T extends Record<string, unknown> = Record<string, unknown>
 > = T
 
+/** String keys of a form values type (field names). */
+export type FieldName<T extends IValues = IValues> = keyof T & string
+
+/**
+ * Validator used by value tests / field rules.
+ * Runtime always passes `(fieldValue, allValues)`.
+ * One-arg functions (and `Boolean`) remain assignable.
+ */
+export type FieldValidator<T extends IValues = IValues> = (
+    value: unknown,
+    values: T
+) => boolean
+
+export type IValueTest<T extends IValues = IValues> = [
+    Array<FieldName<T>>,
+    Array<FieldValidator<T>>,
+    string?
+]
+
+export type ITouched<T extends IValues = IValues> = Array<FieldName<T>>
+
 export type IError = Array<string | IErrors>
 
-export interface IErrors {
-    [s: string]: IError
+export type IErrors<T extends IValues = IValues> = {
+    [K in FieldName<T>]?: IError
 }
 
 export enum EnumFormStatus {
@@ -75,14 +91,14 @@ export interface IFormState<T extends IValues = IValues> {
     isSending: boolean
     isCanceling: boolean
     isSuccess: boolean
-    sendError: any
+    sendError: unknown | null
     values: T
-    tests: IValueTest[]
+    tests: IValueTest<T>[]
     validate: ValidateFunction
-    touched: ITouched
+    touched: ITouched<T>
     fields: IFields
-    errors: IErrors
-    customErrors: IErrors
+    errors: IErrors<T>
+    customErrors: IErrors<T>
 }
 
 export const valuesReducer = (state: IValues, action: IAction): IValues => {
@@ -250,10 +266,13 @@ export const isSuccessReducer = (state: boolean, action: IAction): boolean => {
     }
 }
 
-export const sendErrorReducer = (state: any, action: IAction) => {
+export const sendErrorReducer = (
+    state: unknown | null,
+    action: IAction
+): unknown | null => {
     switch (action.type) {
         case FORM_ACTIONS.SET_SEND_ERROR:
-            return action.payload || null
+            return action.payload ?? null
         default:
             return state
     }
@@ -263,14 +282,20 @@ export const formReducer = <T extends IValues = IValues>(
     state: IFormState<T>,
     action: IAction
 ): IFormState<T> => {
-    const nextState = {
+    const nextState: IFormState<T> = {
         ...state,
         values: valuesReducer(state.values, action) as T,
         fields: fieldsReducer(state.fields, action),
-        tests: testsReducer(state.tests, action),
-        touched: touchedReducer(state.touched, action),
-        errors: errorsReducer(state.errors, action),
-        customErrors: customErrorsReducer(state.customErrors, action),
+        tests: testsReducer(
+            state.tests as IValueTest[],
+            action
+        ) as IValueTest<T>[],
+        touched: touchedReducer(state.touched, action) as ITouched<T>,
+        errors: errorsReducer(state.errors, action) as IErrors<T>,
+        customErrors: customErrorsReducer(
+            state.customErrors,
+            action
+        ) as IErrors<T>,
 
         validate: validateReducer(state.validate, action),
 

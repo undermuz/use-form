@@ -103,7 +103,7 @@ const ErrorBlock = () => {
                 <>
                     <p key={name}>{fields?.[name] || name}:</p>
                     <ul>
-                        {errors[name].map((error, i) => (
+                        {errors[name]?.map((error, i) => (
                             <li key={i}>{error as string}</li>
                         ))}
                     </ul>
@@ -203,7 +203,7 @@ const ErrorBlock = () => {
                 <>
                     <p key={name}>{fields?.[name] || name}:</p>
                     <ul>
-                        {errors[name].map((error, i) => (
+                        {errors[name]?.map((error, i) => (
                             <li key={i}>{error as string}</li>
                         ))}
                     </ul>

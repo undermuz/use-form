@@ -13,10 +13,12 @@ import {
 
 import type { DispatchFunction, IStore } from "../utils/useReducer"
 
+/** Runtime options shared by validate/send middlewares and helpers. */
 export interface IUseIsFormSettings {
-    [k: string]: any
-    afterSendDelay?: number
     debug?: boolean
+    afterSendDelay?: number
+    /** Maps server field names to local form field names on send errors. */
+    mapServerFields?: Record<string, string>
 }
 
 export const isFormHasErrors = (

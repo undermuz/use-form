@@ -1,6 +1,7 @@
 import {
     cloneElement,
     type ReactElement,
+    type ReactNode,
     useCallback,
     useMemo,
     useState,
@@ -8,24 +9,47 @@ import {
     type FocusEvent,
 } from "react"
 
-import type { IError } from "../useForm/reducer"
+import type { FieldName, IError, IValues } from "../useForm/reducer"
 
 import { useFormContext } from "./form-context"
 
-export interface IConnectToForm {
+type ConnectToFormSharedProps<
+    T extends IValues,
+    K extends FieldName<T>
+> = {
     id?: string
-    name: string
+    name: K
     inputName?: string
     disabled?: boolean
     type?: string
-    children: ReactElement
-    IsFilled?: (v: any) => boolean
-    onRefInput?: Function
-    onRef?: Function
+    IsFilled?: (v: T[K]) => boolean
+    onRefInput?: (name: K, node: HTMLElement) => void
+    onRef?: (name: K, ref: HTMLElement) => void
     hasError?: boolean
     errors?: IError
     isSuccess?: boolean
 }
+
+/** Element-child API (props injected via `cloneElement`). */
+export type IConnectToFormElement<
+    T extends IValues = IValues,
+    K extends FieldName<T> = FieldName<T>
+> = ConnectToFormSharedProps<T, K> & {
+    children: ReactElement
+}
+
+/** Render-prop API — fully typed field props. */
+export type IConnectToFormRender<
+    T extends IValues = IValues,
+    K extends FieldName<T> = FieldName<T>
+> = ConnectToFormSharedProps<T, K> & {
+    children: (props: IConnectedProps<T, K>) => ReactNode
+}
+
+export type IConnectToForm<
+    T extends IValues = IValues,
+    K extends FieldName<T> = FieldName<T>
+> = IConnectToFormElement<T, K> | IConnectToFormRender<T, K>
 
 export interface IInputProps {
     id: string
@@ -38,12 +62,21 @@ export interface IInputProps {
     onBlur: (event: ChangeEvent<HTMLInputElement>) => void
 }
 
-export interface IConnectedProps {
+/** Field value type for connected props; stays `any` for the open default form. */
+export type ConnectedValue<
+    T extends IValues = IValues,
+    K extends FieldName<T> = FieldName<T>
+> = unknown extends T[K] ? any : T[K]
+
+export interface IConnectedProps<
+    T extends IValues = IValues,
+    K extends FieldName<T> = FieldName<T>
+> {
     id?: string
     inputProps: IInputProps
 
     name: string
-    value: any
+    value: ConnectedValue<T, K>
     label: string
     errors: IError | null
     disabled: boolean
@@ -55,19 +88,30 @@ export interface IConnectedProps {
     isDisabled: boolean
     hasError: boolean
 
-    onChange: Function
-    onFocus: Function
-    onBlur: Function
-    onRefInput?: Function
-    onRef?: Function
-    onError: Function
+    onChange: (value: ConnectedValue<T, K>) => void
+    onFocus: () => void
+    onBlur: () => void
+    onRefInput?: (node: HTMLElement) => void
+    onRef?: (ref: HTMLElement) => void
+    onError: (error: IError) => void
 }
 
-const ConnectToForm = (props: IConnectToForm) => {
+function ConnectToForm<
+    T extends IValues = IValues,
+    K extends FieldName<T> = FieldName<T>
+>(props: IConnectToFormRender<T, K>): ReactElement | null
+function ConnectToForm<
+    T extends IValues = IValues,
+    K extends FieldName<T> = FieldName<T>
+>(props: IConnectToFormElement<T, K>): ReactElement | null
+function ConnectToForm<
+    T extends IValues = IValues,
+    K extends FieldName<T> = FieldName<T>
+>(props: IConnectToForm<T, K>): ReactElement | null {
     const [isFocused, setFocus] = useState(false)
 
     const {
-        IsFilled = Boolean,
+        IsFilled = Boolean as (v: T[K]) => boolean,
         children,
         name,
         disabled,
@@ -81,7 +125,7 @@ const ConnectToForm = (props: IConnectToForm) => {
         errors: forceErrors,
     } = props
 
-    const params = useFormContext()
+    const params = useFormContext<T>()
 
     const id =
         typeof forceId !== "undefined" && forceId !== null
@@ -90,9 +134,9 @@ const ConnectToForm = (props: IConnectToForm) => {
 
     const {
         isSending = false,
-        values = {},
+        values,
         touched = [],
-        errors: allErrors = {},
+        errors: allErrors,
         fields = {},
         setValue,
         setTouchedByName,
@@ -102,9 +146,14 @@ const ConnectToForm = (props: IConnectToForm) => {
     const value = values[name]
 
     const errors =
-        typeof forceErrors !== "undefined" ? forceErrors : allErrors[name]
+        typeof forceErrors !== "undefined" ? forceErrors : allErrors?.[name]
 
-    const label = children?.props?.label || fields[name]
+    const childLabel =
+        typeof children !== "function"
+            ? (children.props as { label?: string } | undefined)?.label
+            : undefined
+
+    const label = childLabel || fields[name]
     const inputName = forceInputName || name
 
     const isTouched = touched.indexOf(name) > -1
@@ -112,7 +161,7 @@ const ConnectToForm = (props: IConnectToForm) => {
     const hasError =
         typeof forceHasError === "boolean"
             ? forceHasError
-            : Boolean(errors) && errors?.length > 0 && isTouched
+            : Boolean(errors?.length) && isTouched
 
     const isFilled = useMemo(() => IsFilled(value), [IsFilled, value])
 
@@ -154,17 +203,19 @@ const ConnectToForm = (props: IConnectToForm) => {
     const onBlur = useCallback(() => {
         setTouchedByName(name)
         setFocus(false)
-    }, [setTouchedByName])
+    }, [setTouchedByName, name])
 
     const onChange = useCallback(
-        (_v: any) => {
+        (_v: T[K]) => {
             setValue(name, _v, false, true, type)
         },
         [setValue, name, type]
     )
 
     const onNativeChange = useCallback(
-        (e: any) => onChange?.(e?.target?.value),
+        (e: ChangeEvent<HTMLInputElement>) => {
+            onChange(e.target.value as T[K])
+        },
         [onChange]
     )
 
@@ -203,19 +254,23 @@ const ConnectToForm = (props: IConnectToForm) => {
         return null
     }
 
-    const connectedProps: IConnectedProps = {
+    const connectedProps: IConnectedProps<T, K> = {
         id,
         inputProps,
 
         name: inputProps.name,
-        value: inputProps.value,
+        value,
         label: inputProps.label,
-        errors: hasError ? errors : null,
+        errors: hasError ? errors ?? null : null,
         disabled: inputProps.disabled,
 
         ...states,
 
         ...callbacks,
+    }
+
+    if (typeof children === "function") {
+        return <>{children(connectedProps)}</>
     }
 
     return cloneElement(children, connectedProps)

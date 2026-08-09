@@ -4,20 +4,27 @@ import type { FormState } from "./useFormState"
 import { useHasFormErrors, useIsFormValid } from "./helpers"
 import { useFormControl } from "./useFormControl"
 import { useCallback, useMemo, useRef } from "react"
-import type { IErrors } from "./reducer"
+import type { FieldName, IError, IErrors, IFormState, IValues } from "./reducer"
+import type { IStore } from "../utils/useReducer"
 
-const useFormCore = (
-    formConfig: IFormConfig,
-    formState: FormState
-): UseFormConfig => {
+const useFormCore = <T extends IValues = IValues>(
+    formConfig: IFormConfig<T>,
+    formState: FormState<T>
+): UseFormConfig<T> => {
     const { state, dispatch, store, reset } = formState
 
     const formControl = useFormControl(formConfig, store, dispatch)
 
-    const isFormValid = useIsFormValid(formConfig, store, dispatch)
-    const hasFormErrors = useHasFormErrors(formConfig, store, dispatch)
+    const looseStore = store as IStore<IFormState>
 
-    const errors = useMemo<IErrors>(() => {
+    const isFormValid = useIsFormValid(formConfig, looseStore, dispatch)
+    const hasFormErrors = useHasFormErrors(
+        formConfig,
+        looseStore,
+        dispatch
+    ) as UseFormConfig<T>["hasFormErrors"]
+
+    const errors = useMemo<IErrors<T>>(() => {
         const _fieldNames = [
             Object.keys(state.errors),
             Object.keys(state.customErrors),
@@ -36,13 +43,14 @@ const useFormCore = (
             }
         }
 
-        const allErrors: IErrors = {}
+        const allErrors = {} as IErrors<T>
 
         for (const fieldName of fieldPrimaryNames) {
-            const fieldErrors = []
+            const key = fieldName as FieldName<T>
+            const fieldErrors: IError = []
 
-            const fieldPrimaryErrors = state.errors[fieldName]
-            const fieldSecondaryErrors = state.customErrors[fieldName]
+            const fieldPrimaryErrors = state.errors[key]
+            const fieldSecondaryErrors = state.customErrors[key]
 
             if (fieldPrimaryErrors) {
                 if (Array.isArray(fieldPrimaryErrors)) {
@@ -60,7 +68,7 @@ const useFormCore = (
                 }
             }
 
-            if (fieldErrors.length) allErrors[fieldName] = fieldErrors
+            if (fieldErrors.length) allErrors[key] = fieldErrors
         }
 
         return allErrors
@@ -69,7 +77,7 @@ const useFormCore = (
     const errorsRef = useRef(errors)
     errorsRef.current = errors
 
-    const getErrors = useCallback(() => {
+    const getErrors = useCallback((): IErrors<T> => {
         return errorsRef.current
     }, [])
 

@@ -1,10 +1,20 @@
-import type { IUseFormSettings, UseFormConfig } from "./useForm"
+import type {
+    FormSettingsTypeFields,
+    InferValuesFromFields,
+    IUseFormSettings,
+    UseFormConfig,
+} from "./useForm"
 
 import { useEffect, useRef } from "react"
 import { isEqual } from "underscore"
 import { useRefBy } from "../utils/common"
 
-const useControlledForm = (form: UseFormConfig, props: IUseFormSettings) => {
+const useControlledForm = <
+    F extends FormSettingsTypeFields = FormSettingsTypeFields
+>(
+    form: UseFormConfig<InferValuesFromFields<F>>,
+    props: IUseFormSettings<F>
+) => {
     const { value, onChange, options } = props
 
     const valueRef = useRef(value)

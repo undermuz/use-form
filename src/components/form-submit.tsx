@@ -8,7 +8,15 @@ import {
     type WebTarget,
 } from "../utils/common"
 
-import { useFormSubmit } from "../utils/useFormSubmit"
+import {
+    useFormSubmit,
+    type FormSubmitError,
+} from "../utils/useFormSubmit"
+import type {
+    FormSendApi,
+    FormSendResult,
+} from "../useForm/useFormControl"
+import type { IValues } from "../useForm/reducer"
 
 export enum EnumFormSubmitStatus {
     Default = "default",
@@ -17,17 +25,23 @@ export enum EnumFormSubmitStatus {
     Sending = "sending",
 }
 
-interface IFormSubmitProps<Target = WebTarget> {
+export interface IFormSubmitProps<
+    T extends IValues = IValues,
+    R = unknown,
+    Target = WebTarget
+> {
     as?: Target
     children?: (status: EnumFormSubmitStatus) => ReactNode
     disableWhenErrors?: boolean
-    onSend: Function
-    onSucceed: (value: any) => any
-    onError?: (reason: any) => any
+    onSend: FormSendApi<T, R>
+    onSucceed: (result: FormSendResult<T, R>) => void
+    onError?: (reason: FormSubmitError) => void
     disabled?: boolean
 }
 
-const FormSubmit: React.FC<IFormSubmitProps> = (props) => {
+function FormSubmit<T extends IValues = IValues, R = unknown>(
+    props: IFormSubmitProps<T, R>
+) {
     const {
         as: Component = "button",
         children,

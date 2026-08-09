@@ -6,16 +6,29 @@ import type {
     IFormConfig,
     IUseFormSettings,
     TypeUseFormField,
+    FormSettingsTypeFields,
+    InferValuesFromFields,
 } from "./useForm"
+import type { IFields, IValueTest } from "./reducer"
 
-const useFormConfigBySettings = (props: IUseFormSettings): IFormConfig => {
-    return useMemo<IFormConfig>(() => {
-        const _config = {
-            initialValues: props.value ? props.value : {},
-            valueTests: [],
-            fields: {},
-            ...(props.options || {}),
-        }
+const useFormConfigBySettings = <
+    F extends FormSettingsTypeFields = FormSettingsTypeFields
+>(
+    props: IUseFormSettings<F>
+): IFormConfig<InferValuesFromFields<F>> => {
+    return useMemo(() => {
+        type Values = InferValuesFromFields<F>
+
+        const options = props.options || {}
+
+        const initialValues: Record<string, unknown> = props.value
+            ? { ...props.value }
+            : {}
+
+        const valueTests: IValueTest<Values>[] = [
+            ...((options.valueTests || []) as IValueTest<Values>[]),
+        ]
+        const fields: IFields = { ...(options.fields || {}) }
 
         Object.keys(props.fields).forEach((fieldName: string) => {
             const _field: TypeUseFormField = props.fields[fieldName]
@@ -32,19 +45,29 @@ const useFormConfigBySettings = (props: IUseFormSettings): IFormConfig => {
                 field = _field
             }
 
-            _config.fields[fieldName] = field.label || fieldName
+            fields[fieldName] = field.label || fieldName
 
-            if (!props.value || props.value[fieldName] === undefined)
-                _config.initialValues[fieldName] = field.initialValue
+            if (!props.value || props.value[fieldName as keyof Values] === undefined) {
+                initialValues[fieldName] = field.initialValue
+            }
 
             if (field.rules?.length) {
                 field.rules.forEach((rule: IUseFormFieldRule) => {
-                    _config.valueTests.push([[fieldName], ...rule])
+                    const test: IValueTest<Values> = [
+                        [fieldName as keyof Values & string],
+                        ...rule,
+                    ]
+                    valueTests.push(test)
                 })
             }
         })
 
-        return _config
+        return {
+            ...options,
+            initialValues: initialValues as Values,
+            valueTests,
+            fields,
+        }
     }, [])
 }
 

@@ -1,7 +1,12 @@
 const noop = () => {}
 
 import type { DispatchFunction, IAction, IStore } from "../../utils/useReducer"
-import { FormSendError, FormValidateError } from "../errors"
+import {
+    FormSendError,
+    FormValidateError,
+    getErrorMessage,
+    getFormApiErrorMeta,
+} from "../errors"
 import { isFormHasErrors, type IUseIsFormSettings } from "../helpers"
 
 import {
@@ -9,7 +14,9 @@ import {
     type ITouched,
     type IFormState,
     type IErrors,
+    type IValues,
 } from "../reducer"
+import type { FormSendApi, FormSendResult } from "../useFormControl"
 
 const setIsSending = (value: boolean): IAction => {
     return {
@@ -47,19 +54,23 @@ const setTouched = (value: ITouched, silent = false): IAction => {
     }
 }
 
-const setSendError = (value: any): IAction => {
+const setSendError = (value: unknown | null): IAction => {
     return {
         type: FORM_ACTIONS.SET_SEND_ERROR,
         payload: value,
     }
 }
 
-const send = async (
+const send = async <T extends IValues = IValues, R = unknown>(
     settings: IUseIsFormSettings,
-    store: IStore<IFormState>,
-    api: Function
-) => {
-    const { mapServerFields, afterSendDelay, debug = false } = settings
+    store: IStore<IFormState<T>>,
+    api: FormSendApi<T, R>
+): Promise<FormSendResult<T, R>> => {
+    const {
+        mapServerFields = {},
+        afterSendDelay,
+        debug = false,
+    } = settings
 
     const state = store.getState()
     const d = store.dispatch
@@ -68,7 +79,11 @@ const send = async (
 
     d(setTouched(Object.keys(state.fields), true))
 
-    const [isFormInvalid, formErrors] = isFormHasErrors(settings, store, false)
+    const [isFormInvalid, formErrors] = isFormHasErrors(
+        settings,
+        store as IStore<IFormState>,
+        false
+    )
 
     if (debug)
         console.log(
@@ -111,26 +126,25 @@ const send = async (
         const _errors: IErrors = {}
         let hasErrors = false
 
-        //@ts-ignore
-        if (error?.__meta__?.formInfo) {
-            //@ts-ignore
-            const { formInfo } = error.__meta__
+        const formInfo = getFormApiErrorMeta(error)?.formInfo
+        const fieldsErrors = formInfo?.fieldsErrors
 
-            //@ts-ignore
-            if (formInfo.fieldsErrors) {
-                Object.keys(formInfo.fieldsErrors).forEach((fieldName) => {
-                    const realFieldName =
-                        mapServerFields[fieldName] ?? fieldName
+        if (fieldsErrors) {
+            Object.keys(fieldsErrors).forEach((fieldName) => {
+                const realFieldName = mapServerFields[fieldName] ?? fieldName
+                const fieldError = fieldsErrors[fieldName]
 
-                    hasErrors = true
-                    _errors[realFieldName] = formInfo.fieldsErrors[fieldName]
-                })
-            }
+                if (!fieldError) {
+                    return
+                }
+
+                hasErrors = true
+                _errors[realFieldName] = fieldError
+            })
         }
 
         if (debug) {
-            //@ts-ignore
-            console.error(`[useForm][send][Fail]`, error?.message)
+            console.error(`[useForm][send][Fail]`, getErrorMessage(error))
             console.error(error)
         }
 

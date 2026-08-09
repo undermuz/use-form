@@ -9,6 +9,7 @@ import {
     type ValidateFunction,
     type IErrors,
     type IError,
+    type FieldName,
 } from "./reducer"
 
 import { useCallback } from "react"
@@ -26,33 +27,50 @@ import {
     useValidate,
 } from "./helpers"
 
-export type SendFunction = (api: Function) => Promise<any>
+/** API callback passed to `form.send` / `FormSubmit.onSend`. */
+export type FormSendApi<T extends IValues = IValues, R = unknown> = (
+    values: T
+) => R | Promise<R>
 
-export interface IUseFormControl {
-    send: SendFunction
+/** Resolved value of `form.send(api)`. */
+export type FormSendResult<T extends IValues = IValues, R = unknown> = {
+    response: R
+    values: T
+}
+
+export type SendFunction<T extends IValues = IValues> = <R = unknown>(
+    api: FormSendApi<T, R>
+) => Promise<FormSendResult<T, R>>
+
+export interface IUseFormControl<T extends IValues = IValues> {
+    send: SendFunction<T>
     validate: (checkOnlyFilled?: boolean) => void
-    setValue: (
-        name: string,
-        value: any,
+    setValue: <K extends FieldName<T>>(
+        name: K,
+        value: T[K],
         silent?: boolean,
         checkOnlyFilled?: boolean,
         type?: string
     ) => void
-    setTouchedByName: (name: string, value?: boolean, silent?: boolean) => void
+    setTouchedByName: (
+        name: FieldName<T>,
+        value?: boolean,
+        silent?: boolean
+    ) => void
     setTouched: (
-        newTouched: ITouched,
+        newTouched: ITouched<T>,
         silent?: boolean,
         checkOnlyFilled?: boolean
     ) => void
     setValues: (
-        newValues: IValues,
+        newValues: T,
         silent?: boolean,
         checkOnlyFilled?: boolean,
         type?: string
     ) => void
-    getValues: () => IValues
+    getValues: () => T
     setTests: (
-        newTests: IValueTest[],
+        newTests: IValueTest<T>[],
         silent?: boolean,
         checkOnlyFilled?: boolean
     ) => void
@@ -61,33 +79,67 @@ export interface IUseFormControl {
         silent?: boolean,
         checkOnlyFilled?: boolean
     ) => void
-    setErrors: (newErrors: IErrors) => void
-    setCustomErrors: (newErrors: IErrors) => void
-    setCustomErrorByName: (name: string, error: IError) => void
+    setErrors: (newErrors: IErrors<T>) => void
+    setCustomErrors: (newErrors: IErrors<T>) => void
+    setCustomErrorByName: (name: FieldName<T>, error: IError) => void
 }
 
-const useFormControl = (
-    props: IFormConfig,
-    store: IStore<IFormState>,
+const useFormControl = <T extends IValues = IValues>(
+    props: IFormConfig<T>,
+    store: IStore<IFormState<T>>,
     dispatch: DispatchFunction
-): IUseFormControl => {
-    const setValues = useSetValues(props, store, dispatch)
+): IUseFormControl<T> => {
+    const looseStore = store as IStore<IFormState>
 
-    const getValues = useCallback(() => {
+    const setValues = useSetValues(
+        props,
+        looseStore,
+        dispatch
+    ) as IUseFormControl<T>["setValues"]
+
+    const getValues = useCallback((): T => {
         return store.getState().values
     }, [])
 
-    const setTouched = useSetTouched(props, store, dispatch)
-    const setTests = useSetTests(props, store, dispatch)
-    const setValidate = useSetValidate(props, store, dispatch)
-    const setErrors = useSetErrors(props, store, dispatch)
-    const setCustomErrors = useSetCustomErrors(props, store, dispatch)
-    const setCustomErrorByName = useSetCustomErrorByName(props, store, dispatch)
-    const setValue = useSetFieldValue(props, store, dispatch)
-    const setTouchedByName = useSetFieldTouched(props, store, dispatch)
-    const validate = useValidate(props, store, dispatch)
+    const setTouched = useSetTouched(
+        props,
+        looseStore,
+        dispatch
+    ) as IUseFormControl<T>["setTouched"]
+    const setTests = useSetTests(
+        props,
+        looseStore,
+        dispatch
+    ) as IUseFormControl<T>["setTests"]
+    const setValidate = useSetValidate(props, looseStore, dispatch)
+    const setErrors = useSetErrors(
+        props,
+        looseStore,
+        dispatch
+    ) as IUseFormControl<T>["setErrors"]
+    const setCustomErrors = useSetCustomErrors(
+        props,
+        looseStore,
+        dispatch
+    ) as IUseFormControl<T>["setCustomErrors"]
+    const setCustomErrorByName = useSetCustomErrorByName(
+        props,
+        looseStore,
+        dispatch
+    ) as IUseFormControl<T>["setCustomErrorByName"]
+    const setValue = useSetFieldValue(
+        props,
+        looseStore,
+        dispatch
+    ) as IUseFormControl<T>["setValue"]
+    const setTouchedByName = useSetFieldTouched(
+        props,
+        looseStore,
+        dispatch
+    ) as IUseFormControl<T>["setTouchedByName"]
+    const validate = useValidate(props, looseStore, dispatch)
 
-    const send = useCallback<SendFunction>((api: Function) => {
+    const send = useCallback<SendFunction<T>>((api) => {
         return new Promise((onResolve, onReject) => {
             dispatch({
                 type: FORM_ACTIONS.SEND_FORM,

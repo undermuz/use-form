@@ -18,34 +18,39 @@ React library for build forms
 
 ### Setup form
 
-For example, setup a login form with username and password fields with rules
-Rules work like: `!yourFn(filedValue) && errorText`, your should provide an array: `[Rule1, Rule2, RuleN]`
-Every rule is array: `[yourFnArray, errorText]`, yourFnArray is array of functions: `yourFn(filedValue: unknown) => boolean`
+For example, set up a login form with username and password fields and rules.
 
-This example uses built-in JS function `Boolean` to validate input's values
+Rules: for each field, `rules` is an array of `[validators, errorText]`.  
+Each validator is `(value, values) => boolean` — the field passes while the function returns `true`.  
+One-arg functions and built-in `Boolean` still work. Prefer helpers like `required` / `minLength` when you can.
 
-```javascript
-    const formConfig: IUseFormSettings = {
-        fields: {
-            username: {
-                label: "Login",
-                rules: [[[Boolean], "Username is required"]],
-            },
-            password: {
-                label: "Password",
-                rules: [[[Boolean], "Password is required"]],
-            },
+```ts
+import { useForm, required } from "@undermuz/use-form"
+
+const form = useForm({
+    fields: {
+        username: {
+            label: "Login",
+            initialValue: "",
+            rules: [[[required], "Username is required"]],
         },
-    }
+        password: {
+            label: "Password",
+            initialValue: "",
+            rules: [[[required], "Password is required"]],
+        },
+    },
+})
 
-    ...
-
-    const form = useForm(formConfig)
+// form.values.username // string
+// form.setValue("username", "alice")
 ```
 
-You should wrapp your inputs and components witch use form-hooks by FormContext.Provider
+Pass the config object into `useForm` directly (or use `satisfies`) so TypeScript can infer value types from `initialValue`. Avoid `const config: IUseFormSettings = { ... }` if you care about inference — that widens field types.
 
-```javascript
+You should wrap your inputs and components that use form hooks with `FormContext.Provider`:
+
+```tsx
     <FormContext.Provider value={form}>
     ...
     </FormContext.Provider>
@@ -54,17 +59,35 @@ You should wrapp your inputs and components witch use form-hooks by FormContext.
 ### Connect input-like components to the form
 
 To connect any form component (or just a component)
-you have to wrapp it by ConnectToForm and provide a name
+you have to wrap it by `ConnectToForm` and provide a `name`.
 
-Provided component have to receive `value` prop, `onChange` prop and call `onChange` with new value
+The child should accept a `value` prop and an `onChange` prop, and call `onChange` with the new value.
 
-```javascript
-    <ConnectToForm name="FIELD_NAME">
-        {/*Your component*/}
+```tsx
+    {/* Element child — props injected via cloneElement (existing API) */}
+    <ConnectToForm name="username">
+        <FormInput placeholder="Enter your login" />
+    </ConnectToForm>
+
+    {/* Typed field name: */}
+    <ConnectToForm<LoginForm> name="username">
+        <FormInput />
+    </ConnectToForm>
+
+    {/* Render prop — fully typed value / onChange for that field */}
+    <ConnectToForm<LoginForm> name="username">
+        {(props) => (
+            <input
+                value={props.value ?? ""}
+                onChange={(e) => props.onChange(e.target.value)}
+                onBlur={props.onBlur}
+            />
+        )}
     </ConnectToForm>
 ```
 
-ConnectToForm provides current field's value to your component, and wait new value through `onChange`
+`ConnectToForm` provides the current field value and waits for a new value through `onChange`.  
+Prefer the **render-prop** form when you want TypeScript to know `value` / `onChange` for that field; the element-child form stays supported for existing inputs.
 
 #### Browser's input
 
@@ -208,9 +231,9 @@ ConnectToForm provides current field's value to your component, and wait new val
                     <>
                         <p key={name}>{fields?.[name] || name}:</p>
                         <ul>
-                            {errors[name].map((error, i) => (
-                                <li key={i}>{error as string}</li>
-                            ))}
+                        {errors[name]?.map((error, i) => (
+                            <li key={i}>{error as string}</li>
+                        ))}
                         </ul>
                     </>
                 ))}
@@ -457,25 +480,30 @@ Or by context inside FormContext.Provider:
 
 ### Submit
 
+`onSend` receives typed form values. On success, callbacks get `{ response, values }` from `form.send`.
+
 Create callbacks
 
-```javascript
+```ts
     const form = useForm(/*Form config*/)
 
     ...
 
-    const onSend = useCallback(async (values: IValues) => {
+    const onSend = useCallback(async (values: typeof form.values) => {
         console.log("Login data", values)
 
-        await sendValuesToTheServer(values)
+        return sendValuesToTheServer(values)
     }, [])
 
-    const onSucceed = useCallback(() => {
-        console.log("Login completed")
-    }, [])
+    const onSucceed = useCallback(
+        ({ response, values }: { response: unknown; values: typeof form.values }) => {
+            console.log("Login completed", response, values)
+        },
+        []
+    )
 
-    const onError = useCallback(() => {
-        console.log("Login failed")
+    const onError = useCallback((reason: unknown) => {
+        console.log("Login failed", reason)
     }, [])
 
     const submit = useFormSubmit(onSend, onSucceed, onError)
@@ -520,31 +548,210 @@ OR Get submit by component
 
 ```
 
-## Controlled form
+## TypeScript
 
-You can control form's values from outside by providing `value` and `onChange` to useForm's config
+`useForm` infers the values type from `fields` / `initialValue`, and threads it through `values`, `setValue`, `setValues`, errors, and touched APIs.
 
-```javascript
-const [value, onChange] = useState<IValues>(() => {
-    return {
-        username: "",
-        password: ""
-    }
+### Infer values from `fields`
+
+```ts
+const form = useForm({
+    fields: {
+        username: { label: "Login", initialValue: "" },
+        age: { label: "Age", initialValue: 0 },
+    },
 })
 
-const form = useForm({
+form.values.username // string
+form.values.age // number
+form.setValue("age", 21) // ok
+// form.setValue("age", "21") // TS error
+// form.setValue("missing", "x") // TS error
+```
+
+### Explicit values type
+
+Use a generic when `initialValue` is narrower than the real domain (e.g. `null`, but the field is `string | null`):
+
+```ts
+type LoginForm = {
+    username: string | null
+    age: number
+}
+
+const form = useForm<LoginForm>({
+    fields: {
+        username: { label: "Login", initialValue: null },
+        age: { label: "Age", initialValue: 0 },
+    },
+})
+
+form.setValue("username", "alice") // ok
+form.setValue("username", null) // ok
+```
+
+Or widen a single field: `initialValue: null as string | null`.
+
+### Field names
+
+With an inferred or explicit values type, these APIs only accept known field names:
+
+- `setValue` / `setTouchedByName` / `setCustomErrorByName`
+- `setTouched` / `setErrors` / `setCustomErrors`
+- `ConnectToForm<YourValues> name="..."`
+
+Without a type argument, `ConnectToForm` still accepts any `string` name (React context does not flow generics). Prefer `ConnectToForm<LoginForm>` next to `useForm<LoginForm>`.
+
+For typed `value` / `onChange`, use the render-prop child:
+
+```tsx
+<ConnectToForm<LoginForm> name="age">
+    {(props) => {
+        // props.value: number
+        // props.onChange: (value: number) => void
+        return <input ... />
+    }}
+</ConnectToForm>
+```
+
+Or type your input as `Partial<IConnectedProps<LoginForm, "username">>`.
+
+### Validators
+
+Runtime always calls `(value, values) => boolean`. Types match that contract.
+
+```ts
+import { useForm, required, minLength } from "@undermuz/use-form"
+
+type LoginForm = {
+    username: string
+    age: number
+}
+
+const form = useForm<LoginForm>({
     fields: {
         username: {
             label: "Login",
-            rules: [[[Boolean], "Username is required"]],
+            initialValue: "",
+            rules: [[[required, minLength(3)], "Username is invalid"]],
+        },
+        age: {
+            label: "Age",
+            initialValue: 0,
+            rules: [[
+                [
+                    (value, values) =>
+                        typeof value === "number" && Boolean(values.username),
+                ],
+                "Age is invalid",
+            ]],
+        },
+    },
+})
+```
+
+Built-ins: `required`, `minLength(n)`, `pattern(regexp)`.  
+`Boolean` remains valid for simple “truthy” checks.
+
+### Send / FormSubmit
+
+```ts
+const result = await form.send(async (values) => {
+    return { token: "…" } // values typed from the form
+})
+
+result.values // form values
+result.response.token // string
+
+<FormSubmit
+    onSend={async (values) => api.login(values)}
+    onSucceed={({ response, values }) => {
+        /* response + values typed */
+    }}
+    onError={(err) => {
+        /* FormValidateError | FormSendError | unknown */
+    }}
+/>
+```
+
+Types: `FormSendApi`, `FormSendResult`, `FormSubmitError`, `IFormSubmitProps`.
+
+### Form options
+
+```ts
+const form = useForm({
+    fields: { /* ... */ },
+    options: {
+        debug: true,
+        afterSendDelay: 300,
+        mapServerFields: { user_name: "username" },
+        middlewares: [myMiddleware], // FormMiddleware[]
+    },
+})
+```
+
+| Option | Purpose |
+|--------|---------|
+| `debug` | Extra console logs |
+| `afterSendDelay` | How long success/cancel flags stay true after send |
+| `mapServerFields` | Map API field names → local names when applying `__meta__.formInfo.fieldsErrors` |
+| `middlewares` | Extra store middlewares (`FormMiddleware` / `StoreMiddleware`) |
+
+### Errors helpers
+
+`IError` can nest maps; UI usually wants plain strings:
+
+```ts
+import { getFieldError, getFieldErrorMessages } from "@undermuz/use-form"
+
+getFieldError(form.errors, "username") // string[]
+getFieldErrorMessages(form.errors.username)
+
+form.sendError // unknown | null — last send failure payload
+```
+
+### Tips
+
+| Do | Avoid |
+|----|--------|
+| Pass config inline into `useForm({ fields })` | `const config: IUseFormSettings = { ... }` if you need inference |
+| Set `initialValue` for typed values | Omitting `initialValue` → field value typed as `unknown` |
+| `useForm<MyValues>(...)` for unions / nullables | Relying only on `null` literal inference |
+| `ConnectToForm<MyValues> name="..."` | Untyped `ConnectToForm` when you want name checks |
+
+## Controlled form
+
+You can control form values from outside by providing `value` and `onChange` to `useForm`'s config.
+
+```ts
+import { useState } from "react"
+import { useForm, required } from "@undermuz/use-form"
+
+type LoginForm = {
+    username: string
+    password: string
+}
+
+const [value, onChange] = useState<LoginForm>({
+    username: "",
+    password: "",
+})
+
+const form = useForm<LoginForm>({
+    fields: {
+        username: {
+            label: "Login",
+            initialValue: "",
+            rules: [[[required], "Username is required"]],
         },
         password: {
             label: "Password",
-            rules: [[[Boolean], "Password is required"]],
+            initialValue: "",
+            rules: [[[required], "Password is required"]],
         },
     },
     value,
-    onChange
+    onChange,
 })
 ```
 
@@ -660,8 +867,22 @@ You can get even *more* control
 
 ## Examples
 
-```javascript
-const Input: React.FC<IConnectedProps> = ({
+```tsx
+import { useCallback } from "react"
+import {
+    useForm,
+    FormContext,
+    ConnectToForm,
+    FormSubmit,
+    IfForm,
+    useFormErrors,
+    useFormFields,
+    required,
+    EnumFormSubmitStatus,
+    type IConnectedProps,
+} from "@undermuz/use-form"
+
+const Input: React.FC<IConnectedProps & { type?: string; placeholder?: string }> = ({
     type = "text",
     placeholder = "",
     onChange,
@@ -671,14 +892,12 @@ const Input: React.FC<IConnectedProps> = ({
     return (
         <>
             <label>{label}</label>
-            <InputGroup fullWidth size="Small">
-                <input
-                    type={type}
-                    placeholder={placeholder}
-                    onChange={(e) => onChange?.(e.target.value)}
-                    value={value}
-                />
-            </InputGroup>
+            <input
+                type={type}
+                placeholder={placeholder}
+                onChange={(e) => onChange?.(e.target.value)}
+                value={value}
+            />
         </>
     )
 }
@@ -690,14 +909,14 @@ const ErrorBlock = () => {
     return (
         <>
             {Object.keys(errors).map((name) => (
-                <>
-                    <p key={name}>{fields?.[name] || name}:</p>
+                <div key={name}>
+                    <p>{fields?.[name] || name}:</p>
                     <ul>
-                        {errors[name].map((error: string, i: number) => (
-                            <li key={i}>{error}</li>
+                        {errors[name]?.map((error, i) => (
+                            <li key={i}>{error as string}</li>
                         ))}
                     </ul>
-                </>
+                </div>
             ))}
         </>
     )
@@ -708,16 +927,18 @@ const LoginForm = () => {
         fields: {
             username: {
                 label: "Login",
-                rules: [[[Boolean], "Username is required"]],
+                initialValue: "",
+                rules: [[[required], "Username is required"]],
             },
             password: {
                 label: "Password",
-                rules: [[[Boolean], "Password is required"]],
+                initialValue: "",
+                rules: [[[required], "Password is required"]],
             },
         },
     })
 
-    const onSend = useCallback((values: IValues) => {
+    const onSend = useCallback((values: typeof form.values) => {
         console.log("Login data", values)
     }, [])
 

@@ -7,6 +7,8 @@ import { EnumFormStatus } from "../useForm/reducer"
 
 export const defaultValidate = ({ errors = {} }) => errors
 
+const initialState = getInitialState()
+
 export const DEF_VALUES: UseFormConfig = {
     status: EnumFormStatus.Initial,
     values: {},
@@ -16,14 +18,15 @@ export const DEF_VALUES: UseFormConfig = {
     sendError: null,
     tests: [],
     config: {},
-    validate: (_c) => true,
     touched: [],
-    fields: [],
+    fields: {},
     errors: {},
     customErrors: {},
-    send: () => {
-        return Promise.resolve()
-    },
+    // IUseFormControl.validate — not state ValidateFunction
+    validate: (_checkOnlyFilled) => {},
+    send: (async () => {
+        return { response: undefined as unknown, values: {} }
+    }) as UseFormConfig["send"],
     hasFormErrors(_c) {
         return [true, {}]
     },
@@ -51,7 +54,7 @@ export const DEF_VALUES: UseFormConfig = {
 
     store: {
         getState: () => {
-            return getInitialState()
+            return initialState
         },
         dispatch: (..._args) => {},
     },

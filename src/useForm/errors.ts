@@ -32,4 +32,36 @@ class FormSendError extends Error {
     }
 }
 
+/** Optional `__meta__` shape recognized by the send middleware. */
+export interface FormServerErrorMeta {
+    formInfo?: {
+        fieldsErrors?: IErrors
+    }
+}
+
+export type FormApiErrorLike = {
+    message?: string
+    __meta__?: FormServerErrorMeta
+}
+
+export const getFormApiErrorMeta = (
+    error: unknown
+): FormServerErrorMeta | undefined => {
+    if (typeof error !== "object" || error === null) {
+        return undefined
+    }
+
+    return (error as FormApiErrorLike).__meta__
+}
+
+export const getErrorMessage = (error: unknown): string | undefined => {
+    if (typeof error !== "object" || error === null) {
+        return undefined
+    }
+
+    const message = (error as FormApiErrorLike).message
+
+    return typeof message === "string" ? message : undefined
+}
+
 export { FormValidateError, FormSendError }

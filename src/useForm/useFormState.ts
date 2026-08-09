@@ -1,4 +1,4 @@
-import type { IFormConfig } from "./useForm"
+import type { FormMiddleware, IFormConfig } from "./useForm"
 import { formReducer, type IValues, type IFormState } from "./reducer"
 
 import { useMemo } from "react"
@@ -10,6 +10,7 @@ import {
     useReducer,
     type DispatchFunction,
     type IStore,
+    type StoreMiddleware,
 } from "../utils/useReducer"
 // import { createReset } from "./middlewares/reset"
 
@@ -21,22 +22,26 @@ export type FormState<T extends IValues = IValues> = {
 }
 
 const useFormState = <T extends IValues = IValues>(
-    props: IFormConfig
+    props: IFormConfig<T>
 ): FormState<T> => {
     const initialState = useMemo(
         () => getInitialState(props) as IFormState<T>,
         []
     )
 
-    const middlewares = useMemo(
-        () => [
-            ...(props?.middlewares || []),
-            createValidating(props),
+    const middlewares = useMemo(() => {
+        const custom = (props?.middlewares || []) as StoreMiddleware<
+            IFormState<T>
+        >[]
+
+        const builtin: FormMiddleware<T>[] = [
+            createValidating(props) as FormMiddleware<T>,
             // createReset(props),
-            createSend(props),
-        ],
-        []
-    )
+            createSend(props) as FormMiddleware<T>,
+        ]
+
+        return [...custom, ...builtin]
+    }, [])
 
     const [state, dispatch, { store, reset }] = useReducer<IFormState<T>>(
         formReducer,
