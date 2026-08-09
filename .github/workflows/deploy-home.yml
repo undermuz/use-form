@@ -1,0 +1,47 @@
+name: Deploy home-page to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "www/home/**"
+      - "packages/use-form/**"
+      - "package.json"
+      - "package-lock.json"
+      - ".github/workflows/deploy-home.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Build home-page for GitHub Pages
+        run: npm run build:pages --workspace=@undermuz/use-form-home
+        env:
+          BASE_PATH: /use-form/
+
+      - name: Deploy to gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./www/home/dist
+          force_orphan: true

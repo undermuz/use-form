@@ -4,16 +4,21 @@
   "private": true,
   "description": "Workspace for @undermuz/use-form",
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "www/*"
   ],
   "scripts": {
     "build": "nx run @undermuz/use-form:build",
     "test": "nx run @undermuz/use-form:test",
     "lint": "nx run @undermuz/use-form:lint",
-    "predeploy": "nx run @undermuz/use-form:predeploy"
+    "predeploy": "nx run @undermuz/use-form:predeploy",
+    "dev:home": "npm run dev --workspace=@undermuz/use-form-home",
+    "build:home:pages": "npm run build:pages --workspace=@undermuz/use-form-home",
+    "deploy:home": "npm run build:home:pages && gh-pages -d www/home/dist -b gh-pages --dotfiles -m \"Deploy home-page to GitHub Pages\""
   },
   "license": "MIT",
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "nx": "^23.1.1"
   }
 }

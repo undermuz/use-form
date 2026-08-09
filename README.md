@@ -14,7 +14,7 @@ React library for build forms
 
 ## Basic usage
 
-[Storybook](https://undermuz.github.io/use-form/)
+[Home page](https://undermuz.github.io/use-form/)
 
 ### Setup form
 
@@ -91,8 +91,6 @@ Prefer the **render-prop** form when you want TypeScript to know `value` / `onCh
 
 #### Browser's input
 
-[Storybook: browsers inputs example](https://undermuz.github.io/use-form/?path=/story/form-examples--browser-inputs-example)
-
 ```tsx
     type InputProps = Partial<IConnectedProps> & {
         type?: string
@@ -157,8 +155,6 @@ Prefer the **render-prop** form when you want TypeScript to know `value` / `onCh
 ```
 
 #### Ui framework's input
-
-[Storybook: chakra-ui example](https://undermuz.github.io/use-form/?path=/story/form-examples--chakra-ui-example)
 
 ```tsx
     type InputProps = Partial<IConnectedProps> & {
@@ -276,8 +272,6 @@ Prefer the **render-prop** form when you want TypeScript to know `value` / `onCh
 ```
 
 #### Third-party components
-
-[Storybook: Date-picker example](https://undermuz.github.io/use-form/?path=/story/form-examples--date-picker-example)
 
 ```tsx
     const formConfig: IUseFormSettings = {

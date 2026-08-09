@@ -62,15 +62,20 @@ export const DEF_VALUES: UseFormConfig = {
     reset: () => {},
 }
 
-const FormContext = createContext<UseFormConfig | null>(null)
+/**
+ * Holds any `UseFormConfig<T>`. React context cannot be generic, so the value
+ * type is intentionally loose (`any`); narrow with `useFormContext<T>()`.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const FormContext = createContext<UseFormConfig<any> | null>(null)
 
 FormContext.displayName = "FormContext"
 
 export const useFormContext = <
     T extends Record<string, unknown> = Record<string, unknown>
 >() => {
-    const ctx = useContext<UseFormConfig<T>>(
-        FormContext as Context<UseFormConfig<T>>
+    const ctx = useContext(
+        FormContext as Context<UseFormConfig<T> | null>
     )
 
     if (!ctx) {

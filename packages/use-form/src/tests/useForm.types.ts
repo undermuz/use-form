@@ -2,11 +2,13 @@
  * Compile-time checks for Values inference and field-name typing.
  * Not executed as a Jest suite — validated by `tsc --noEmit`.
  */
+import { createElement } from "react"
 import type {
     IConnectToForm,
     IConnectToFormRender,
     IConnectedProps,
 } from "../components/connect-to-form"
+import { FormContext } from "../components/form-context"
 import type { FieldValidator, IValueTest } from "../useForm/reducer"
 import { useForm } from "../useForm/useForm"
 import { getFieldError, getFieldErrorMessages } from "../useForm/errorHelpers"
@@ -238,3 +240,11 @@ void sendErr
 
 // @ts-expect-error — unknown field name for getFieldError
 getFieldError(explicit.errors, "password")
+
+// FormContext.Provider must accept a concrete UseFormConfig<T> without casts
+const formContextEl = createElement(
+    FormContext.Provider,
+    { value: inferred },
+    null
+)
+void formContextEl

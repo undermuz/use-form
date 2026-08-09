@@ -35,18 +35,22 @@ export interface IFormConfig<T extends IValues = IValues>
     middlewares?: FormMiddleware<T>[]
 }
 
+/**
+ * Core form API. Method syntax keeps `UseFormConfig<T>` assignable to the
+ * default `UseFormConfig` (FormContext / loose refs) under strictFunctionTypes.
+ */
 export interface IUseForm<T extends IValues = IValues> {
     /**
      * @deprecated
      */
-    IsFormValid: (c: boolean) => boolean
-    isFormValid: (c: boolean) => boolean
-    hasFormErrors: (c: boolean) => [boolean, IErrors<T>]
-    getErrors: () => IErrors<T>
+    IsFormValid(c: boolean): boolean
+    isFormValid(c: boolean): boolean
+    hasFormErrors(c: boolean): [boolean, IErrors<T>]
+    getErrors(): IErrors<T>
     store: IStore<IFormState<T>>
     dispatch: DispatchFunction
     send: SendFunction<T>
-    reset: () => void
+    reset(): void
 }
 
 export type UseFormConfig<T extends Record<string, unknown> = IValues> =

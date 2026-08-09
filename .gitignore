@@ -1,13 +1,10 @@
 node_modules
-package-lock.json
 dist
 build
 .nx/cache
 .nx/workspace-data
+.nx/migrate-runs
 packages/*/dist
 packages/*/src/tests/__screenshots__
-
-
-.nx/cache
-.nx/workspace-data
-.nx/migrate-runs
+www/*/dist
+www/*/node_modules/.tmp

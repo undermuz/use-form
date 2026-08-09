@@ -58,11 +58,13 @@ export type FieldName<T extends IValues = IValues> = keyof T & string
  * Validator used by value tests / field rules.
  * Runtime always passes `(fieldValue, allValues)`.
  * One-arg functions (and `Boolean`) remain assignable.
+ *
+ * Method-style bivariance so `FieldValidator<Specific>` is assignable to
+ * `FieldValidator` (needed for FormContext / loose `UseFormConfig`).
  */
-export type FieldValidator<T extends IValues = IValues> = (
-    value: unknown,
-    values: T
-) => boolean
+export type FieldValidator<T extends IValues = IValues> = {
+    bivarianceHack(value: unknown, values: T): boolean
+}["bivarianceHack"]
 
 export type IValueTest<T extends IValues = IValues> = [
     Array<FieldName<T>>,
