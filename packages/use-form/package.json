@@ -1,0 +1,93 @@
+{
+  "name": "@undermuz/use-form",
+  "version": "2.0.0-alpha",
+  "description": "React library for build forms",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    "types": "./dist/index.d.ts",
+    "import": "./dist/index.js",
+    "node": "./dist/index.cjs",
+    "require": "./dist/index.cjs",
+    "default": "./dist/index.cjs"
+  },
+  "sideEffects": false,
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "nx exec -- vitest run",
+    "test:watch": "vitest",
+    "lint": "nx exec -- eslint src && tsc --noEmit -p tsconfig.json",
+    "build": "nx exec -- tsup",
+    "predeploy": "npm run lint && npm run test && npm run build",
+    "prepublishOnly": "npm run predeploy"
+  },
+  "author": {
+    "name": "undermuz",
+    "email": "undermuz@gmail.com",
+    "url": "https://github.com/undermuz"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/undermuz/use-form.git",
+    "directory": "packages/use-form"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "tslib": "^2.3.1",
+    "underscore": "^1.13.4"
+  },
+  "peerDependencies": {
+    "react": ">=17.0.0",
+    "react-dom": ">=17.0.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.0",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.0",
+    "@types/underscore": "^1.13.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "@vitest/browser-playwright": "^4.1.10",
+    "esbuild-plugin-file-path-extensions": "^2.1.4",
+    "eslint": "^9.39.0",
+    "eslint-config-prettier": "^10.1.0",
+    "eslint-plugin-react": "^7.37.0",
+    "playwright": "^1.55.0",
+    "prettier": "^3.6.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0",
+    "typescript-eslint": "^8.46.0",
+    "vitest": "^4.1.10",
+    "vitest-browser-react": "^2.2.0"
+  },
+  "keywords": [
+    "react",
+    "form",
+    "forms",
+    "use-form",
+    "hook"
+  ],
+  "nx": {
+    "targets": {
+      "build": {
+        "outputs": ["{projectRoot}/dist"]
+      },
+      "test": {
+        "inputs": ["default", "^default"]
+      },
+      "lint": {
+        "inputs": [
+          "default",
+          "{projectRoot}/eslint.config.js",
+          "{projectRoot}/tsconfig.json"
+        ]
+      }
+    }
+  }
+}

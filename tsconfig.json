@@ -1,34 +1,5 @@
 {
-    "compilerOptions": {
-        "checkJs": false,
-        "resolveJsonModule": true,
-        "moduleResolution": "node",
-        "esModuleInterop": true,
-        "target": "ES2019",
-        "module": "esnext",
-        "rootDir": "src",
-        "forceConsistentCasingInFileNames": true,
-        "importHelpers": true,
-        "jsx": "react-jsx",
-        "declaration": false,
-        "strict": true,
-        "lib": ["es2019", "dom"],
-        "sourceMap": false,
-        "noImplicitAny": true,
-        "noImplicitThis": true,
-        "noImplicitReturns": true,
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "skipLibCheck": true
-    },
-    "exclude": [
-        "dist",
-        "node_modules",
-        "build",
-        ".vscode",
-        "coverage",
-        ".npm",
-        ".yarn"
-    ],
-    "include": ["src/**/*"]
+  "extends": "./tsconfig.base.json",
+  "include": ["packages/use-form/src/**/*"],
+  "exclude": ["**/dist", "**/node_modules", "stories"]
 }

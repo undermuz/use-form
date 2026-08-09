@@ -1,5 +1,13 @@
 node_modules
 package-lock.json
-storybook-static
 dist
 build
+.nx/cache
+.nx/workspace-data
+packages/*/dist
+packages/*/src/tests/__screenshots__
+
+
+.nx/cache
+.nx/workspace-data
+.nx/migrate-runs
